@@ -50,6 +50,7 @@ namespace Repositories
                 .Include(o => o.Abonnements)
                 .Include(o => o.MatchHomeClubs)
                 .Include(o => o.MatchAwayClubs)
+                .Include(c => c.Stadium)
                 .AsNoTracking()
                 .SingleOrDefaultAsync(o => o.Id == Id);
         }
@@ -58,7 +59,13 @@ namespace Repositories
         {
             try
             {
-                return await _context.Clubs.AsNoTracking().ToListAsync();
+                return await _context.Clubs
+                    .Include(o => o.Abonnements)
+                    .Include(o => o.MatchHomeClubs)
+                    .Include(o => o.MatchAwayClubs)
+                    .Include(c => c.Stadium)
+                    .AsNoTracking()
+                    .ToListAsync();
             }
             catch (Exception ex)
             {

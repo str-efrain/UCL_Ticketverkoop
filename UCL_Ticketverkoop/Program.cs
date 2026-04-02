@@ -1,8 +1,14 @@
+using Domains.Data;
+using Domains.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Repositories;
+using Repositories.Interfaces;
+using Services;
+using Services.Interfaces;
 using System.Text;
 using UCL_Ticketverkoop.Data;
 
@@ -10,7 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
+builder.Services.AddDbContext<UCL_TicketingDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -21,7 +27,7 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 //Default identity
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+    .AddEntityFrameworkStores<UCL_TicketingDbContext>();
 builder.Services.AddControllersWithViews();
 
 //Swagger
@@ -51,6 +57,11 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddAutoMapper(typeof(Program));
 
 //DI
+builder.Services.AddScoped<IDAO<Club>, ClubDAO>();
+builder.Services.AddScoped<IService<Club>, ClubService>();
+
+builder.Services.AddScoped<IDAO<Stadium>, StadiumDAO>();
+builder.Services.AddScoped<IService<Stadium>, StadiumService>();
 
 
 //JWT Bearer tokens

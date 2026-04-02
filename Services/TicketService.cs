@@ -12,31 +12,37 @@ namespace Services
 {
     internal class TicketService : IService<Ticket>
     {
-        public Task AddAsync(Ticket entity)
+        private readonly IDAO<Ticket> _ticketDAO;
+        public TicketService(IDAO<Ticket> ticketDAO)
         {
-            throw new NotImplementedException();
+            _ticketDAO = ticketDAO;
+        }
+        public async Task AddAsync(Ticket entity)
+        {
+           await _ticketDAO.AddAsync(entity);
         }
 
-        public Task DeleteAsync(Ticket entity)
+        public async Task DeleteAsync(Ticket entity)
         {
-            throw new NotImplementedException();
+            await _ticketDAO.DeleteAsync(entity);
         }
 
-        public Task<Ticket?> FindByIdAsync(int Id)
+        public async Task<Ticket?> FindByIdAsync(int Id)
         {
-            throw new NotImplementedException();
+           return await _ticketDAO.FindByIdAsync(Id);
         }
 
-        public Task<IEnumerable<Ticket>?> GetAllAsync()
+        public async Task<IEnumerable<Ticket>?> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _ticketDAO.GetAllAsync();
         }
 
-        public Task UpdateAsync(Ticket entity)
+        public async Task UpdateAsync(Ticket entity)
         {
-            throw new NotImplementedException();
+          await _ticketDAO.UpdateAsync(entity);
         }
 
 
     }
+
 }

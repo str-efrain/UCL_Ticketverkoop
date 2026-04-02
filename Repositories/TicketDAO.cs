@@ -11,7 +11,7 @@ using Repositories.Interfaces;
 
 namespace Repositories
 {
-    public class TicketDAO : ITicketDAO
+    public class TicketDAO : IDAO<Ticket>
     {
         private readonly UCL_TicketingDbContext _context;
         public TicketDAO(UCL_TicketingDbContext context)
@@ -20,34 +20,66 @@ namespace Repositories
         }
         public async Task AddAsync(Ticket entity)
         {
-
+            _context.Entry(entity).State = EntityState.Added;
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
         }
 
         public async Task DeleteAsync(Ticket entity)
         {
-
+            _context.Entry(entity).State = EntityState.Deleted;
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
         }
 
         public async Task<Ticket?> FindByIdAsync(int Id)
         {
-
+            return await _context.Tickets
+                .Include(t => t.Match)
+                .Include(t => t.Order)
+                .Include (t => t.Vak)
+                .AsNoTracking()
+                .SingleOrDefaultAsync(t => t.Id == Id);
         }
 
         public async Task<IEnumerable<Ticket>?> GetAllAsync()
         {
-
+            try
+            {
+                return await _context.Tickets.AsNoTracking().ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error in de DAO");
+                throw;
+            }
         }
 
         public async Task UpdateAsync(Ticket entity)
         {
-
+            _context.Update(entity).State = EntityState.Modified;
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
         }
-
-        public async Task<IEnumerable<Ticket>?> getByUserId()
-        {
-            throw new NotImplementedException();
-
-        }
+    }
 
 
-}
+    }
