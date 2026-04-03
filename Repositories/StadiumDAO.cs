@@ -46,8 +46,11 @@ namespace Repositories
 
         public async Task<Stadium?> FindByIdAsync(int Id)
         {
+            // Eager-load Clubs (and Vaks) so the navigation collections are populated
             return await _context.Stadia
                 .AsNoTracking()
+                .Include(s => s.Clubs)
+                .Include(s => s.Vaks)
                 .SingleOrDefaultAsync(s => s.Id == Id);
         }
 
