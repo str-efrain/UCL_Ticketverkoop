@@ -13,16 +13,16 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.name)
+                @Html.DisplayNameFor(model => model.Name)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.imageURL)
+                @Html.DisplayNameFor(model => model.LogoUrl)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.stadiumName)
+                @Html.DisplayNameFor(model => model.StadiumName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.stadiumID)
+                @Html.DisplayNameFor(model => model.StadiumID)
             </th>
             <th></th>
         </tr>
@@ -31,19 +31,19 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.name)
+                @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.imageURL)
+                @Html.DisplayFor(modelItem => item.LogoUrl)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.stadiumName)
+                @Html.DisplayFor(modelItem => item.StadiumName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.stadiumID)
+                @Html.DisplayFor(modelItem => item.StadiumID)
             </td>
             <td>
-                @Html.ActionLink(item.stadiumName, item.stadiumName, new { id = item.stadiumID })
+                @Html.ActionLink(item.StadiumName, "Details", "Stadium", new { id = item.StadiumID }, null)
             </td>
         </tr>
 }

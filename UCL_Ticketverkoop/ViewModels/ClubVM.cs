@@ -2,10 +2,9 @@
 {
     public class ClubVM
     {
-        public string name { get; set; }
-        public string imageURL { get; set; }
-
-        public String stadiumName { get; set; }
-        public int stadiumID { get; set; } 
+        public string Name { get; set; }
+        public string LogoUrl { get; set; }
+        public string StadiumName { get; set; }
+        public int StadiumID { get; set; } 
     }
 }

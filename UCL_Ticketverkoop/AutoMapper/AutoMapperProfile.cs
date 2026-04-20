@@ -11,7 +11,7 @@ namespace UCL_Ticketverkoop.AutoMapper
 
 
             CreateMap<Club, ClubVM>()
-                .ForMember(dest => dest.stadiumName, opt => opt.MapFrom(src => src.Stadium != null ? src.Stadium.Name : "Geen stadion"));
+                .ForMember(dest => dest.StadiumName, opt => opt.MapFrom(src => src.Stadium != null ? src.Stadium.Name : "Geen stadion"));
             //CreateMap<TSource, TDestination>();
         }
     }
