@@ -12,10 +12,10 @@ namespace UCL_Ticketverkoop.AutoMapper
 
 
             CreateMap<Club, ClubVM>()
-<<<<<<< HEAD
+
                 .ForMember(dest => dest.StadiumName, opt => opt.MapFrom(src => src.Stadium != null ? src.Stadium.Name : "Geen stadion"));
-=======
-                .ForMember(dest => dest.stadiumName, opt => opt.MapFrom(src => src.Stadium != null ? src.Stadium.Name : "Geen stadion"));
+
+                
 
             CreateMap<Stadium, StadiumVM>();
 
@@ -24,7 +24,7 @@ namespace UCL_Ticketverkoop.AutoMapper
             .ForMember(dest => dest.ticketCount, opt => opt.MapFrom(src => src.Tickets.Count))
             .ForMember(dest => dest.abonnementCount, opt => opt.MapFrom(src => src.Abonnements.Count));
 
->>>>>>> 72501b419c2378c045d39d12a5260c2d92276b45
+
             //CreateMap<TSource, TDestination>();
         }
     }
