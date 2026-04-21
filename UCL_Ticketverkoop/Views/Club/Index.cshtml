@@ -9,46 +9,14 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.imageURL)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.stadiumName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.stadiumID)
-            </th>
-            <th></th>
-        </tr>
+
 
 
         <!-- Wordt later mooi partial view-->
-    </thead>
-    <tbody>
+
 @foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.imageURL)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.stadiumName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.stadiumID)
-            </td>
-            <td>
-                @Html.ActionLink(item.stadiumName, "Details","Stadium", new { id = item.stadiumID })
-            </td>
-        </tr>
+
+    <partial name="~/Views/Club/_ClubDetail.cshtml" model="item" />
+
+
 }
-    </tbody>
-</table>
