@@ -1,36 +1,24 @@
 ﻿@model UCL_Ticketverkoop.ViewModels.ClubVM
 
-<div>
-    <h4>ClubVM</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.imageURL)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.imageURL)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.stadiumName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.stadiumName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.stadiumID)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.stadiumID)
-        </dd>
-    </dl>
-</div>
-<div>
-    @Html.ActionLink(Model.stadiumName, "Details", "Stadium", new { id = Model.stadiumID }, null);
-    <a asp-action="Index">Back to List</a>
+<div class="club-detail-container">
+    <div class="club-info">
+        <h4>@Model.name</h4>
+        <p>
+            <span class="label">Stadium:</span><br />
+            @if (Model.stadiumID != null)
+            {
+                <a asp-controller="Stadium" asp-action="Details" asp-route-id="@Model.stadiumID" class="stadium-link">
+                    @Model.stadiumName
+                </a>
+            }
+            else
+            {
+                <span class="no-stadium">No stadium assigned</span>
+            }
+        </p>
+    </div>
+
+    <div class="club-photo-wrapper">
+            <img src="@Model.imageURL" class="club-logo-img" alt="@Model.name" />
+    </div>
 </div>

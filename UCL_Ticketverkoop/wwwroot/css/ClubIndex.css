@@ -1,0 +1,42 @@
+﻿/* De container die de flexbox activeert */
+.clubs-grid {
+    display: flex;
+    flex-wrap: wrap; /* Zorgt dat nummer 3 naar de volgende regel gaat */
+    gap: 20px; /* De witruimte tussen de blokken */
+    justify-content: flex-start;
+    align-items: stretch;
+}
+
+/* De styling voor de partial zelf */
+.club-detail-container {
+    /* Belangrijk: dwingt de breedte op 50% minus de helft van de gap */
+    flex: 0 0 calc(50% - 10px);
+    background: linear-gradient(135deg, #001540 0%, #002d72 100%);
+    color: white;
+    padding: 20px;
+    border-radius: 12px;
+    border-left: 5px solid #d4af37;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    /* Zorgt dat tekst links en foto rechts staan binnen de kaart */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box; /* Cruciaal zodat padding de 50% niet verpest */
+}
+
+/* De tekstkant */
+.club-info {
+    flex: 1;
+}
+
+/* De fotokant (altijd rechts en vaste breedte) */
+.club-photo-wrapper {
+    flex: 0 0 100px;
+    margin-left: 15px;
+}
+
+.club-logo-img {
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
+}

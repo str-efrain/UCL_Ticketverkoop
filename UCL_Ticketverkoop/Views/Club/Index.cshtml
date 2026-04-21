@@ -1,22 +1,15 @@
-﻿ @model IEnumerable<UCL_Ticketverkoop.ViewModels.ClubVM>
-
+﻿@model IEnumerable<UCL_Ticketverkoop.ViewModels.ClubVM>
+<link href="~/css/clubindex.css" rel="stylesheet" />
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Clubs";
 }
 
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<h1>Clubs</h1>
 
 
-
-        <!-- Wordt later mooi partial view-->
-
-@foreach (var item in Model) {
-
-    <partial name="~/Views/Club/_ClubDetail.cshtml" model="item" />
-
-
-}
+<div class="clubs-grid">
+    @foreach (var item in Model)
+    {
+        <partial name="~/Views/Club/_ClubDetail.cshtml" model="item" />
+    }
+</div>
