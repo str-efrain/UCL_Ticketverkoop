@@ -19,7 +19,6 @@
               data-ajax-failure="Failure">
             <div class="form-group">
                 <label for="ClubID" class="control-label"></label>
-                <!-- Add a name attribute to the select so the selected value is posted -->
                 <select asp-for="ClubID" asp-items="@Model.Clubs" id="ClubID" name="ClubID">
                     <option>All clubs</option>
                 </select>

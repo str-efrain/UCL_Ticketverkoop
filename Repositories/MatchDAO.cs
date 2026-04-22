@@ -71,7 +71,10 @@ namespace Repositories
         {
             try 
             {
-                return await _context.Matches.Where(m => m.HomeClubId == clubId || m.AwayClubId == clubId).ToListAsync();
+                return await _context.Matches
+                    .Include(h => h.HomeClub)
+                    .Include(a => a.AwayClub)
+                    .Where(m => m.HomeClubId == clubId || m.AwayClubId == clubId).ToListAsync();
             }
             catch 
             {
