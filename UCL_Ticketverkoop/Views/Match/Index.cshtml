@@ -1,53 +1,56 @@
-﻿@model IEnumerable<UCL_Ticketverkoop.ViewModels.MatchVM>
+﻿@model UCL_Ticketverkoop.ViewModels.ClubMatchVM
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "matches";
 }
 
-<h1>Index</h1>
+<h1>matches:</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.HomeTeam)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AwayTeam)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MatchDate)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.HomeTeam)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AwayTeam)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MatchDate)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>
-        </tr>
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="getMatchesByClubs"
+              data-ajax="true"
+              data-ajax-method="POST"
+              data-ajax-mode="replace"
+              data-ajax-update="#content"
+              data-ajax-loading="#divloading"
+              data-ajax-success="Success"
+              data-ajax-failure="Failure">
+            <div class="form-group">
+                <label for="ClubID" class="control-label"></label>
+                <!-- Add a name attribute to the select so the selected value is posted -->
+                <select asp-for="ClubID" asp-items="@Model.Clubs" id="ClubID" name="ClubID">
+                    <option>All clubs</option>
+                </select>
+            </div>
+        </form>
+    </div>
+</div>
+
+<img id="divloading"
+     src="~/images/spinner3.gif"
+     style="display: none" />
+<div id="content">
+    <partial name="_MatchData" model="Model.Matches" />
+</div>>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+
+    <script src="~/lib/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.min.js"></script>
+    <script>
+        $("#ClubID").on("change", () =>
+         {
+            $("form").trigger("submit");
+         });
+
+         let Success = () => {
+             $("#divloading").hide();
+         }
+    </script>
+
 }
-    </tbody>
-</table>

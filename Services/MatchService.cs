@@ -45,5 +45,6 @@ namespace Services
         {
             return await _matchDAO.GetByClubAsync(clubId);
         }
+
     }
 }
