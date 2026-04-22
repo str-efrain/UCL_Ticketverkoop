@@ -2,13 +2,13 @@
 
 <div class="club-detail-container">
     <div class="club-info">
-        <h4>@Model.name</h4>
+        <h4>@Model.Name</h4>
         <p>
             <span class="label">Stadium:</span><br />
-            @if (Model.stadiumID != null)
+            @if (Model.StadiumID != null)
             {
-                <a asp-controller="Stadium" asp-action="Details" asp-route-id="@Model.stadiumID" class="stadium-link">
-                    @Model.stadiumName
+                <a asp-controller="Stadium" asp-action="Details" asp-route-id="@Model.StadiumID" class="stadium-link">
+                    @Model.StadiumName
                 </a>
             }
             else
@@ -19,6 +19,6 @@
     </div>
 
     <div class="club-photo-wrapper">
-            <img src="@Model.imageURL" class="club-logo-img" alt="@Model.name" />
+            <img src="@Model.LogoUrl" class="club-logo-img" alt="@Model.Name" />
     </div>
 </div>
