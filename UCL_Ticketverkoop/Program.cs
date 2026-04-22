@@ -63,6 +63,12 @@ builder.Services.AddScoped<IService<Club>, ClubService>();
 builder.Services.AddScoped<IDAO<Stadium>, StadiumDAO>();
 builder.Services.AddScoped<IService<Stadium>, StadiumService>();
 
+builder.Services.AddScoped<IDAO<Match>, MatchDAO>();
+builder.Services.AddScoped<IMatchDAO, MatchDAO>();
+
+builder.Services.AddScoped<IService<Match>, MatchService>();
+builder.Services.AddScoped<IMatchService, MatchService>();
+
 
 //JWT Bearer tokens
 builder.Services.AddAuthentication(options =>

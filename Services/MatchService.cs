@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace Services
 {
-    public class MatchService : IService<Match>
+    public class MatchService : IMatchService
     {
-        private readonly IDAO<Match> _matchDAO;
+        private readonly IMatchDAO _matchDAO;
 
-        public MatchService(IDAO<Match> matchDAO)
+        public MatchService(IMatchDAO matchDAO)
         {
             _matchDAO = matchDAO;
         }
@@ -40,6 +40,10 @@ namespace Services
         public async Task UpdateAsync(Match entity)
         {
             await _matchDAO.UpdateAsync(entity);
+        }
+        public async Task<IEnumerable<Match>?> GetByClubAsync(int clubId) 
+        {
+            return await _matchDAO.GetByClubAsync(clubId);
         }
     }
 }

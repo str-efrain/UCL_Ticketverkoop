@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Repositories
 {
-    public class MatchDAO : IDAO<Match>
+    public class MatchDAO : IMatchDAO
     {
         private readonly UCL_TicketingDbContext _context;
 
@@ -56,12 +56,26 @@ namespace Repositories
         {
             try
             {
-                return await _context.Matches.AsNoTracking().ToListAsync();
+                return await _context.Matches
+                    .Include(h=>h.HomeClub)
+                    .Include(a=>a.AwayClub)
+                    .AsNoTracking().ToListAsync();
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Error in de DAO");
                 throw;
+            }
+        }
+        public async Task<IEnumerable<Match>?> GetByClubAsync(int clubId)
+        {
+            try 
+            {
+                return await _context.Matches.Where(m => m.HomeClubId == clubId || m.AwayClubId == clubId).ToListAsync();
+            }
+            catch 
+            {
+                return null;
             }
         }
 

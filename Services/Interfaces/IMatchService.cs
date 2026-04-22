@@ -1,0 +1,14 @@
+﻿using Domains.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Services.Interfaces
+{
+    public interface IMatchService : IService<Match>
+    {
+        Task<IEnumerable<Match>?> GetByClubAsync(int clubId);
+    }
+}
