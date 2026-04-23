@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using Domains.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Domains.Data;
 
-public partial class UCL_TicketingDbContext : DbContext
+public partial class UCL_TicketingDbContext : IdentityDbContext
 {
     public UCL_TicketingDbContext()
     {
@@ -38,8 +39,11 @@ public partial class UCL_TicketingDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
+
         modelBuilder.Entity<Abonnement>(entity =>
         {
+         
             entity.HasKey(e => e.Id).HasName("PK__Abonneme__3214EC07122A5F15");
 
             entity.ToTable("Abonnement");
