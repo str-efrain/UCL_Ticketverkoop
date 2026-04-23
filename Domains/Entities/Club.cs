@@ -11,7 +11,7 @@ public partial class Club
 
     public string? LogoUrl { get; set; }
 
-    public int? StadiumId { get; set; }
+    public int StadiumId { get; set; }
 
     public virtual ICollection<Abonnement> Abonnements { get; set; } = new List<Abonnement>();
 
@@ -19,5 +19,5 @@ public partial class Club
 
     public virtual ICollection<Match> MatchHomeClubs { get; set; } = new List<Match>();
 
-    public virtual Stadium? Stadium { get; set; }
+    public virtual Stadium Stadium { get; set; } = null!;
 }

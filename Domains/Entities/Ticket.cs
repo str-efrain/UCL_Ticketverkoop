@@ -13,9 +13,7 @@ public partial class Ticket
 
     public int VakId { get; set; }
 
-    public string Seat { get; set; } = null!;
-
-    public Guid VoucherId { get; set; }
+    public int Seat { get; set; }
 
     public string? Status { get; set; }
 

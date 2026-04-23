@@ -7,7 +7,7 @@ public partial class Abonnement
 {
     public int Id { get; set; }
 
-    public string UserId { get; set; } = null!;
+    public int OrderId { get; set; }
 
     public int ClubId { get; set; }
 
@@ -15,9 +15,13 @@ public partial class Abonnement
 
     public string Seat { get; set; } = null!;
 
-    public string Seizoen { get; set; } = null!;
+    public int SeizoenId { get; set; }
+
+    public virtual Order Order { get; set; } = null!;
 
     public virtual Club Club { get; set; } = null!;
 
     public virtual Vak Vak { get; set; } = null!;
+
+    public virtual Seizoen Seizoen { get; set; } = null!;
 }

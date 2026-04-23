@@ -24,6 +24,8 @@ public partial class UCL_TicketingDbContext : DbContext
 
     public virtual DbSet<Order> Orders { get; set; }
 
+    public virtual DbSet<Seizoen> Seizoenen { get; set; }
+
     public virtual DbSet<Stadium> Stadia { get; set; }
 
     public virtual DbSet<Ticket> Tickets { get; set; }
@@ -42,24 +44,32 @@ public partial class UCL_TicketingDbContext : DbContext
 
             entity.ToTable("Abonnement");
 
-            entity.HasIndex(e => e.UserId, "IX_Abonnement_UserId");
+            entity.HasIndex(e => e.OrderId, "IX_Abonnement_OrderId").IsUnique();
+            entity.HasIndex(e => e.SeizoenId, "IX_Abonnement_SeizoenId");
 
             entity.Property(e => e.Seat)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.Seizoen)
                 .HasMaxLength(255)
                 .IsUnicode(false);
 
+            entity.HasOne(d => d.Order).WithOne(p => p.Abonnement)
+                .HasForeignKey<Abonnement>(d => d.OrderId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_Abonnement_Order");
+
             entity.HasOne(d => d.Club).WithMany(p => p.Abonnements)
                 .HasForeignKey(d => d.ClubId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK_Abonnement_Club");
 
             entity.HasOne(d => d.Vak).WithMany(p => p.Abonnements)
                 .HasForeignKey(d => d.VakId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK_Abonnement_Vak");
+
+            entity.HasOne(d => d.Seizoen).WithMany(p => p.Abonnements)
+                .HasForeignKey(d => d.SeizoenId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_Abonnement_Seizoen");
         });
 
         modelBuilder.Entity<Club>(entity =>
@@ -81,7 +91,7 @@ public partial class UCL_TicketingDbContext : DbContext
 
             entity.HasOne(d => d.Stadium).WithMany(p => p.Clubs)
                 .HasForeignKey(d => d.StadiumId)
-                .OnDelete(DeleteBehavior.SetNull)
+                .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK_Club_Stadium");
         });
 
@@ -113,8 +123,20 @@ public partial class UCL_TicketingDbContext : DbContext
             entity.ToTable("Order");
 
             entity.Property(e => e.OrderDate).HasDefaultValueSql("(getdate())");
-            entity.Property(e => e.TotalPrice).HasColumnType("decimal(10, 2)");
-            entity.Property(e => e.UserId).HasMaxLength(450);
+            entity.Property(e => e.TotalPrice).HasColumnType("float");
+            entity.Property(e => e.UserId).HasMaxLength(255);
+        });
+
+        modelBuilder.Entity<Seizoen>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Seizoen__3214EC07");
+
+            entity.ToTable("Seizoen");
+
+            entity.HasIndex(e => e.Name, "UQ__Seizoen__Name").IsUnique();
+
+            entity.Property(e => e.StartDate).HasColumnType("date");
+            entity.Property(e => e.EndDate).HasColumnType("date");
         });
 
         modelBuilder.Entity<Stadium>(entity =>
@@ -122,6 +144,8 @@ public partial class UCL_TicketingDbContext : DbContext
             entity.HasKey(e => e.Id).HasName("PK__Stadium__3214EC075B5F78D3");
 
             entity.ToTable("Stadium");
+
+            entity.HasIndex(e => e.Name, "UQ__Stadium__Name").IsUnique();
 
             entity.Property(e => e.City)
                 .HasMaxLength(255)
@@ -143,13 +167,9 @@ public partial class UCL_TicketingDbContext : DbContext
 
             entity.HasIndex(e => e.VakId, "IX_Ticket_VakId");
 
-            entity.Property(e => e.Seat)
-                .HasMaxLength(50)
-                .IsUnicode(false);
             entity.Property(e => e.Status)
                 .HasMaxLength(255)
                 .IsUnicode(false);
-            entity.Property(e => e.VoucherId).HasDefaultValueSql("(newid())");
 
             entity.HasOne(d => d.Match).WithMany(p => p.Tickets)
                 .HasForeignKey(d => d.MatchId)
@@ -177,13 +197,14 @@ public partial class UCL_TicketingDbContext : DbContext
             entity.Property(e => e.Name)
                 .HasMaxLength(255)
                 .IsUnicode(false);
-            entity.Property(e => e.Price).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.Price).HasColumnType("float");
             entity.Property(e => e.Ring)
                 .HasMaxLength(255)
                 .IsUnicode(false);
 
             entity.HasOne(d => d.Stadium).WithMany(p => p.Vaks)
                 .HasForeignKey(d => d.StadiumId)
+                .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK_Vak_Stadium");
         });
 

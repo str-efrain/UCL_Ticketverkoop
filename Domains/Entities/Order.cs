@@ -11,7 +11,9 @@ public partial class Order
 
     public DateTime OrderDate { get; set; }
 
-    public decimal? TotalPrice { get; set; }
+    public double? TotalPrice { get; set; }
+
+    public virtual Abonnement? Abonnement { get; set; }
 
     public virtual ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
 }
