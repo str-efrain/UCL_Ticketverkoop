@@ -5,12 +5,15 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using NuGet.Configuration;
 using Repositories;
 using Repositories.Interfaces;
 using Services;
 using Services.Interfaces;
 using System.Text;
 using UCL_Ticketverkoop.Data;
+using Util;
+using Util.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -112,6 +115,15 @@ builder.Services.AddAuthorization(options =>
         policy.RequireClaim("functie", "Manager");
     });
 });
+
+//email
+builder.Services.AddControllersWithViews();
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+
+builder.Services.AddSingleton<IEmailSend, EmailSend>();
+
+//conformation email
+builder.Services.AddTransient<Microsoft.AspNetCore.Identity.UI.Services.IEmailSender, Util.EmailSend>();
 
 var app = builder.Build();
 
