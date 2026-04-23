@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Domains.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
@@ -128,7 +129,13 @@ public partial class UCL_TicketingDbContext : IdentityDbContext
 
             entity.Property(e => e.OrderDate).HasDefaultValueSql("(getdate())");
             entity.Property(e => e.TotalPrice).HasColumnType("float");
-            entity.Property(e => e.UserId).HasMaxLength(255);
+            entity.Property(e => e.UserId);
+
+            entity.HasOne(d => d.User)
+                .WithMany()
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_Order_AspNetUsers");
         });
 
         modelBuilder.Entity<Seizoen>(entity =>

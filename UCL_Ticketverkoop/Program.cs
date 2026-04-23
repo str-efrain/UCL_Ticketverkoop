@@ -17,18 +17,19 @@ using Util.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+//Connection string ophalen
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
+//Add UCL_TicketingDbContext
 builder.Services.AddDbContext<UCL_TicketingDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-//Add UCLDbContext (TOEVOEGEN ALS DB IS GESCAFFOLD)
-//builder.Services.AddDbContext<UCLDbContext>(options =>
-//    options.UseSqlServer(connectionString));
+//Add ApplicationDbContext voor Identity
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+ options.UseSqlServer(connectionString));
 
-
-//Default identity
+//Default identity voor EF Core, hiermee kunnen we gebruikers beheren en authenticeren
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<UCL_TicketingDbContext>();
 builder.Services.AddControllersWithViews();
@@ -153,7 +154,9 @@ app.UseSwagger();
 //User CORS
 app.UseCors(myAllowSpecificOrigins);
 
-
+//Voor sessies, nodig voor het opslaan van tijdelijke gegevens zoals gebruikersinformatie tijdens een sessie.
+//Maar moet nog extra dingen in om te werken (zie beershop-identity oef)
+app.UseSession();
 
 app.UseHttpsRedirection();
 app.UseRouting();

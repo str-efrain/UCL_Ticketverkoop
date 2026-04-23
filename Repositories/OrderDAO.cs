@@ -47,6 +47,7 @@ namespace Repositories
         public async Task<Order?> FindByIdAsync(int Id)
         {
             return await _context.Orders
+                .Include(o => o.User)
                 .Include(o => o.Tickets)
                 .AsNoTracking()
                 .SingleOrDefaultAsync(o => o.Id == Id);

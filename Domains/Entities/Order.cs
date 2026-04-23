@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
 
 namespace Domains.Entities;
 
@@ -12,6 +13,8 @@ public partial class Order
     public DateTime OrderDate { get; set; }
 
     public double? TotalPrice { get; set; }
+
+    public virtual IdentityUser User { get; set; } = null!;
 
     public virtual Abonnement? Abonnement { get; set; }
 
