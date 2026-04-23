@@ -154,10 +154,6 @@ app.UseSwagger();
 //User CORS
 app.UseCors(myAllowSpecificOrigins);
 
-//Voor sessies, nodig voor het opslaan van tijdelijke gegevens zoals gebruikersinformatie tijdens een sessie.
-//Maar moet nog extra dingen in om te werken (zie beershop-identity oef)
-app.UseSession();
-
 app.UseHttpsRedirection();
 app.UseRouting();
 
