@@ -29,3 +29,118 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+
+/* ===== GLOBAL RESET (optional but recommended) ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f6f8;
+}
+
+/* ===== NAVBAR ===== */
+.navbar {
+    background: linear-gradient(90deg, #0a1a33, #0d2a52);
+    padding: 0.8rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #d4af37; /* gold accent */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+/* ===== BRAND ===== */
+.navbar-brand {
+    color: #ffffff;
+    font-size: 1.4rem;
+    font-weight: 600;
+    text-decoration: none;
+    letter-spacing: 0.5px;
+}
+
+    .navbar-brand span {
+        color: #d4af37; /* gold highlight */
+    }
+
+/* ===== NAV LINKS ===== */
+.nav-links {
+    display: flex;
+    gap: 1.5rem;
+}
+
+    .nav-links a {
+        color: #cfd6e6;
+        text-decoration: none;
+        font-size: 0.95rem;
+        position: relative;
+        transition: all 0.25s ease;
+    }
+
+        /* Hover underline animation */
+        .nav-links a::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -4px;
+            width: 0%;
+            height: 2px;
+            background-color: #d4af37;
+            transition: width 0.25s ease;
+        }
+
+        .nav-links a:hover {
+            color: #ffffff;
+        }
+
+            .nav-links a:hover::after {
+                width: 100%;
+            }
+
+/* ===== RIGHT SIDE (AUTH) ===== */
+.nav-auth {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+    .nav-auth a {
+        text-decoration: none;
+        font-size: 0.9rem;
+    }
+
+/* Login */
+.nav-login {
+    color: #cfd6e6;
+    transition: color 0.2s ease;
+}
+
+    .nav-login:hover {
+        color: #ffffff;
+    }
+
+/* Register button */
+.nav-register {
+    padding: 0.35rem 0.8rem;
+    border: 1px solid #d4af37;
+    border-radius: 6px;
+    color: #d4af37;
+    transition: all 0.25s ease;
+}
+
+    .nav-register:hover {
+        background-color: #d4af37;
+        color: #0a1a33;
+    }
+
+/* ===== ACTIVE LINK ===== */
+.nav-links a.active {
+    color: #ffffff;
+}
+
+    .nav-links a.active::after {
+        width: 100%;
+    }
