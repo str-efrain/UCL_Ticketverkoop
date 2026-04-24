@@ -1,47 +1,39 @@
 ﻿@model IEnumerable<UCL_Ticketverkoop.ViewModels.MatchVM>
+<link href="~/css/MatchCalendar.css" rel="stylesheet" />
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.HomeTeam)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AwayTeam)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MatchDate)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.HomeTeam)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AwayTeam)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MatchDate)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<div class="match-list">
+    @foreach (var item in Model)
+    {
+        <div class="match-card">
+            <div class="match-date-badge">
+                <span class="match-day">@item.MatchDate.ToString("dd")</span>
+                <span class="match-month">@item.MatchDate.ToString("MMM")</span>
+                <span class="match-time">@item.MatchDate.ToString("HH:mm")</span>
+            </div>
+
+            <div class="match-teams">
+                <div class="team home">
+                    <img src="/Images/@item.HomeTeam.LogoUrl" alt="@item.HomeTeam.Name" class="team-logo" />
+                    <span class="team-name">@item.HomeTeam.Name</span>
+                </div>
+
+                <div class="match-vs">
+                    <span>VS</span>
+                </div>
+
+                <div class="team away">
+                    <img src="/Images/@item.AwayTeam.LogoUrl" alt="@item.AwayTeam.Name" class="team-logo" />
+                    <span class="team-name">@item.AwayTeam.Name</span>
+                </div>
+            </div>
+
+            <div class="match-meta">
+                <span class="match-stadium">@item.HomeTeam.Stadium.Name</span>
+            </div>
+
+            <div class="match-action">
+                @Html.ActionLink("Buy tickets", "BuyTickets", new { id = item.Id }, new { @class = "btn-ticket" })
+            </div>
+        </div>
+    }
+</div>

@@ -58,6 +58,7 @@ namespace Repositories
             {
                 return await _context.Matches
                     .Include(h=>h.HomeClub)
+                        .ThenInclude(c => c.Stadium)
                     .Include(a=>a.AwayClub)
                     .AsNoTracking().ToListAsync();
             }
@@ -73,6 +74,7 @@ namespace Repositories
             {
                 return await _context.Matches
                     .Include(h => h.HomeClub)
+                        .ThenInclude(c => c.Stadium)
                     .Include(a => a.AwayClub)
                     .Where(m => m.HomeClubId == clubId || m.AwayClubId == clubId).ToListAsync();
             }

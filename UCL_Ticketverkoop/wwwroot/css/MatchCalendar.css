@@ -1,0 +1,407 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap');
+
+/* ════════════════════════════════════════════
+   1. BOOTSTRAP VARIABLE OVERRIDES
+   Must come first — these neutralise Bootstrap's
+   white table/body defaults before any custom
+   rules are applied.
+════════════════════════════════════════════ */
+:root {
+    --bs-body-bg: #0a0f1e;
+    --bs-body-color: #e8e4d6;
+    --bs-body-font-family: 'DM Sans', sans-serif;
+    /* Table */
+    --bs-table-bg: transparent;
+    --bs-table-color: #e8e4d6;
+    --bs-table-border-color: rgba(255, 255, 255, 0.06);
+    --bs-table-striped-bg: transparent;
+    --bs-table-striped-color: #e8e4d6;
+    --bs-table-hover-bg: rgba(197, 161, 83, 0.07);
+    --bs-table-hover-color: #e8e4d6;
+    --bs-table-active-bg: transparent;
+    --bs-table-active-color: #e8e4d6;
+    /* Links */
+    --bs-link-color: #c5a153;
+    --bs-link-hover-color: #e8d48a;
+    /* Forms */
+    --bs-border-color: rgba(197, 161, 83, 0.35);
+}
+
+/* ════════════════════════════════════════════
+   2. BASE
+════════════════════════════════════════════ */
+body {
+    background-color: #0a0f1e;
+    color: #e8e4d6;
+    font-family: 'DM Sans', sans-serif;
+}
+
+/* ════════════════════════════════════════════
+   3. PAGE HEADING
+════════════════════════════════════════════ */
+h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.8rem;
+    letter-spacing: 0.1em;
+    color: #ffffff;
+    line-height: 1;
+    margin-bottom: 0.3rem;
+}
+
+    h1::after {
+        content: "UEFA Champions League · 2025/26";
+        display: block;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.68rem;
+        letter-spacing: 0.28em;
+        text-transform: uppercase;
+        color: #c5a153;
+        font-weight: 400;
+        margin-top: 6px;
+    }
+
+/* ════════════════════════════════════════════
+   4. FILTER FORM
+════════════════════════════════════════════ */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+    .form-group::before {
+        content: "Filter by club";
+        display: block;
+        font-size: 0.65rem;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: #c5a153;
+        margin-bottom: 6px;
+    }
+
+    .form-group label.control-label {
+        display: none;
+    }
+
+    .form-group select,
+    .form-group select#ClubID {
+        background-color: rgba(197, 161, 83, 0.07);
+        border: 1px solid rgba(197, 161, 83, 0.35);
+        color: #e8e4d6;
+        padding: 0.5rem 1.1rem;
+        border-radius: 4px;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.85rem;
+        appearance: none;
+        -webkit-appearance: none;
+        cursor: pointer;
+        min-width: 210px;
+        transition: border-color 0.15s;
+    }
+
+        .form-group select:focus,
+        .form-group select#ClubID:focus {
+            outline: none;
+            border-color: #c5a153;
+            box-shadow: 0 0 0 3px rgba(197, 161, 83, 0.12);
+            background-color: rgba(197, 161, 83, 0.1);
+        }
+
+        .form-group select option {
+            background-color: #111827;
+            color: #e8e4d6;
+        }
+
+/* ════════════════════════════════════════════
+   5. LOADING SPINNER
+════════════════════════════════════════════ */
+#divloading {
+    width: 32px;
+    display: block;
+    margin: 1rem 0;
+    filter: sepia(1) hue-rotate(15deg) saturate(4) brightness(0.9);
+    opacity: 0.6;
+}
+
+/* ════════════════════════════════════════════
+   6. TABLE CONTAINER  (#content + partial)
+════════════════════════════════════════════ */
+#content {
+    background-color: #0d1424;
+    border: 1px solid rgba(197, 161, 83, 0.18);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 0.5rem;
+}
+
+/* ════════════════════════════════════════════
+   7. TABLE — structure
+   Bootstrap's .table sets bg on > * > * (td/th)
+   directly. We neutralise it by re-declaring
+   background-color: transparent on the same
+   selectors, matching Bootstrap's own specificity.
+════════════════════════════════════════════ */
+.table {
+    width: 100%;
+    margin-bottom: 0;
+    border-color: rgba(255, 255, 255, 0.06);
+}
+
+    /* This selector mirrors Bootstrap's own rule,
+   so it wins without needing !important */
+    .table > :not(caption) > * > * {
+        background-color: transparent;
+        color: #e8e4d6;
+        border-bottom-color: rgba(255, 255, 255, 0.06);
+        padding: 0.95rem 1.15rem;
+    }
+
+    /* ════════════════════════════════════════════
+   8. TABLE — thead
+════════════════════════════════════════════ */
+    .table > thead {
+        background-color: rgba(197, 161, 83, 0.1);
+    }
+
+        .table > thead > tr > th {
+            background-color: rgba(197, 161, 83, 0.1);
+            color: #c5a153;
+            font-size: 0.63rem;
+            font-weight: 500;
+            letter-spacing: 0.24em;
+            text-transform: uppercase;
+            border-bottom: 1px solid rgba(197, 161, 83, 0.22);
+            padding: 0.85rem 1.15rem;
+            vertical-align: middle;
+        }
+
+    /* ════════════════════════════════════════════
+   9. TABLE — tbody rows
+════════════════════════════════════════════ */
+    .table > tbody > tr {
+        transition: background-color 0.14s ease;
+    }
+
+        .table > tbody > tr:hover > * {
+            background-color: rgba(197, 161, 83, 0.07);
+            color: #f0ece0;
+        }
+
+        .table > tbody > tr:last-child > * {
+            border-bottom: none;
+        }
+
+        /* ════════════════════════════════════════════
+   10. TABLE — td specifics
+════════════════════════════════════════════ */
+
+        /* Match ID column — muted gold */
+        .table > tbody > tr > td:first-child {
+            color: rgba(197, 161, 83, 0.45);
+            font-size: 0.75rem;
+            font-weight: 300;
+        }
+
+        /* Team name columns */
+        .table > tbody > tr > td:nth-child(2),
+        .table > tbody > tr > td:nth-child(3) {
+            font-weight: 500;
+            color: #f0ece0;
+        }
+
+        /* Date column */
+        .table > tbody > tr > td:nth-child(4) {
+            color: #9a9282;
+            font-size: 0.83rem;
+            font-weight: 300;
+        }
+
+        /* ════════════════════════════════════════════
+   11. BUY TICKETS LINK
+════════════════════════════════════════════ */
+        .table > tbody > tr > td:last-child a,
+        .table > tbody > tr > td > a[href*="BuyTickets"] {
+            display: inline-block;
+            padding: 0.38rem 0.95rem;
+            background-color: transparent;
+            border: 1px solid rgba(197, 161, 83, 0.55);
+            color: #c5a153;
+            font-size: 0.68rem;
+            font-weight: 500;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            border-radius: 3px;
+            text-decoration: none;
+            transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+            white-space: nowrap;
+        }
+
+            .table > tbody > tr > td:last-child a:hover,
+            .table > tbody > tr > td > a[href*="BuyTickets"]:hover {
+                background-color: rgba(197, 161, 83, 0.14);
+                border-color: #c5a153;
+                color: #e8d48a;
+                text-decoration: none;
+            }
+
+/* ════════════════════════════════════════════
+   MATCH LIST & CARDS
+════════════════════════════════════════════ */
+.match-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background-color: rgba(197, 161, 83, 0.15);
+    border: 1px solid rgba(197, 161, 83, 0.18);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.match-card {
+    display: grid;
+    grid-template-columns: 80px 1fr auto auto;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.1rem 1.4rem;
+    background-color: #0d1424;
+    transition: background-color 0.15s;
+}
+
+    .match-card:hover {
+        background-color: rgba(197, 161, 83, 0.07);
+    }
+
+/* ── Date badge ── */
+.match-date-badge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: rgba(197, 161, 83, 0.1);
+    border: 1px solid rgba(197, 161, 83, 0.2);
+    border-radius: 5px;
+    padding: 0.45rem 0.6rem;
+    line-height: 1;
+    gap: 2px;
+}
+
+.match-day {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    color: #ffffff;
+    letter-spacing: 0.05em;
+    line-height: 1;
+}
+
+.match-month {
+    font-size: 0.62rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #c5a153;
+}
+
+.match-time {
+    font-size: 0.68rem;
+    color: #7a7264;
+    letter-spacing: 0.05em;
+    margin-top: 3px;
+}
+
+/* ── Teams ── */
+.match-teams {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.team {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-width: 160px;
+}
+
+    .team.away {
+        flex-direction: row-reverse;
+        text-align: right;
+    }
+
+.team-logo {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.team-name {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #f0ece0;
+    white-space: nowrap;
+}
+
+.match-vs {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1rem;
+    color: rgba(197, 161, 83, 0.4);
+    letter-spacing: 0.1em;
+    flex-shrink: 0;
+}
+
+/* ── Stadium ── */
+.match-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 3px;
+}
+
+.match-stadium {
+    font-size: 0.72rem;
+    color: #6a6255;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+}
+
+/* ── Buy tickets button ── */
+.btn-ticket {
+    display: inline-block;
+    padding: 0.4rem 1rem;
+    background-color: transparent;
+    border: 1px solid rgba(197, 161, 83, 0.55);
+    color: #c5a153;
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    border-radius: 3px;
+    text-decoration: none;
+    transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+    white-space: nowrap;
+}
+
+    .btn-ticket:hover {
+        background-color: rgba(197, 161, 83, 0.14);
+        border-color: #c5a153;
+        color: #e8d48a;
+        text-decoration: none;
+    }
+
+/* ── Responsive: stack on small screens ── */
+@media (max-width: 700px) {
+    .match-card {
+        grid-template-columns: 1fr;
+        gap: 0.8rem;
+    }
+
+    .match-teams {
+        flex-wrap: wrap;
+    }
+
+    .team.away {
+        flex-direction: row;
+        text-align: left;
+    }
+
+    .match-meta {
+        align-items: flex-start;
+    }
+}

@@ -1,7 +1,8 @@
 ﻿@model UCL_Ticketverkoop.ViewModels.ClubMatchVM
+<link href="~/css/MatchCalendar.css" rel="stylesheet" />
 
 @{
-    ViewData["Title"] = "matches";
+    ViewData["Title"] = "Matches";
 }
 
 <h1>matches:</h1>
@@ -28,7 +29,7 @@
 </div>
 
 <img id="divloading"
-     src="~/images/spinner3.gif"
+     src="~/Images/spinner.webp"
      style="display: none" />
 <div id="content">
     <partial name="_MatchData" model="Model.Matches" />
@@ -44,12 +45,11 @@
     <script>
         $("#ClubID").on("change", () =>
          {
-            $("form").trigger("submit");
+                $("form").trigger("submit");
          });
 
          let Success = () => {
-             $("#divloading").hide();
+            $("#divloading").hide();
          }
     </script>
-
 }
