@@ -31,21 +31,28 @@
                 </div>
             </div>
         </nav> *@
+        @{
+            var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+        }
         <nav class="navbar">
             <a class="navbar-brand" asp-area="" asp-controller="Club" asp-action="Index">
                 UCL<span>_Ticketverkoop</span>
             </a>
 
             <div class="nav-links">
-                <a class ="active" asp-area="" asp-controller="Club" asp-action="Index">
+                <a class="@(currentController == "Club" ? "active" : "")"
+                   asp-controller="Club" asp-action="Index">
                     Clubs
                 </a>
-                <a asp-area="" asp-controller="Match" asp-action="Index">Matchcalendar</a>
+
+                <a class="@(currentController == "Match" ? "active" : "")"
+                   asp-controller="Match" asp-action="Index">
+                    Matchcalendar
+                </a>
             </div>
 
             <div class="nav-auth">
-                <a href="/account/login" class="nav-login">Login</a>
-                <a href="/account/register" class="nav-register">Register</a>
+                <partial name="_LoginPartial" />
             </div>
         </nav>
     </header>

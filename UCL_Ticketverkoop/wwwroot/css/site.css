@@ -144,3 +144,72 @@ body {
     .nav-links a.active::after {
         width: 100%;
     }
+
+/* ===== AUTH SECTION ===== */
+.nav-auth {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    list-style: none;
+}
+
+    /* Remove default list spacing */
+    .nav-auth li {
+        display: flex;
+        align-items: center;
+    }
+
+/* ===== USER TEXT ===== */
+.nav-user {
+    color: #cfd6e6;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+    .nav-user:hover {
+        color: #ffffff;
+    }
+
+/* ===== LOGIN LINK ===== */
+.nav-login {
+    color: #cfd6e6;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+    .nav-login:hover {
+        color: #ffffff;
+    }
+
+/* ===== REGISTER BUTTON ===== */
+.nav-register {
+    padding: 0.35rem 0.8rem;
+    border: 1px solid #d4af37;
+    border-radius: 6px;
+    color: #d4af37;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.25s ease;
+}
+
+    .nav-register:hover {
+        background-color: #d4af37;
+        color: #0a1a33;
+    }
+
+/* ===== LOGOUT BUTTON ===== */
+.nav-logout {
+    background: none;
+    border: none;
+    color: #cfd6e6;
+    font-size: 0.9rem;
+    cursor: pointer;
+    padding: 0;
+    transition: color 0.2s ease;
+}
+
+    .nav-logout:hover {
+        color: #ff6b6b; /* subtle red hint */
+    }
