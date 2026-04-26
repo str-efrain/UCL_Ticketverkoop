@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace Domains.Data;
 
-public partial class UCL_TicketingDbContext : IdentityDbContext
+public partial class UCL_TicketingDbContext : DbContext
 {
     public UCL_TicketingDbContext()
     {
@@ -51,8 +51,6 @@ public partial class UCL_TicketingDbContext : IdentityDbContext
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        base.OnModelCreating(modelBuilder);
-
         modelBuilder.Entity<Abonnement>(entity =>
         {
          

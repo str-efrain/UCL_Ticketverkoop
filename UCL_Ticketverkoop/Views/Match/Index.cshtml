@@ -10,7 +10,8 @@
 
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="getMatchesByClubs"
+        <form id="clubFilterForm"
+              asp-action="getMatchesByClubs"
               data-ajax="true"
               data-ajax-method="POST"
               data-ajax-mode="replace"
@@ -45,7 +46,7 @@
     <script>
         $("#ClubID").on("change", () =>
          {
-                $("form").trigger("submit");
+                $("#clubFilterForm").trigger("submit");
          });
 
          let Success = () => {

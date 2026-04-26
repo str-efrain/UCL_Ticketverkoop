@@ -31,7 +31,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 //Default identity voor EF Core, hiermee kunnen we gebruikers beheren en authenticeren
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<UCL_TicketingDbContext>();
+    .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 
 //Swagger
@@ -75,13 +75,8 @@ builder.Services.AddScoped<IMatchService, MatchService>();
 
 
 //JWT Bearer tokens
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    //Gebruik JWT Bearer authentication als standaard authenticatiemethode.
-    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(cfg =>
+builder.Services.AddAuthentication()
+    .AddJwtBearer(cfg =>
 {
     cfg.RequireHttpsMetadata = false;
     cfg.SaveToken = true;
@@ -157,6 +152,7 @@ app.UseCors(myAllowSpecificOrigins);
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();
