@@ -264,13 +264,13 @@ namespace Domains.Migrations
                         .IsUnicode(false)
                         .HasColumnType("varchar(255)");
 
+                    b.Property<int>("Rows")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SeatsPerRow")
+                        .HasColumnType("int");
+
                     b.Property<int>("StadiumId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("rows")
-                        .HasColumnType("int");
-
-                    b.Property<int>("seatsPerRow")
                         .HasColumnType("int");
 
                     b.HasKey("Id")

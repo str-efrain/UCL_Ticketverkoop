@@ -11,9 +11,9 @@ public partial class Vak
 
     public string Name { get; set; } = null!;
 
-    public int rows { get; set; }
+    public int Rows { get; set; }
 
-    public int seatsPerRow { get; set; }
+    public int SeatsPerRow { get; set; }
 
     public string? Ring { get; set; }
 

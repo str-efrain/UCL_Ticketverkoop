@@ -11,7 +11,8 @@ namespace UCL_Ticketverkoop.ViewModels
 
         public string name { get; set; } = null!;
 
-        public int capacity { get; set; }
+        public int Rows { get; set; }
+        public int SeatsPerRow { get; set; }
 
         public string? ring { get; set; }
 
