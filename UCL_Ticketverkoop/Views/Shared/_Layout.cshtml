@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/UCL_Ticketverkoop.styles.css" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
     <header>
@@ -35,11 +36,16 @@
             var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
         }
         <nav class="navbar">
-            <a class="navbar-brand" asp-area="" asp-controller="Club" asp-action="Index">
-                UCL<span>_Ticketverkoop</span>
+            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                EfraThib<span>_Ticketing</span>
             </a>
 
             <div class="nav-links">
+                <a class="@(currentController == "Home" ? "active" : "")"
+                   asp-controller="Home" asp-action="Index">
+                    Home
+                </a>
+
                 <a class="@(currentController == "Club" ? "active" : "")"
                    asp-controller="Club" asp-action="Index">
                     Clubs
@@ -64,7 +70,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2026 - UCL_Ticketverkoop - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2026 - EfraThib_Ticketing - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

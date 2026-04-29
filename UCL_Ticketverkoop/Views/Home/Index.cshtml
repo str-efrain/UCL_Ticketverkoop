@@ -1,8 +1,192 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+@section Styles {
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/homepage.css" asp-append-version="true" />
+}
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- HERO                                                        -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="hp-hero rounded-3 mb-4">
+    <div class="row align-items-center">
+        <div class="col-lg-7">
+            <p class="hp-eyebrow">UEFA Champions League Tickets</p>
+            <h1 class="hp-hero-title">
+                Your Seat at<br />
+                Europe's <span class="hp-accent">Greatest Stage</span>
+            </h1>
+            <p class="hp-hero-desc">
+                EfraThib Ticketing is the central platform for buying and managing
+                UEFA Champions League match tickets. Browse clubs, pick your game,
+                and secure your spot — all in one place.
+            </p>
+            <div class="hp-cta-group">
+                <a asp-controller="Match" asp-action="Index" class="hp-btn-primary">Browse Matches</a>
+                <a asp-controller="Club" asp-action="Index" class="hp-btn-outline">View Clubs</a>
+            </div>
+        </div>
+        <div class="col-lg-5 d-none d-lg-flex justify-content-center">
+            <div class="hp-emblem-wrap">
+                <img src="~/images/ucl.svg" alt="UEFA Champions League" class="hp-ucl-logo" />
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- STATS STRIP                                                 -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="hp-stats rounded-3 mb-4">
+    <div class="row text-center g-0">
+        <div class="col-6 col-md-3">
+            <div class="hp-stat">
+                <div class="hp-stat-value">6</div>
+                <div class="hp-stat-label">Top Clubs</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="hp-stat">
+                <div class="hp-stat-value">30+</div>
+                <div class="hp-stat-label">Matches Available</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="hp-stat">
+                <div class="hp-stat-value">100%</div>
+                <div class="hp-stat-label">Secure Checkout</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="hp-stat">
+                <div class="hp-stat-value">24/7</div>
+                <div class="hp-stat-label">Support</div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- ABOUT                                                       -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="mb-5">
+    <div class="row align-items-center g-4">
+        <div class="col-md-7">
+            <p class="hp-eyebrow">Who We Are</p>
+            <h2 class="hp-section-title">One Platform.<br />Every UCL Ticket.</h2>
+            <p class="hp-section-body">
+                EfraThib Ticketing was built to solve a fragmented fan experience.
+                Instead of navigating each club's own website, dealing with multiple
+                accounts, and scattered seat availability — we centralise it all.
+            </p>
+            <p class="hp-section-body mt-3">
+                Whether you're following Real Madrid at the Bernabéu or rooting for
+                Club Brugge at Jan Breydel, you'll find your tickets here with a
+                single account and a seamless checkout flow.
+            </p>
+        </div>
+        <div class="col-md-5">
+            <div class="hp-about-visual rounded-3 d-flex flex-column align-items-center justify-content-center gap-3">
+                <img src="~/images/ucl.svg" alt="UEFA Champions League" class="hp-ucl-logo hp-ucl-logo-lg" />
+                <span class="hp-visual-caption">UEFA Champions League</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- HOW IT WORKS                                                -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="hp-how-wrap rounded-3 mb-4 p-4 p-md-5">
+    <p class="hp-eyebrow">How It Works</p>
+    <h2 class="hp-section-title">Three Steps to the Perfect Match Night</h2>
+    <div class="row g-3 mt-2">
+        <div class="col-sm-6 col-lg-3">
+            <div class="hp-step-card h-100">
+                <div class="hp-step-num">01</div>
+                <div class="hp-step-icon">🏟️</div>
+                <div class="hp-step-title">Choose Your Club</div>
+                <p class="hp-step-body">Browse our lineup of top UCL clubs and explore their upcoming home fixtures.</p>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="hp-step-card h-100">
+                <div class="hp-step-num">02</div>
+                <div class="hp-step-icon">🎟️</div>
+                <div class="hp-step-title">Pick Your Match</div>
+                <p class="hp-step-body">Select the match, choose your seating category, and check live availability.</p>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="hp-step-card h-100">
+                <div class="hp-step-num">03</div>
+                <div class="hp-step-icon">✅</div>
+                <div class="hp-step-title">Secure Your Seat</div>
+                <p class="hp-step-body">Fast, secure checkout. Your e-ticket is tied to your account for easy management.</p>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="hp-step-card h-100">
+                <div class="hp-step-num">04</div>
+                <div class="hp-step-icon">📲</div>
+                <div class="hp-step-title">Enjoy the Night</div>
+                <p class="hp-step-body">Show your digital ticket at the gate and soak up the Champions League atmosphere.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- WHY EFRATHIB                                                -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="mb-4">
+    <p class="hp-eyebrow">Why EfraThib</p>
+    <h2 class="hp-section-title">Built for Real Fans</h2>
+    <div class="row g-3 mt-1">
+        <div class="col-sm-6 col-lg-3">
+            <div class="hp-feature-card h-100">
+                <div class="hp-feature-icon">🔒</div>
+                <div class="hp-feature-title">Verified &amp; Secure</div>
+                <p class="hp-feature-body">All tickets come via official club channels. Every transaction is encrypted and fraud-protected.</p>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="hp-feature-card h-100">
+                <div class="hp-feature-icon">⚡</div>
+                <div class="hp-feature-title">Real-Time Availability</div>
+                <p class="hp-feature-body">Seat counts update live — never waste time on a sold-out match again.</p>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="hp-feature-card h-100">
+                <div class="hp-feature-icon">🌍</div>
+                <div class="hp-feature-title">All Major UCL Clubs</div>
+                <p class="hp-feature-body">La Liga giants, Bundesliga powerhouses, and Belgian pride — all covered.</p>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="hp-feature-card h-100">
+                <div class="hp-feature-icon">👤</div>
+                <div class="hp-feature-title">One Account, All Clubs</div>
+                <p class="hp-feature-body">Manage every ticket in one dashboard. No more juggling accounts across club websites.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- CTA BANNER                                                  -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="hp-cta-banner rounded-3 text-center mb-4">
+    <h2 class="hp-cta-banner-title">Ready to Watch UCL Football Live?</h2>
+    <p class="hp-cta-banner-sub">Create a free account and start browsing tickets in under a minute.</p>
+    <div class="hp-cta-group justify-content-center">
+
+        <a asp-area="Identity" asp-page="/Account/Register" class="hp-btn-primary">Create Free Account</a>
+        <a asp-controller="Match" asp-action="Index" class="hp-btn-outline">See All Matches</a>
+    </div>
+</section>

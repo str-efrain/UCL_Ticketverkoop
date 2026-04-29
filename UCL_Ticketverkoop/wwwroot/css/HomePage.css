@@ -1,0 +1,348 @@
+﻿/* ── Design tokens ───────────────────────────────────────────────── */
+:root {
+    --hp-navy-deep: #0b1530;
+    --hp-navy: #112060;
+    --hp-navy-card: #122272;
+    --hp-navy-light: #1a2e80;
+    --hp-gold: #f5c518;
+    --hp-white: #ffffff;
+    --hp-muted: #8fa3d0;
+    --hp-border: rgba(245, 197, 24, 0.35);
+    --hp-card-border: rgba(255, 255, 255, 0.08);
+}
+
+/* ── Base: override Bootstrap defaults inside homepage only ──────── */
+.hp-hero, .hp-stats, .hp-how-wrap, .hp-about-visual,
+.hp-step-card, .hp-feature-card, .hp-cta-banner {
+    font-family: 'Barlow', sans-serif;
+    color: var(--hp-white);
+}
+
+/* ── Eyebrow label ───────────────────────────────────────────────── */
+.hp-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--hp-gold);
+    margin-bottom: 0.75rem;
+}
+
+    .hp-eyebrow::before {
+        content: '';
+        display: inline-block;
+        width: 22px;
+        height: 2px;
+        background: var(--hp-gold);
+        flex-shrink: 0;
+    }
+
+/* ── Section titles ──────────────────────────────────────────────── */
+.hp-section-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    color: var(--hp-white);
+    margin-bottom: 1rem;
+}
+
+.hp-section-body {
+    font-size: 0.975rem;
+    font-weight: 300;
+    line-height: 1.75;
+    color: var(--hp-muted);
+    margin-bottom: 0;
+}
+
+/* ── Buttons ─────────────────────────────────────────────────────── */
+.hp-cta-group {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-top: 1.75rem;
+}
+
+.hp-btn-primary {
+    display: inline-block;
+    background: var(--hp-gold);
+    color: var(--hp-navy-deep) !important;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none !important;
+    padding: 0.65rem 1.75rem;
+    border-radius: 6px;
+    transition: background 0.2s, transform 0.15s;
+}
+
+    .hp-btn-primary:hover {
+        background: #ffe066;
+        transform: translateY(-2px);
+    }
+
+.hp-btn-outline {
+    display: inline-block;
+    border: 1.5px solid rgba(255, 255, 255, 0.4);
+    color: var(--hp-white) !important;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none !important;
+    padding: 0.65rem 1.75rem;
+    border-radius: 6px;
+    transition: border-color 0.2s, color 0.2s, transform 0.15s;
+}
+
+    .hp-btn-outline:hover {
+        border-color: var(--hp-gold);
+        color: var(--hp-gold) !important;
+        transform: translateY(-2px);
+    }
+
+/* ── Hero ────────────────────────────────────────────────────────── */
+.hp-hero {
+    background: linear-gradient(135deg, rgba(11,21,48,0.98) 40%, rgba(17,32,96,0.85) 100%), radial-gradient(ellipse 70% 90% at 80% 50%, rgba(17,40,140,0.6) 0%, transparent 70%);
+    background-color: var(--hp-navy-deep);
+    padding: 4rem 3rem;
+    border: 1px solid var(--hp-card-border);
+    position: relative;
+    overflow: hidden;
+}
+
+    /* Subtle dot accents */
+    .hp-hero::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background-image: radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.3) 0%, transparent 100%), radial-gradient(1px 1px at 60% 15%, rgba(255,255,255,0.2) 0%, transparent 100%), radial-gradient(1px 1px at 80% 65%, rgba(255,255,255,0.25) 0%, transparent 100%), radial-gradient(1px 1px at 45% 80%, rgba(255,255,255,0.15) 0%, transparent 100%);
+        pointer-events: none;
+    }
+
+.hp-hero-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: clamp(2.6rem, 5vw, 4rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    color: var(--hp-white);
+    margin-bottom: 1.25rem;
+}
+
+.hp-accent {
+    color: var(--hp-gold);
+}
+
+.hp-hero-desc {
+    font-size: 1rem;
+    font-weight: 300;
+    line-height: 1.7;
+    color: var(--hp-muted);
+    max-width: 480px;
+    margin-bottom: 0;
+}
+
+/* UCL logo */
+.hp-ucl-logo {
+    width: 160px;
+    height: auto;
+    /* SVG fill is dark navy — invert to white then warm to gold */
+    filter: brightness(0) invert(1) sepia(1) saturate(2) hue-rotate(5deg);
+    opacity: 0.92;
+}
+
+.hp-ucl-logo-lg {
+    width: 200px;
+}
+
+/* ── Stats strip ─────────────────────────────────────────────────── */
+.hp-stats {
+    background: var(--hp-navy);
+    border: 1px solid var(--hp-card-border);
+    padding: 0;
+}
+
+.hp-stat {
+    padding: 1.5rem 1rem;
+    border-right: 1px solid var(--hp-card-border);
+}
+
+    .hp-stat:last-child {
+        border-right: none;
+    }
+
+.hp-stat-value {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.9rem;
+    font-weight: 800;
+    color: var(--hp-gold);
+    line-height: 1;
+}
+
+.hp-stat-label {
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--hp-muted);
+    margin-top: 0.3rem;
+}
+
+/* ── About visual box ────────────────────────────────────────────── */
+.hp-about-visual {
+    background: var(--hp-navy-card);
+    border: 1px solid var(--hp-card-border);
+    padding: 3rem 2rem;
+    min-height: 220px;
+    position: relative;
+    overflow: hidden;
+}
+
+    .hp-about-visual::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at 40% 40%, rgba(245,197,24,0.05) 0%, transparent 60%);
+        pointer-events: none;
+    }
+
+.hp-visual-caption {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--hp-muted);
+}
+
+/* ── How it works section ────────────────────────────────────────── */
+.hp-how-wrap {
+    background: var(--hp-navy);
+    border: 1px solid var(--hp-card-border);
+}
+
+.hp-step-card {
+    background: var(--hp-navy-card);
+    border: 1px solid var(--hp-card-border);
+    border-radius: 10px;
+    padding: 1.75rem 1.5rem;
+    transition: transform 0.2s, border-color 0.2s;
+}
+
+    .hp-step-card:hover {
+        transform: translateY(-4px);
+        border-color: var(--hp-border);
+    }
+
+.hp-step-num {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: floralwhite;
+    line-height: 1;
+    margin-bottom: 0.6rem;
+}
+
+.hp-step-icon {
+    font-size: 1.5rem;
+    margin-bottom: 0.6rem;
+}
+
+.hp-step-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--hp-white);
+    margin-bottom: 0.4rem;
+}
+
+.hp-step-body {
+    font-size: 0.85rem;
+    font-weight: 300;
+    line-height: 1.65;
+    color: var(--hp-muted);
+    margin-bottom: 0;
+}
+
+/* ── Why EfraThib feature cards ──────────────────────────────────── */
+.hp-feature-card {
+    background: var(--hp-navy-card);
+    border: 1px solid var(--hp-card-border);
+    border-radius: 10px;
+    padding: 1.75rem 1.5rem;
+    transition: transform 0.2s, border-color 0.2s;
+}
+
+    .hp-feature-card:hover {
+        transform: translateY(-3px);
+        border-color: var(--hp-border);
+    }
+
+.hp-feature-icon {
+    font-size: 1.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.hp-feature-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--hp-white);
+    margin-bottom: 0.4rem;
+}
+
+.hp-feature-body {
+    font-size: 0.85rem;
+    font-weight: 300;
+    line-height: 1.65;
+    color: var(--hp-muted);
+    margin-bottom: 0;
+}
+
+/* ── CTA banner ──────────────────────────────────────────────────── */
+.hp-cta-banner {
+    background: linear-gradient(135deg, var(--hp-navy) 0%, var(--hp-navy-light) 100%);
+    border: 1px solid var(--hp-border) !important;
+    padding: 3.5rem 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+    .hp-cta-banner::before {
+        content: '';
+        position: absolute;
+        top: -80px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(245,197,24,0.07) 0%, transparent 70%);
+        pointer-events: none;
+    }
+
+.hp-cta-banner-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: clamp(1.7rem, 3vw, 2.4rem);
+    font-weight: 800;
+    color: var(--hp-white);
+    margin-bottom: 0.6rem;
+    position: relative;
+}
+
+.hp-cta-banner-sub {
+    font-size: 0.95rem;
+    font-weight: 300;
+    color: var(--hp-muted);
+    margin-bottom: 1.75rem;
+    position: relative;
+}
