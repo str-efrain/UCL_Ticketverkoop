@@ -1,35 +1,35 @@
 ﻿using AutoMapper;
-using Domains.Entities;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using UCL_Ticketverkoop.ViewModels;
 
 namespace UCL_Ticketverkoop.API
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ClubController : ControllerBase
+    public class UsersController : ControllerBase
     {
-        private IService<Club> _clubService;
+        private readonly UserManager<IdentityUser> _userManager;
         private readonly IMapper _mapper;
-        public ClubController(IService<Club> clubService, IMapper mapper)
+
+        public UsersController(UserManager<IdentityUser> userManager, IMapper mapper)
         {
-            _clubService = clubService;
+            _userManager = userManager;
             _mapper = mapper;
         }
 
-        // GET: api/Club
+        // GET: api/users
         [HttpGet] //Authorize erbij als we JWT gaan gebruiken!
-        public async Task<ActionResult<ClubVM>> Get()
+        public async Task<ActionResult<List<UserVM>>> Get()
         {
             try
             {
-                //ophalen Clubs
-                var clubs = await _clubService.GetAllAsync();
-                // mapping
-                List<ClubVM> data = _mapper.Map<List<ClubVM>>(clubs);
+                // ophalen Users
+                var users = await _userManager.Users.ToListAsync();
+
+                List<UserVM> data = _mapper.Map<List<UserVM>>(users);
 
                 if (data == null)
                 {// Als de gegevens niet worden gevonden, retourneer een 404 Not Found-status
@@ -46,17 +46,18 @@ namespace UCL_Ticketverkoop.API
             }
         }
 
-        // GET: api/club/5
-        [HttpGet("{id}", Name = "Get")]
-        public async Task<ActionResult<ClubVM>> Get(int id)
+        // GET: api/users/5
+        [HttpGet("{id}", Name = "GetUserById")]
+        public async Task<ActionResult<IdentityUser>> Get(string id)
         {
             try
             {
-                // ophalen Club o.b.v. id
-                var club = await _clubService.FindByIdAsync(id);
+                // ophalen User o.b.v. id
+                var user = await _userManager.FindByIdAsync(id);
 
-                // mapping
-                ClubVM data = _mapper.Map<ClubVM>(club);
+                //Mapping
+                UserVM data = _mapper.Map<UserVM>(user);
+
                 if (data == null)
                 {
                     return NotFound();
@@ -68,7 +69,7 @@ namespace UCL_Ticketverkoop.API
             {
                 return StatusCode(500, new
                 {
-                    error = "Fout bij het ophalen van de clubgegevens." + ex.Message
+                    error = "Fout bij het ophalen van de gebruikersgegevens." + ex.Message
                 });
             }
         }

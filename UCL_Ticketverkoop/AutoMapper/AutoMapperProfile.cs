@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Domains.Entities;
 using Elfie.Serialization;
+using Microsoft.AspNetCore.Identity;
 using UCL_Ticketverkoop.ViewModels;
 
 namespace UCL_Ticketverkoop.AutoMapper
@@ -22,6 +23,8 @@ namespace UCL_Ticketverkoop.AutoMapper
             CreateMap<Match, MatchVM>()
                 .ForMember(dest => dest.HomeTeam, opt => opt.MapFrom(src => src.HomeClub))
                 .ForMember(dest => dest.AwayTeam, opt => opt.MapFrom(src => src.AwayClub));
+
+            CreateMap<IdentityUser, UserVM>();
         }
     }
 }
