@@ -32,7 +32,9 @@
             </div>
 
             <div class="match-action">
-                @Html.ActionLink("Buy tickets", "BuyTickets", new { id = item.Id }, new { @class = "btn-ticket" })
+                @Html.ActionLink("Buy tickets", "Index", "ShoppingCart",
+                new { stadiumId = item.HomeTeam.Stadium.Id, matchId = item.Id },
+                        new { @class = "btn-ticket" })
             </div>
         </div>
     }
