@@ -49,8 +49,8 @@ namespace UCL_Ticketverkoop.Controllers
             List<ShoppingCartVM> cart = HttpContext.Session.GetObject<List<ShoppingCartVM>>(CartSession) ?? new List<ShoppingCartVM>(); ;
             cart.Add(new ShoppingCartVM
             {
-                MatchId = MatchId.Value,
-                VakId = VakId.Value,
+                Match = _mapper.Map<MatchVM>(match),
+                Vak = _mapper.Map<VakVM>(vak),
                 Seat = Seat.Value
             });
 

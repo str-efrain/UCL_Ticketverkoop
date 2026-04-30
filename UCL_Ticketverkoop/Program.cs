@@ -108,6 +108,12 @@ builder.Services.AddScoped<IMatchService, MatchService>();
 builder.Services.AddScoped<IDAO<Vak>, VakDAO>();
 builder.Services.AddScoped<IService<Vak>, VakService>();
 
+builder.Services.AddScoped<IDAO<Order>, OrderDAO>();
+builder.Services.AddScoped<IService<Order>, OrderService>();
+
+builder.Services.AddScoped<IDAO<Ticket>, TicketDAO>();
+builder.Services.AddScoped<IService<Ticket>, TicketService>();
+
 
 
 //JWT Bearer tokens
@@ -198,14 +204,15 @@ app.UseSwaggerUI(option =>
 });
 app.UseSwagger();
 
-//Session
-app.UseSession();
 
 //User CORS
 app.UseCors(myAllowSpecificOrigins);
 
 app.UseHttpsRedirection();
 app.UseRouting();
+
+//Session
+app.UseSession();
 
 app.UseAuthentication();
 app.UseAuthorization();

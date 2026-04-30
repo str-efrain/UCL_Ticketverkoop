@@ -2,9 +2,9 @@
 {
     public class ShoppingCartVM
     {
-        public int MatchId { get; set; }
+        public MatchVM Match { get; set; }
 
-        public int VakId { get; set; }
+        public VakVM Vak { get; set; }
         public int Seat { get; set; }
 
     }

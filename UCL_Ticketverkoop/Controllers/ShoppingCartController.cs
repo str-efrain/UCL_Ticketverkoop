@@ -1,5 +1,8 @@
 ﻿using BeerschopNET9_Identity.Extensions;
+using Domains.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Services.Interfaces;
+using System.Security.Claims;
 using UCL_Ticketverkoop.ViewModels;
 
 namespace UCL_Ticketverkoop.Controllers
@@ -7,6 +10,16 @@ namespace UCL_Ticketverkoop.Controllers
     public class ShoppingCartController : Controller
     {
         private const string CartSession = "shoppingCart";
+        private readonly IService<Order> _orderService;
+        private readonly IService<Ticket> _ticketService;
+
+        public ShoppingCartController(IService<Order> orderService, IService<Ticket> ticketService)
+        {
+            _orderService = orderService;
+            _ticketService = ticketService;
+        }
+
+
         public IActionResult Index()
         {
             var cart = GetShoppingCart();
@@ -19,9 +32,41 @@ namespace UCL_Ticketverkoop.Controllers
             var shoppingCartVM = HttpContext.Session.GetObject<List<ShoppingCartVM>>(CartSession);
             return shoppingCartVM;
         }
-        public void SetShoppingCart(ShoppingCartVM cart)
+        public void SetShoppingCart(List<ShoppingCartVM> cart)
         {
             HttpContext.Session.SetObject(CartSession, cart);
+        }
+
+        public async Task<IActionResult> Buy()
+        {
+            List<ShoppingCartVM> cart = GetShoppingCart();
+
+            Random rnd = new Random();
+            Order order = new Order
+            {
+               
+                UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value, 
+                OrderDate = DateTime.Now,
+                TotalPrice = cart.Sum(item => item.Vak.Price)
+            };
+
+            await _orderService.AddAsync(order);
+
+            foreach (var item in cart)
+            {
+               await _ticketService.AddAsync(new Ticket
+                {
+                    OrderId = order.Id,
+                    MatchId = item.Match.Id,
+                    VakId = item.Vak.Id,
+                    Seat = item.Seat,
+                });
+                
+                
+            }
+
+            return View();
+
         }
     }
 }

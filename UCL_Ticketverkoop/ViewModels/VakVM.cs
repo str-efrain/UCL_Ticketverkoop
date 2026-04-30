@@ -16,7 +16,7 @@ namespace UCL_Ticketverkoop.ViewModels
 
         public string? Ring { get; set; }
 
-        public decimal Price { get; set; }
+        public double Price { get; set; }
         public int TicketCount { get; set; }
         public int AbonnementCount { get; set; }
     }

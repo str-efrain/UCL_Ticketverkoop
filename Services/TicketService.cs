@@ -10,7 +10,7 @@ using Services.Interfaces;
 
 namespace Services
 {
-    internal class TicketService : IService<Ticket>
+    public class TicketService : IService<Ticket>
     {
         private readonly IDAO<Ticket> _ticketDAO;
         public TicketService(IDAO<Ticket> ticketDAO)

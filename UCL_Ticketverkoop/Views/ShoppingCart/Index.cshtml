@@ -9,39 +9,28 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.MatchId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.VakId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Seat)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
+
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.MatchId)
+                  @item.Match.HomeTeamName
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.VakId)
+            @item.Match.AwayTeamName
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Seat)
+                @item.Vak.Name
+                    stoeltje: @item.Seat
             </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>
+        <td>
+            @item.Vak.Price
+        </td>
         </tr>
+
+
 }
+
+                            <a asp-Controller="ShoppingCart" asp-action="Buy"
+                            >Buy</a>
     </tbody>
 </table>
