@@ -58,7 +58,11 @@ namespace Repositories
         {
             try
             {
-                return await _context.Stadia.AsNoTracking().ToListAsync();
+                return await _context.Stadia
+                    .AsNoTracking()
+                    .Include(s => s.Clubs)
+                    .Include(s => s.Vaks)
+                    .ToListAsync();
             }
             catch (Exception ex)
             {

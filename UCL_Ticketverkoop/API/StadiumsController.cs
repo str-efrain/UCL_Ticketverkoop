@@ -21,14 +21,14 @@ namespace UCL_Ticketverkoop.API
 
         // GET: api/Stadium
         [HttpGet] //Authorize erbij als we JWT gaan gebruiken!
-        public async Task<ActionResult<StadiumVM>> Get()
+        public async Task<ActionResult<StadiumAPIVM>> Get()
         {
             try
             {
                 //ophalen Stadiums
                 var stadiums = await _stadiumService.GetAllAsync();
                 // mapping
-                List<StadiumVM> data = _mapper.Map<List<StadiumVM>>(stadiums);
+                List<StadiumAPIVM> data = _mapper.Map<List<StadiumAPIVM>>(stadiums);
 
                 if (data == null)
                 {// Als de gegevens niet worden gevonden, retourneer een 404 Not Found-status
@@ -47,7 +47,7 @@ namespace UCL_Ticketverkoop.API
 
         // GET: api/stadium/5
         [HttpGet("{id}", Name = "GetStadiumById")]
-        public async Task<ActionResult<StadiumVM>> Get(int id)
+        public async Task<ActionResult<StadiumAPIVM>> Get(int id)
         {
             try
             {
@@ -55,7 +55,7 @@ namespace UCL_Ticketverkoop.API
                 var stadium = await _stadiumService.FindByIdAsync(id);
 
                 // mapping
-                StadiumVM data = _mapper.Map<StadiumVM>(stadium);
+                StadiumAPIVM data = _mapper.Map<StadiumAPIVM>(stadium);
                 if (data == null)
                 {
                     return NotFound();
