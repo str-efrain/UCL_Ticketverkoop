@@ -1,31 +1,25 @@
-﻿using AutoMapper;
-using Domains.Entities;
+﻿using BeerschopNET9_Identity.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using Services.Interfaces;
-using System.Threading.Tasks;
 using UCL_Ticketverkoop.ViewModels;
 
 namespace UCL_Ticketverkoop.Controllers
 {
     public class ShoppingCartController : Controller
     {
-        private readonly IService<Stadium> _stadiumService;
-        private readonly IMapper _mapper;
-
-        public ShoppingCartController(IService<Stadium> stadiumService, IMapper mapper)
+        private const string CartSession = "shoppingCart";
+        public IActionResult Index()
         {
-            _stadiumService = stadiumService;
-            _mapper = mapper;
+            return View();
         }
-        public async Task<IActionResult> Index(int stadiumId, int matchId)
+
+        public ShoppingCartVM? GetShoppingCart()
         {
-            Stadium stadium = await _stadiumService.FindByIdAsync(stadiumId);
-            if (stadium == null) 
-                return NotFound();
-
-            StadiumVM viewModel = _mapper.Map<StadiumVM>(stadium);  
-
-            return View(viewModel);
+            var shoppingCartVM = HttpContext.Session.GetObject<ShoppingCartVM>(CartSession);
+            return shoppingCartVM;
+        }
+        public void SetShoppingCart(ShoppingCartVM cart)
+        {
+            HttpContext.Session.SetObject(CartSession, cart);
         }
     }
 }
