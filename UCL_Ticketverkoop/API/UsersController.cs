@@ -48,7 +48,7 @@ namespace UCL_Ticketverkoop.API
 
         // GET: api/users/5
         [HttpGet("{id}", Name = "GetUserById")]
-        public async Task<ActionResult<IdentityUser>> Get(string id)
+        public async Task<ActionResult<UserVM>> Get(string id)
         {
             try
             {

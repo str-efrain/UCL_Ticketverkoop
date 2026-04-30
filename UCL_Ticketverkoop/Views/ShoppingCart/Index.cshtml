@@ -10,14 +10,14 @@
     @foreach (var vak in Model.vaks)
     {
         <div class="vak-container">
-            <h3>Vak: @vak.name</h3>
+            <h3>Vak: @vak.Name</h3>
             <div>
                 @for (int i = 0; i < vak.Rows; i++)
                 {
                     <div>
                     @for (int j = 0; j < vak.SeatsPerRow; j++)
                     {
-                        <button name="@vak.id@i@j">
+                        <button name="@vak.Id@i@j">
                             s
                         </button>
                     }

@@ -50,13 +50,13 @@
                 <ul>
                     @foreach (var vak in Model.vaks)
                     {
-                        <li>@vak.name   capacity: @(vak.Rows * vak.SeatsPerRow)</li>
+                        <li>@vak.Name capacity: @(vak.Rows * vak.SeatsPerRow)</li>
                     }
                 </ul>
             }
             else
             {
-                <span>no vakken</span>
+                <span>No geen</span>
             }
         </dd>
     </dl>

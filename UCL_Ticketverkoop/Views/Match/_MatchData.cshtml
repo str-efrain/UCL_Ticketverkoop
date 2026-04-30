@@ -13,8 +13,8 @@
 
             <div class="match-teams">
                 <div class="team home">
-                    <img src="/Images/@item.HomeTeam.LogoUrl" alt="@item.HomeTeam.Name" class="team-logo" />
-                    <span class="team-name">@item.HomeTeam.Name</span>
+                    <img src="/Images/@item.HomeTeamLogoUrl" alt="@item.HomeTeamName" class="team-logo" />
+                    <span class="team-name">@item.HomeTeamName</span>
                 </div>
 
                 <div class="match-vs">
@@ -22,18 +22,18 @@
                 </div>
 
                 <div class="team away">
-                    <img src="/Images/@item.AwayTeam.LogoUrl" alt="@item.AwayTeam.Name" class="team-logo" />
-                    <span class="team-name">@item.AwayTeam.Name</span>
+                    <img src="/Images/@item.AwayTeamLogoUrl" alt="@item.AwayTeamName" class="team-logo" />
+                    <span class="team-name">@item.AwayTeamName</span>
                 </div>
             </div>
 
             <div class="match-meta">
-                <span class="match-stadium">@item.HomeTeam.Stadium.Name</span>
+                <span class="match-stadium">@item.StadiumName</span>
             </div>
 
             <div class="match-action">
                 @Html.ActionLink("Buy tickets", "Index", "ShoppingCart",
-                new { stadiumId = item.HomeTeam.Stadium.Id, matchId = item.Id },
+                new { stadiumId = item.StadiumId, matchId = item.Id },
                         new { @class = "btn-ticket" })
             </div>
         </div>

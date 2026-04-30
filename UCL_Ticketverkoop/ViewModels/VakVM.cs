@@ -4,23 +4,22 @@ namespace UCL_Ticketverkoop.ViewModels
 {
     public class VakVM
     {
-        public int id { get; set; }
+        public int Id { get; set; }
 
-        public int stadiumId { get; set; }
-        public string stadiumName { get; set; } = null!;
+        public int StadiumId { get; set; }
+        public string StadiumName { get; set; } = null!;
 
-        public string name { get; set; } = null!;
+        public string Name { get; set; } = null!;
 
         public int Rows { get; set; }
         public int SeatsPerRow { get; set; }
 
-        public string? ring { get; set; }
+        public string? Ring { get; set; }
 
-        public decimal price { get; set; }
+        public decimal Price { get; set; }
 
-        public int ticketCount { get; set; }
-
-        public int abonnementCount { get; set; }
+        public int TicketCount { get; set; }
+        public int AbonnementCount { get; set; }
     }
 }
 

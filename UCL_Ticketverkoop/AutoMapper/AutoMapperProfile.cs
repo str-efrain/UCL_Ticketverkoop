@@ -16,13 +16,22 @@ namespace UCL_Ticketverkoop.AutoMapper
             CreateMap<Stadium, StadiumVM>();
 
             CreateMap<Vak, VakVM>()
-                .ForMember(dest => dest.stadiumName, opt => opt.MapFrom(src => src.Stadium.Name))
-                .ForMember(dest => dest.ticketCount, opt => opt.MapFrom(src => src.Tickets.Count))
-                .ForMember(dest => dest.abonnementCount, opt => opt.MapFrom(src => src.Abonnements.Count));
+                .ForMember(dest => dest.StadiumName, opt => opt.MapFrom(src => src.Stadium.Name))
+                .ForMember(dest => dest.TicketCount, opt => opt.MapFrom(src => src.Tickets.Count))
+                .ForMember(dest => dest.AbonnementCount, opt => opt.MapFrom(src => src.Abonnements.Count));
 
             CreateMap<Match, MatchVM>()
-                .ForMember(dest => dest.HomeTeam, opt => opt.MapFrom(src => src.HomeClub))
-                .ForMember(dest => dest.AwayTeam, opt => opt.MapFrom(src => src.AwayClub));
+                .ForMember(dest => dest.HomeTeamName, opt => opt.MapFrom(src => src.HomeClub.Name))
+                .ForMember(dest => dest.HomeTeamLogoUrl, opt => opt.MapFrom(src => src.HomeClub.LogoUrl))
+                .ForMember(dest => dest.AwayTeamName, opt => opt.MapFrom(src => src.AwayClub.Name))
+                .ForMember(dest => dest.AwayTeamLogoUrl, opt => opt.MapFrom(src => src.AwayClub.LogoUrl))
+                .ForMember(dest => dest.StadiumName, opt => opt.MapFrom(src => src.HomeClub.Stadium.Name))
+                .ForMember(dest => dest.StadiumId, opt => opt.MapFrom(src => src.HomeClub.Stadium.Id));
+
+            CreateMap<Match, MatchAPIVM>()
+                .ForMember(dest => dest.HomeTeamName, opt => opt.MapFrom(src => src.HomeClub.Name))
+                .ForMember(dest => dest.AwayTeamName, opt => opt.MapFrom(src => src.AwayClub.Name))
+                .ForMember(dest => dest.StadiumName, opt => opt.MapFrom(src => src.HomeClub.Stadium.Name));
 
             CreateMap<IdentityUser, UserVM>();
         }
