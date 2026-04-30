@@ -11,24 +11,55 @@ namespace UCL_Ticketverkoop.Controllers
 {
     public class SeatSelectController : Controller
     {
-        private readonly IService<Stadium> _stadiumService;
+        private const string CartSession = "shoppingCart";
+        private readonly IService<Match> _matchService;
+        private readonly IService<Vak> _vakService;
         private readonly IMapper _mapper;
 
-        public SeatSelectController(IService<Stadium> stadiumService, IMapper mapper)
+        public SeatSelectController(IService<Match> matchService, IMapper mapper, IService<Vak> vakService)
         {
-            _stadiumService = stadiumService;
+            _matchService = matchService;
             _mapper = mapper;
+            _vakService = vakService;
         }
-        public async Task<IActionResult> Index(int stadiumId, int matchId)
+        public async Task<IActionResult> Index(int matchId)
         {
-            Stadium stadium = await _stadiumService.FindByIdAsync(stadiumId);
-            if (stadium == null) 
+            Match match = await _matchService.FindByIdAsync(matchId);
+            if (match == null) 
                 return NotFound();
            
-            StadiumVM viewModel = _mapper.Map<StadiumVM>(stadium);  
+            MatchVM viewModel = _mapper.Map<MatchVM>(match);  
 
             return View(viewModel);
         }
+
+        public async Task<IActionResult> SelectSeat(int? MatchId, int? VakId, int? Seat)
+        {
+            if (!MatchId.HasValue || !VakId.HasValue || !Seat.HasValue)
+                return NotFound();
+
+            Match match = await _matchService.FindByIdAsync(MatchId.Value);
+            Vak vak = await _vakService.FindByIdAsync(VakId.Value);
+            if (match == null || vak == null)
+                return NotFound();
+
+            if (Seat < 0 ||int.Parse(Seat.ToString()[0].ToString()) > vak.Rows || int.Parse(Seat.ToString()[1].ToString()) > vak.SeatsPerRow) //controleert of het zitje wel kan bestaan
+                return NotFound();
+
+            List<ShoppingCartVM> cart = HttpContext.Session.GetObject<List<ShoppingCartVM>>(CartSession) ?? new List<ShoppingCartVM>(); ;
+            cart.Add(new ShoppingCartVM
+            {
+                MatchId = MatchId.Value,
+                VakId = VakId.Value,
+                Seat = Seat.Value
+            });
+
+            HttpContext.Session.SetObject(CartSession, cart);
+            return RedirectToAction("Index", "ShoppingCart");
+
+        }
+
+
 
 
 

@@ -9,12 +9,14 @@ namespace UCL_Ticketverkoop.Controllers
         private const string CartSession = "shoppingCart";
         public IActionResult Index()
         {
-            return View();
+            var cart = GetShoppingCart();
+
+            return View(cart);
         }
 
-        public ShoppingCartVM? GetShoppingCart()
+        public List<ShoppingCartVM>? GetShoppingCart()
         {
-            var shoppingCartVM = HttpContext.Session.GetObject<ShoppingCartVM>(CartSession);
+            var shoppingCartVM = HttpContext.Session.GetObject<List<ShoppingCartVM>>(CartSession);
             return shoppingCartVM;
         }
         public void SetShoppingCart(ShoppingCartVM cart)

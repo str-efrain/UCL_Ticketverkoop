@@ -1,4 +1,4 @@
-﻿@model UCL_Ticketverkoop.ViewModels.StadiumVM
+﻿@model UCL_Ticketverkoop.ViewModels.MatchVM
 
 @{
     ViewData["Title"] = "Index";
@@ -17,9 +17,12 @@
                     <div>
                     @for (int j = 0; j < vak.SeatsPerRow; j++)
                     {
-                        <button name="@i@j">
-                            s
-                        </button>
+                            <a asp-Controller="SeatSelect" asp-action="SelectSeat"
+                            asp-route-MatchId="@Model.Id"
+                            asp-route-VakId="@vak.Id"
+                            asp-route-Seat="@int.Parse($"{i+1}{j+1}")"
+                            
+                            >S</a>
                     }
                     </div>
                 }

@@ -105,6 +105,10 @@ builder.Services.AddScoped<IMatchDAO, MatchDAO>();
 builder.Services.AddScoped<IService<Match>, MatchService>();
 builder.Services.AddScoped<IMatchService, MatchService>();
 
+builder.Services.AddScoped<IDAO<Vak>, VakDAO>();
+builder.Services.AddScoped<IService<Vak>, VakService>();
+
+
 
 //JWT Bearer tokens
 builder.Services.AddAuthentication()
@@ -153,6 +157,22 @@ builder.Services.AddSingleton<IEmailSend, EmailSend>();
 //conformation email
 builder.Services.AddTransient<Microsoft.AspNetCore.Identity.UI.Services.IEmailSender, Util.EmailSend>();
 
+builder.Services.AddSession(options =>
+{
+    options.Cookie.Name = "be.VIVES.Session";
+
+    options.IdleTimeout = TimeSpan.FromMinutes(10); //Default = 20 min
+});
+
+//session 
+builder.Services.AddSession(options =>
+{
+    options.Cookie.Name = "EfraThibSession";
+
+    options.IdleTimeout = TimeSpan.FromMinutes(20); //Default = 20 min
+});
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -177,6 +197,9 @@ app.UseSwaggerUI(option =>
     option.SwaggerEndpoint(swaggerOptions.UiEndpoint, swaggerOptions.Description);
 });
 app.UseSwagger();
+
+//Session
+app.UseSession();
 
 //User CORS
 app.UseCors(myAllowSpecificOrigins);

@@ -48,6 +48,9 @@ namespace Repositories
         {
             return await _context.Matches
                 .Include(o => o.Tickets)
+                .Include(o=>o.HomeClub)
+                    .ThenInclude(c => c.Stadium)
+                    .ThenInclude(v=>v.Vaks)
                 .AsNoTracking()
                 .SingleOrDefaultAsync(o => o.Id == Id);
         }

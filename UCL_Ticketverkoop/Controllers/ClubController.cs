@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using BeerschopNET9_Identity.Extensions;
 using Domains.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Services.Interfaces;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using UCL_Ticketverkoop.ViewModels;
 
@@ -12,7 +14,9 @@ namespace UCL_Ticketverkoop.Controllers
         private readonly IService<Club> _clubService;
         private readonly IMapper _mapper;
 
-        public ClubController(IService<Club> clubService, IMapper mapper) 
+
+
+        public ClubController(IService<Club> clubService, IMapper mapper,IService<Match> matchService, IService<Vak> vakService) 
         {
             _clubService = clubService;
             _mapper = mapper;
@@ -30,5 +34,7 @@ namespace UCL_Ticketverkoop.Controllers
 
             return View(viewModels);
         }
+
+       
     }
 }
