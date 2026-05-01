@@ -2,10 +2,8 @@
 {
     public class ShoppingCartVM
     {
-        public MatchVM Match { get; set; }
-
-        public VakVM Vak { get; set; }
-        public int Seat { get; set; }
+        public List<TicketVM> Tickets { get; set; } = new List<TicketVM>();
+        public double TotalPrice { get; set; }
 
     }
 }

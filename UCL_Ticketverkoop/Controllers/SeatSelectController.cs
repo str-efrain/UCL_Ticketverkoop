@@ -46,13 +46,15 @@ namespace UCL_Ticketverkoop.Controllers
             if (Seat < 0 ||int.Parse(Seat.ToString()[0].ToString()) > vak.Rows || int.Parse(Seat.ToString()[1].ToString()) > vak.SeatsPerRow) //controleert of het zitje wel kan bestaan
                 return NotFound();
 
-            List<ShoppingCartVM> cart = HttpContext.Session.GetObject<List<ShoppingCartVM>>(CartSession) ?? new List<ShoppingCartVM>(); ;
-            cart.Add(new ShoppingCartVM
+            ShoppingCartVM cart = new ShoppingCartVM();
+            cart = HttpContext.Session.GetObject<ShoppingCartVM>(CartSession) ?? new ShoppingCartVM(); ;
+            cart.Tickets.Add(new TicketVM
             {
                 Match = _mapper.Map<MatchVM>(match),
                 Vak = _mapper.Map<VakVM>(vak),
                 Seat = Seat.Value
             });
+            cart.TotalPrice += vak.Price;
 
             HttpContext.Session.SetObject(CartSession, cart);
             return RedirectToAction("Index", "ShoppingCart");

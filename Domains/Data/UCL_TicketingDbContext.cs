@@ -51,6 +51,13 @@ public partial class UCL_TicketingDbContext : DbContext
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        //zorgt er voor dat de db weet dat de IdentityUser in de AspNetUsers tabel zit
+        base.OnModelCreating(modelBuilder);
+        modelBuilder.Entity<IdentityUser>(entity =>
+        {
+            entity.ToTable("AspNetUsers");
+        });
+
         modelBuilder.Entity<Abonnement>(entity =>
         {
          
@@ -227,6 +234,8 @@ public partial class UCL_TicketingDbContext : DbContext
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK_Vak_Stadium");
         });
+
+        
 
         OnModelCreatingPartial(modelBuilder);
     }

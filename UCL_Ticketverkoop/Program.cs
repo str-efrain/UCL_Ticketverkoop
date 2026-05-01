@@ -116,6 +116,7 @@ builder.Services.AddScoped<IService<Ticket>, TicketService>();
 
 
 
+
 //JWT Bearer tokens
 builder.Services.AddAuthentication()
     .AddJwtBearer(cfg =>

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<UCL_Ticketverkoop.ViewModels.ShoppingCartVM>
+﻿@model UCL_Ticketverkoop.ViewModels.ShoppingCartVM
 
 @{
     ViewData["Title"] = "Index";
@@ -10,7 +10,7 @@
     <a asp-action="Create">Create New</a>
 </p>
 
-@foreach (var item in Model) {
+@foreach (var item in Model.Tickets) {
         <tr>
             <td>
                   @item.Match.HomeTeamName
@@ -23,12 +23,13 @@
                     stoeltje: @item.Seat
             </td>
         <td>
-            @item.Vak.Price
+           € @item.Vak.Price
         </td>
         </tr>
 
 
 }
+€ @Model.TotalPrice
 
                             <a asp-Controller="ShoppingCart" asp-action="Buy"
                             >Buy</a>

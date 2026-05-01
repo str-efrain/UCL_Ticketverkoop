@@ -1,0 +1,50 @@
+﻿@model UCL_Ticketverkoop.ViewModels.OrderVM
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+<div>
+    <h4>OrderVM</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Id)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.OrderDate)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.OrderDate)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.TotalPrice)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.TotalPrice)
+        </dd>
+    </dl>
+
+    <div>
+        @foreach(var item in Model.Tickets)
+        {
+            <div>
+                <p>
+                    @item.Match.HomeTeamName vs @item.Match.AwayTeamName
+                </p>
+                <p>
+                    Vak: @item.Vak.Name, Stoel: @item.Seat
+                </p>
+                <p>
+                    Prijs: € @item.Vak.Price
+                </p>
+            </div>
+        }
+)
+    </div>
+</div>
+

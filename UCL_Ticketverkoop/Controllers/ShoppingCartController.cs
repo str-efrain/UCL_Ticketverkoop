@@ -27,9 +27,9 @@ namespace UCL_Ticketverkoop.Controllers
             return View(cart);
         }
 
-        public List<ShoppingCartVM>? GetShoppingCart()
+        public ShoppingCartVM? GetShoppingCart()
         {
-            var shoppingCartVM = HttpContext.Session.GetObject<List<ShoppingCartVM>>(CartSession);
+            var shoppingCartVM = HttpContext.Session.GetObject<ShoppingCartVM>(CartSession);
             return shoppingCartVM;
         }
         public void SetShoppingCart(List<ShoppingCartVM> cart)
@@ -39,7 +39,7 @@ namespace UCL_Ticketverkoop.Controllers
 
         public async Task<IActionResult> Buy()
         {
-            List<ShoppingCartVM> cart = GetShoppingCart();
+            ShoppingCartVM cart = GetShoppingCart();
 
             Random rnd = new Random();
             Order order = new Order
@@ -47,12 +47,12 @@ namespace UCL_Ticketverkoop.Controllers
                
                 UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value, 
                 OrderDate = DateTime.Now,
-                TotalPrice = cart.Sum(item => item.Vak.Price)
+                TotalPrice = cart.TotalPrice
             };
 
             await _orderService.AddAsync(order);
 
-            foreach (var item in cart)
+            foreach (var item in cart.Tickets)
             {
                await _ticketService.AddAsync(new Ticket
                 {
@@ -65,7 +65,7 @@ namespace UCL_Ticketverkoop.Controllers
                 
             }
 
-            return View();
+            return RedirectToAction("Index", "Checkout", new { orderId = order.Id });
 
         }
     }
