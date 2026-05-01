@@ -10,10 +10,10 @@ using Services.Interfaces;
 
 namespace Services
 {
-    public class TicketService : IService<Ticket>
+    public class TicketService : ITicketService
     {
-        private readonly IDAO<Ticket> _ticketDAO;
-        public TicketService(IDAO<Ticket> ticketDAO)
+        private readonly ITicketDAO _ticketDAO;
+        public TicketService(ITicketDAO ticketDAO)
         {
             _ticketDAO = ticketDAO;
         }
@@ -35,6 +35,11 @@ namespace Services
         public async Task<IEnumerable<Ticket>?> GetAllAsync()
         {
             return await _ticketDAO.GetAllAsync();
+        }
+
+        public async Task<bool> IsSeatTakenAsync(int matchId, int vakId, int seat)
+        {
+            return await _ticketDAO.IsSeatTakenAsync(matchId, vakId, seat);
         }
 
         public async Task UpdateAsync(Ticket entity)

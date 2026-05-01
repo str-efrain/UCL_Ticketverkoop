@@ -111,8 +111,8 @@ builder.Services.AddScoped<IService<Vak>, VakService>();
 builder.Services.AddScoped<IDAO<Order>, OrderDAO>();
 builder.Services.AddScoped<IService<Order>, OrderService>();
 
-builder.Services.AddScoped<IDAO<Ticket>, TicketDAO>();
-builder.Services.AddScoped<IService<Ticket>, TicketService>();
+builder.Services.AddScoped<ITicketDAO, TicketDAO>();
+builder.Services.AddScoped<ITicketService,TicketService>();
 
 
 

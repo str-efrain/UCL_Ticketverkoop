@@ -12,15 +12,17 @@ namespace UCL_Ticketverkoop.Controllers
     public class SeatSelectController : Controller
     {
         private const string CartSession = "shoppingCart";
-        private readonly IService<Match> _matchService;
+        private readonly IMatchService _matchService;
         private readonly IService<Vak> _vakService;
+        private readonly ITicketService _ticketService;
         private readonly IMapper _mapper;
 
-        public SeatSelectController(IService<Match> matchService, IMapper mapper, IService<Vak> vakService)
+        public SeatSelectController(IMatchService matchService, IMapper mapper, IService<Vak> vakService,ITicketService ticketService)
         {
             _matchService = matchService;
             _mapper = mapper;
             _vakService = vakService;
+            _ticketService = ticketService;
         }
         public async Task<IActionResult> Index(int matchId)
         {
@@ -45,19 +47,33 @@ namespace UCL_Ticketverkoop.Controllers
 
             if (Seat < 0 ||int.Parse(Seat.ToString()[0].ToString()) > vak.Rows || int.Parse(Seat.ToString()[1].ToString()) > vak.SeatsPerRow) //controleert of het zitje wel kan bestaan
                 return NotFound();
-
-            ShoppingCartVM cart = new ShoppingCartVM();
-            cart = HttpContext.Session.GetObject<ShoppingCartVM>(CartSession) ?? new ShoppingCartVM(); ;
-            cart.Tickets.Add(new TicketVM
+            if (!(await _ticketService.IsSeatTakenAsync(MatchId.Value, VakId.Value, Seat.Value)))
             {
-                Match = _mapper.Map<MatchVM>(match),
-                Vak = _mapper.Map<VakVM>(vak),
-                Seat = Seat.Value
-            });
-            cart.TotalPrice += vak.Price;
+                ShoppingCartVM cart = new ShoppingCartVM();
+                cart = HttpContext.Session.GetObject<ShoppingCartVM>(CartSession) ?? new ShoppingCartVM();
 
-            HttpContext.Session.SetObject(CartSession, cart);
-            return RedirectToAction("Index", "ShoppingCart");
+                TicketVM ticket = new TicketVM
+                {
+                    Match = _mapper.Map<MatchVM>(match),
+                    Vak = _mapper.Map<VakVM>(vak),
+                    Seat = Seat.Value
+                };
+
+
+                cart.Tickets.Add(ticket);
+                cart.TotalPrice += vak.Price;
+
+                HttpContext.Session.SetObject(CartSession, cart);
+                return RedirectToAction("Index", "ShoppingCart");
+            }
+            else
+            {
+                ViewBag.ErrorMessage = "Sorry,Deze stoel is al bezet!";
+                MatchVM viewModel = _mapper.Map<MatchVM>(match);
+                return View("Index", viewModel);
+            }
+
+            
 
         }
 

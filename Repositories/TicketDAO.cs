@@ -11,7 +11,7 @@ using Repositories.Interfaces;
 
 namespace Repositories
 {
-    public class TicketDAO : IDAO<Ticket>
+    public class TicketDAO : ITicketDAO
     {
         private readonly UCL_TicketingDbContext _context;
         public TicketDAO(UCL_TicketingDbContext context)
@@ -78,6 +78,14 @@ namespace Repositories
             {
                 Console.WriteLine(ex);
             }
+        }
+
+        public async Task<bool> IsSeatTakenAsync(int matchId, int vakId, int seat)
+        {
+            return await _context.Tickets
+                .AnyAsync(t => t.MatchId == matchId &&
+                               t.VakId == vakId &&
+                               t.Seat == seat);
         }
     }
 

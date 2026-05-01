@@ -11,9 +11,9 @@ namespace UCL_Ticketverkoop.Controllers
     {
         private const string CartSession = "shoppingCart";
         private readonly IService<Order> _orderService;
-        private readonly IService<Ticket> _ticketService;
+        private readonly ITicketService _ticketService;
 
-        public ShoppingCartController(IService<Order> orderService, IService<Ticket> ticketService)
+        public ShoppingCartController(IService<Order> orderService, ITicketService ticketService)
         {
             _orderService = orderService;
             _ticketService = ticketService;
