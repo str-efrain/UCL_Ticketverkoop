@@ -80,12 +80,12 @@ namespace Repositories
             }
         }
 
-        public async Task<bool> IsSeatTakenAsync(int matchId, int vakId, int seat)
+        public async Task<bool> IsSeatTakenAsync(int matchId, int vakId, string seat)
         {
             return await _context.Tickets
                 .AnyAsync(t => t.MatchId == matchId &&
                                t.VakId == vakId &&
-                               t.Seat == seat);
+                               t.Seat.Equals(seat));
         }
     }
 

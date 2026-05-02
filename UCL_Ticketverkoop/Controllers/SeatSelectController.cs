@@ -35,19 +35,36 @@ namespace UCL_Ticketverkoop.Controllers
             return View(viewModel);
         }
 
-        public async Task<IActionResult> SelectSeat(int? MatchId, int? VakId, int? Seat)
+        public async Task<IActionResult> SelectSeat(int? MatchId, int? VakId, string? Seat)
         {
-            if (!MatchId.HasValue || !VakId.HasValue || !Seat.HasValue)
+            //Check voor lege parameters
+            if (!MatchId.HasValue || !VakId.HasValue || string.IsNullOrEmpty(Seat))
+            {
                 return NotFound();
-
+            }
+            //Match en vak ophalen
             Match match = await _matchService.FindByIdAsync(MatchId.Value);
             Vak vak = await _vakService.FindByIdAsync(VakId.Value);
-            if (match == null || vak == null)
-                return NotFound();
 
-            if (Seat < 0 ||int.Parse(Seat.ToString()[0].ToString()) > vak.Rows || int.Parse(Seat.ToString()[1].ToString()) > vak.SeatsPerRow) //controleert of het zitje wel kan bestaan
+            //Check of match en vak bestaan
+            if (match == null || vak == null)
+            {
                 return NotFound();
-            if (!(await _ticketService.IsSeatTakenAsync(MatchId.Value, VakId.Value, Seat.Value)))
+            }
+            //Seat string splitsen in rij en stoelnummer
+            string[] seatRowCol = Seat.Split('-');
+            int seatRow = int.Parse(seatRowCol[0]);
+            int seatCol = int.Parse(seatRowCol[1]);
+
+            //Controleert of het zitje wel kan bestaan
+            if (seatRow < 1 || seatRow >= vak.Rows || seatCol < 1 || seatCol >= vak.SeatsPerRow)
+            {
+                return NotFound();
+            }
+
+            //Check of het zitje al bezet is
+            bool isTaken = await _ticketService.IsSeatTakenAsync(MatchId.Value, VakId.Value, Seat);
+            if (!isTaken)
             {
                 ShoppingCartVM cart = new ShoppingCartVM();
                 cart = HttpContext.Session.GetObject<ShoppingCartVM>(CartSession) ?? new ShoppingCartVM();
@@ -56,7 +73,7 @@ namespace UCL_Ticketverkoop.Controllers
                 {
                     Match = _mapper.Map<MatchVM>(match),
                     Vak = _mapper.Map<VakVM>(vak),
-                    Seat = Seat.Value
+                    Seat = Seat
                 };
 
 
@@ -71,15 +88,7 @@ namespace UCL_Ticketverkoop.Controllers
                 ViewBag.ErrorMessage = "Sorry,Deze stoel is al bezet!";
                 MatchVM viewModel = _mapper.Map<MatchVM>(match);
                 return View("Index", viewModel);
-            }
-
-            
-
+            } 
         }
-
-
-
-
-
     }
 }

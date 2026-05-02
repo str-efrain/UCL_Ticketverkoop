@@ -10,6 +10,6 @@ namespace Repositories.Interfaces
 
     public interface ITicketDAO : IDAO<Ticket>
     {
-        Task<bool> IsSeatTakenAsync(int matchId, int vakId, int seat);
+        Task<bool> IsSeatTakenAsync(int matchId, int vakId, string seat);
     }
 }

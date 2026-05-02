@@ -9,6 +9,6 @@ namespace Services.Interfaces
 {
     public interface ITicketService: IService<Ticket>
     {
-        Task<bool> IsSeatTakenAsync(int matchId, int vakId, int seat);
+        Task<bool> IsSeatTakenAsync(int matchId, int vakId, string seat);
     }
 }

@@ -219,8 +219,9 @@ namespace Domains.Migrations
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Seat")
-                        .HasColumnType("int");
+                    b.Property<string>("Seat")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Status")
                         .HasMaxLength(255)
@@ -330,7 +331,7 @@ namespace Domains.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("IdentityUser");
+                    b.ToTable("AspNetUsers", (string)null);
                 });
 
             modelBuilder.Entity("Domains.Entities.Abonnement", b =>
