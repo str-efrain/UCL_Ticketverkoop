@@ -62,33 +62,40 @@ namespace UCL_Ticketverkoop.Controllers
                 return NotFound();
             }
 
+            //shoppingCart ophalen
+            ShoppingCartVM cart = new ShoppingCartVM();
+            cart = HttpContext.Session.GetObject<ShoppingCartVM>(CartSession) ?? new ShoppingCartVM();
+
             //Check of het zitje al bezet is
             bool isTaken = await _ticketService.IsSeatTakenAsync(MatchId.Value, VakId.Value, Seat);
-            if (!isTaken)
-            {
-                ShoppingCartVM cart = new ShoppingCartVM();
-                cart = HttpContext.Session.GetObject<ShoppingCartVM>(CartSession) ?? new ShoppingCartVM();
-
-                TicketVM ticket = new TicketVM
-                {
-                    Match = _mapper.Map<MatchVM>(match),
-                    Vak = _mapper.Map<VakVM>(vak),
-                    Seat = Seat
-                };
-
-
-                cart.Tickets.Add(ticket);
-                cart.TotalPrice += vak.Price;
-
-                HttpContext.Session.SetObject(CartSession, cart);
-                return RedirectToAction("Index", "ShoppingCart");
-            }
-            else
+            bool isInShoppingCart = cart.Tickets.Any(t => t.Match.Id == MatchId.Value && t.Vak.Id == VakId.Value && t.Seat == Seat);
+            if (isTaken)
             {
                 ViewBag.ErrorMessage = "Sorry,Deze stoel is al bezet!";
                 MatchVM viewModel = _mapper.Map<MatchVM>(match);
                 return View("Index", viewModel);
-            } 
+            }
+
+            if(isInShoppingCart)
+            {
+                ViewBag.ErrorMessage = "Je hebt deze stoel al in je winkelmand!";
+                MatchVM viewModel = _mapper.Map<MatchVM>(match);
+                return View("Index", viewModel);
+            }
+
+            TicketVM ticket = new TicketVM
+            {
+                Match = _mapper.Map<MatchVM>(match),
+                Vak = _mapper.Map<VakVM>(vak),
+                Seat = Seat
+            };
+
+            cart.Tickets.Add(ticket);
+            cart.TotalPrice += vak.Price;
+
+            HttpContext.Session.SetObject(CartSession, cart);
+            return RedirectToAction("Index", "ShoppingCart");
+
         }
     }
 }
