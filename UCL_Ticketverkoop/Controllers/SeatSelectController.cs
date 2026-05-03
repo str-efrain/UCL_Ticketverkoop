@@ -37,10 +37,23 @@ namespace UCL_Ticketverkoop.Controllers
 
         public async Task<IActionResult> SeatSelection(int matchId, int vakId)
         {
+            
             Match match = await _matchService.FindByIdAsync(matchId);
             if (match == null) 
                 return NotFound();
            
+            if (!match.HomeClub.Stadium.Vaks.Any(v => v.Id == vakId))
+                return NotFound();
+
+            if(DateTime.Now < match.MatchDate.AddMonths(-1) || DateTime.Now > match.MatchDate)
+            { 
+                ViewBag.ErrorMessage = "Sorry, de kaartverkoop voor deze wedstrijd is nog niet gestart of al afgelopen!";
+                MatchVM VM = _mapper.Map<MatchVM>(match);
+                return View("Index", VM);
+            }
+
+            
+
             MatchVM viewModel = _mapper.Map<MatchVM>(match);  
             SeatSelectVM seatSelectVM = new SeatSelectVM
             {
@@ -51,16 +64,12 @@ namespace UCL_Ticketverkoop.Controllers
             return View(seatSelectVM);
         }
 
-        public async Task<IActionResult> SelectSeat(int? MatchId, int? VakId, string? Seat)
+        public async Task<IActionResult> SelectSeat(int MatchId, int VakId, string Seat)
         {
-            //Check voor lege parameters
-            if (!MatchId.HasValue || !VakId.HasValue || string.IsNullOrEmpty(Seat))
-            {
-                return NotFound();
-            }
+
             //Match en vak ophalen
-            Match match = await _matchService.FindByIdAsync(MatchId.Value);
-            Vak vak = await _vakService.FindByIdAsync(VakId.Value);
+            Match match = await _matchService.FindByIdAsync(MatchId);
+            Vak vak = await _vakService.FindByIdAsync(VakId);
 
             //Check of match en vak bestaan
             if (match == null || vak == null)
@@ -78,13 +87,15 @@ namespace UCL_Ticketverkoop.Controllers
                 return NotFound();
             }
 
+
+
             //shoppingCart ophalen
             ShoppingCartVM cart = new ShoppingCartVM();
             cart = HttpContext.Session.GetObject<ShoppingCartVM>(CartSession) ?? new ShoppingCartVM();
 
             //Check of het zitje al bezet is
-            bool isTaken = await _ticketService.IsSeatTakenAsync(MatchId.Value, VakId.Value, Seat);
-            bool isInShoppingCart = cart.Tickets.Any(t => t.Match.Id == MatchId.Value && t.Vak.Id == VakId.Value && t.Seat == Seat);
+            bool isTaken = await _ticketService.IsSeatTakenAsync(MatchId, VakId, Seat);
+            bool isInShoppingCart = cart.Tickets.Any(t => t.Match.Id == MatchId && t.Vak.Id == VakId && t.Seat == Seat);
             if (isTaken)
             {
                 ViewBag.ErrorMessage = "Sorry,Deze stoel is al bezet!";
