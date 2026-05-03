@@ -8,6 +8,6 @@
 
         public virtual List<ClubAPIVM> clubs { get; set; } = new List<ClubAPIVM>();
 
-        public List<VakAPIVM> vaks { get; set; } = new List<VakAPIVM>();
+        public List<VakVM> vaks { get; set; } = new List<VakVM>();
     }
 }

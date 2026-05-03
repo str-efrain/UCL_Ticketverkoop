@@ -5,8 +5,6 @@ namespace UCL_Ticketverkoop.ViewModels
     public class VakVM
     {
         public int Id { get; set; }
-
-        public int StadiumId { get; set; }
         public string StadiumName { get; set; } = null!;
 
         public string Name { get; set; } = null!;
@@ -17,8 +15,6 @@ namespace UCL_Ticketverkoop.ViewModels
         public string? Ring { get; set; }
 
         public double Price { get; set; }
-        public int TicketCount { get; set; }
-        public int AbonnementCount { get; set; }
     }
 }
 

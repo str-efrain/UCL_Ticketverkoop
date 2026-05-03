@@ -24,13 +24,9 @@ namespace UCL_Ticketverkoop.AutoMapper
                 .ForMember(dest => dest.vaks, opt => opt.MapFrom(src => src.Vaks));
 
             CreateMap<Vak, VakVM>()
-                .ForMember(dest => dest.StadiumName, opt => opt.MapFrom(src => src.Stadium.Name))
-                .ForMember(dest => dest.TicketCount, opt => opt.MapFrom(src => src.Tickets.Count))
-                .ForMember(dest => dest.AbonnementCount, opt => opt.MapFrom(src => src.Abonnements.Count));
-
-            CreateMap<Vak, VakAPIVM>()
                 .ForMember(dest => dest.StadiumName, opt => opt.MapFrom(src => src.Stadium.Name));
-
+               
+           
             CreateMap<Match, MatchVM>()
                 .ForMember(dest => dest.HomeTeamName, opt => opt.MapFrom(src => src.HomeClub.Name))
                 .ForMember(dest => dest.HomeTeamLogoUrl, opt => opt.MapFrom(src => src.HomeClub.LogoUrl))

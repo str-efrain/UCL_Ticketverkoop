@@ -1,0 +1,301 @@
+﻿/* ── Header ──────────────────────────────────────────────────── */
+.sd-header {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    background: linear-gradient(135deg, #001540 0%, #002d72 100%);
+    border-left: 5px solid #d4af37;
+    border-radius: 12px;
+    padding: 2rem 2.5rem;
+    margin-bottom: 1.25rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
+}
+
+.sd-club-logo {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    flex-shrink: 0;
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.2));
+}
+
+.sd-header-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.sd-eyebrow {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #d4af37;
+    margin-bottom: 0.3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+    .sd-eyebrow::before {
+        content: '';
+        display: inline-block;
+        width: 18px;
+        height: 2px;
+        background: #d4af37;
+        flex-shrink: 0;
+    }
+
+.sd-title {
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0 0 0.3rem;
+    line-height: 1.1;
+}
+
+.sd-city {
+    font-size: 0.88rem;
+    color: #8fa3d0;
+    margin: 0 0 0.4rem;
+}
+
+.sd-club-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.6);
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* ── Stats bar ───────────────────────────────────────────────── */
+.sd-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    background: #112060;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    overflow: hidden;
+}
+
+.sd-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.25rem 1rem;
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+    text-align: center;
+}
+
+    .sd-stat:last-child {
+        border-right: none;
+    }
+
+.sd-stat-value {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #d4af37;
+    line-height: 1;
+    margin-bottom: 0.3rem;
+}
+
+.sd-stat-label {
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8fa3d0;
+}
+
+/* ── Section heading ─────────────────────────────────────────── */
+.sd-sections-header {
+    margin-bottom: 1.25rem;
+}
+
+.sd-sections-title {
+    font-size: clamp(1.3rem, 2.5vw, 1.9rem);
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0;
+    line-height: 1.1;
+}
+
+/* ── Ring group ──────────────────────────────────────────────── */
+.sd-ring-group {
+    margin-bottom: 2rem;
+}
+
+.sd-ring-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8fa3d0;
+    margin-bottom: 0.75rem;
+    padding-left: 0.25rem;
+    border-left: 3px solid #d4af37;
+    padding-left: 0.6rem;
+}
+
+/* ── Vaks grid ───────────────────────────────────────────────── */
+.sd-vaks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+/* ── Vak card ────────────────────────────────────────────────── */
+.sd-vak-card {
+    background: linear-gradient(145deg, #001540 0%, #002d72 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+
+    .sd-vak-card:hover {
+        transform: translateY(-3px);
+        border-color: rgba(212, 175, 55, 0.4);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    }
+
+/* Top row: name + price */
+.sd-vak-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.5rem;
+}
+
+.sd-vak-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1.2;
+}
+
+.sd-vak-price {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #d4af37;
+    white-space: nowrap;
+}
+
+/* Details row: rows / per row / seats */
+.sd-vak-details {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 0.6rem 0.75rem;
+}
+
+.sd-vak-detail {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    text-align: center;
+}
+
+.sd-vak-detail-value {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1;
+}
+
+.sd-vak-detail-label {
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #8fa3d0;
+    margin-top: 0.2rem;
+}
+
+.sd-vak-divider {
+    width: 1px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
+}
+
+/* Buy button */
+.sd-vak-btn {
+    display: block;
+    text-align: center;
+    padding: 0.5rem 1rem;
+    background: rgba(212, 175, 55, 0.12);
+    border: 1px solid rgba(212, 175, 55, 0.45);
+    border-radius: 20px;
+    color: #d4af37;
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    transition: background 0.2s, border-color 0.2s, color 0.2s;
+    margin-top: auto;
+}
+
+    .sd-vak-btn:hover {
+        background: rgba(212, 175, 55, 0.25);
+        border-color: #d4af37;
+        color: #f0d060;
+        text-decoration: none;
+    }
+
+/* ── Empty state ─────────────────────────────────────────────── */
+.sd-empty {
+    color: #8fa3d0;
+    font-style: italic;
+    font-size: 0.9rem;
+    padding: 2rem 0;
+}
+
+/* ── Mobile ──────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    .sd-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+        padding: 1.5rem;
+    }
+
+    .sd-club-logo {
+        width: 70px;
+        height: 70px;
+    }
+
+    .sd-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .sd-stat:nth-child(2) {
+        border-right: none;
+    }
+
+    .sd-stat:nth-child(1),
+    .sd-stat:nth-child(2) {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .sd-vaks-grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    }
+}
+
+@media (max-width: 480px) {
+    .sd-vaks-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .sd-header {
+        padding: 1.25rem;
+    }
+}

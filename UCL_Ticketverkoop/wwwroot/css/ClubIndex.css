@@ -1,15 +1,14 @@
-﻿/* De container die de flexbox activeert */
+﻿/* ── Grid ────────────────────────────────────────────────────── */
 .clubs-grid {
     display: flex;
-    flex-wrap: wrap; /* Zorgt dat nummer 3 naar de volgende regel gaat */
-    gap: 20px; /* De witruimte tussen de blokken */
+    flex-wrap: wrap;
+    gap: 20px;
     justify-content: flex-start;
     align-items: stretch;
 }
 
-/* De styling voor de partial zelf */
+/* ── Card ────────────────────────────────────────────────────── */
 .club-detail-container {
-    /* Belangrijk: dwingt de breedte op 50% minus de helft van de gap */
     flex: 0 0 calc(50% - 10px);
     background: linear-gradient(135deg, #001540 0%, #002d72 100%);
     color: white;
@@ -17,19 +16,19 @@
     border-radius: 12px;
     border-left: 5px solid #d4af37;
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-    /* Zorgt dat tekst links en foto rechts staan binnen de kaart */
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-sizing: border-box; /* Cruciaal zodat padding de 50% niet verpest */
+    box-sizing: border-box;
 }
 
-/* De tekstkant */
+/* ── Text side ───────────────────────────────────────────────── */
 .club-info {
     flex: 1;
+    min-width: 0; /* Prevents text overflow */
 }
 
-/* De fotokant (altijd rechts en vaste breedte) */
+/* ── Logo side ───────────────────────────────────────────────── */
 .club-photo-wrapper {
     flex: 0 0 100px;
     margin-left: 15px;
@@ -39,4 +38,84 @@
     width: 100%;
     height: auto;
     filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
+}
+
+/* ── Stadium link ────────────────────────────────────────────── */
+.stadium-link {
+    display: inline-block;
+    margin-top: 0.35rem;
+    padding: 0.25rem 0.8rem;
+    background: rgba(212, 175, 55, 0.1);
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    border-radius: 20px;
+    color: #d4af37;
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-decoration: none;
+    letter-spacing: 0.03em;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.15s;
+}
+
+    .stadium-link:hover {
+        background: rgba(212, 175, 55, 0.22);
+        border-color: #d4af37;
+        color: #f0d060;
+        text-decoration: none;
+        transform: translateY(-1px);
+    }
+
+/* ── No stadium fallback ─────────────────────────────────────── */
+.no-stadium {
+    display: inline-block;
+    margin-top: 0.35rem;
+    font-size: 0.82rem;
+    color: rgba(255, 255, 255, 0.4);
+    font-style: italic;
+}
+
+/* ── Tablet (≤ 768px): single column ────────────────────────── */
+@media (max-width: 768px) {
+    .clubs-grid {
+        gap: 14px;
+    }
+
+    .club-detail-container {
+        flex: 0 0 100%;
+        padding: 16px;
+    }
+
+    .club-photo-wrapper {
+        flex: 0 0 75px;
+        margin-left: 12px;
+    }
+
+    .club-info h4 {
+        font-size: 1.1rem;
+        word-break: break-word;
+    }
+
+    .stadium-link {
+        font-size: 0.78rem;
+        white-space: normal;
+    }
+}
+
+/* ── Phone (≤ 480px) ─────────────────────────────────────────── */
+@media (max-width: 480px) {
+    .club-detail-container {
+        padding: 14px;
+    }
+
+    .club-photo-wrapper {
+        flex: 0 0 60px;
+        margin-left: 10px;
+    }
+
+    .club-info h4 {
+        font-size: 1rem;
+    }
 }

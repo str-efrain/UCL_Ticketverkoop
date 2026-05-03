@@ -1,62 +1,115 @@
 ﻿@model UCL_Ticketverkoop.ViewModels.StadiumVM
+<link href="~/css/stadiumdetails.css" rel="stylesheet" />
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = Model.name;
+    var club = Model.clubs.FirstOrDefault();
 }
 
-<h1>Details</h1>
-
-<div>
-    <h4>StadiumVM</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.name)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.name)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.city)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.city)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.clubs)
-        </dt>
-        <dd class="col-sm-10">
-            @if (Model.clubs != null && Model.clubs.Any())
-            {
-                <ul>
-                    @foreach (var club in Model.clubs)
-                    {
-                        <li>@club.Name</li>
-                    }
-                </ul>
-            }
-            else
-            {
-                <span>No clubs</span>
-            }
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.vaks)
-        </dt>
-        <dd class="col-sm-10">
-            @if (Model.vaks != null && Model.vaks.Any())
-            {
-                <ul>
-                    @foreach (var vak in Model.vaks)
-                    {
-                        <li>@vak.Name capacity: @(vak.Rows * vak.SeatsPerRow)</li>
-                    }
-                </ul>
-            }
-            else
-            {
-                <span>No geen</span>
-            }
-        </dd>
-    </dl>
+<!-- ── Header ── -->
+<div class="sd-header">
+    @if (club != null)
+    {
+        <img src="/Images/@club.LogoUrl" alt="@club.Name" class="sd-club-logo" />
+    }
+    <div class="sd-header-info">
+        <p class="sd-eyebrow">Stadium</p>
+        <h1 class="sd-title">@Model.name</h1>
+        @if (!string.IsNullOrEmpty(Model.city))
+        {
+            <p class="sd-city">📍 @Model.city</p>
+        }
+        @if (club != null)
+        {
+            <p class="sd-club-name">@club.Name</p>
+        }
+    </div>
 </div>
+
+<!-- ── Stats bar ── -->
+@{
+    int totalSeats = Model.vaks.Sum(v => v.Rows * v.SeatsPerRow);
+    int totalVaks  = Model.vaks.Count;
+    double minPrice = Model.vaks.Any() ? Model.vaks.Min(v => v.Price) : 0;
+    double maxPrice = Model.vaks.Any() ? Model.vaks.Max(v => v.Price) : 0;
+}
+<div class="sd-stats">
+    <div class="sd-stat">
+        <span class="sd-stat-value">@totalSeats.ToString("N0")</span>
+        <span class="sd-stat-label">Total Seats</span>
+    </div>
+    <div class="sd-stat">
+        <span class="sd-stat-value">@totalVaks</span>
+        <span class="sd-stat-label">Sections</span>
+    </div>
+    <div class="sd-stat">
+        <span class="sd-stat-value">€@minPrice.ToString("0.##")</span>
+        <span class="sd-stat-label">From</span>
+    </div>
+    <div class="sd-stat">
+        <span class="sd-stat-value">€@maxPrice.ToString("0.##")</span>
+        <span class="sd-stat-label">Up to</span>
+    </div>
+</div>
+
+<!-- ── Sections ── -->
+<div class="sd-sections-header">
+    <p class="sd-eyebrow">Sections</p>
+    <h2 class="sd-sections-title">Choose Your Section</h2>
+</div>
+
+@if (Model.vaks.Any())
+{
+    <!-- Group by ring if rings are present -->
+    
+    var rings = Model.vaks
+        .GroupBy(v => string.IsNullOrEmpty(v.Ring) ? "General" : v.Ring)
+        .OrderBy(g => g.Key)
+        .ToList();
+    
+
+    @foreach (var ring in rings)
+    {
+        <div class="sd-ring-group">
+            @if (rings.Count > 1 || ring.Key != "General")
+            {
+                <h3 class="sd-ring-label">@ring.Key</h3>
+            }
+            <div class="sd-vaks-grid">
+                @foreach (var vak in ring.OrderBy(v => v.Name))
+                {
+                    int seats = vak.Rows * vak.SeatsPerRow;
+                    <div class="sd-vak-card">
+                        <div class="sd-vak-top">
+                            <span class="sd-vak-name">@vak.Name</span>
+                            <span class="sd-vak-price">€@vak.Price.ToString("0.##")</span>
+                        </div>
+                        <div class="sd-vak-details">
+                            <div class="sd-vak-detail">
+                                <span class="sd-vak-detail-value">@vak.Rows</span>
+                                <span class="sd-vak-detail-label">Rows</span>
+                            </div>
+                            <div class="sd-vak-divider"></div>
+                            <div class="sd-vak-detail">
+                                <span class="sd-vak-detail-value">@vak.SeatsPerRow</span>
+                                <span class="sd-vak-detail-label">Per Row</span>
+                            </div>
+                            <div class="sd-vak-divider"></div>
+                            <div class="sd-vak-detail">
+                                <span class="sd-vak-detail-value">@seats</span>
+                                <span class="sd-vak-detail-label">Seats</span>
+                            </div>
+                        </div>
+                        <a asp-controller="Abonnement" asp-action="Buy" asp-route-vakId="@vak.Id" class="sd-vak-btn">
+                            Buy Season Ticket
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+}
+else
+{
+    <p class="sd-empty">No sections available for this stadium yet.</p>
+}
