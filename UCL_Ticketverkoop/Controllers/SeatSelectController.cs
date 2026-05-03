@@ -103,7 +103,7 @@ namespace UCL_Ticketverkoop.Controllers
                 SeatSelectVM viewModel = new SeatSelectVM
                 {
                     match = matchVM,
-                    VakId = VakId.Value
+                    VakId = VakId
                 };
                 return View("SeatSelection", viewModel);
             }
@@ -115,7 +115,7 @@ namespace UCL_Ticketverkoop.Controllers
                 SeatSelectVM viewModel = new SeatSelectVM
                 {
                     match = matchVM,
-                    VakId = VakId.Value
+                    VakId = VakId
                 };
                 return View("SeatSelection", viewModel);
             }
