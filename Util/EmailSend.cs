@@ -23,7 +23,7 @@ namespace Util
                 var mail = new MailMessage(); // aanmaken van een mail-object
                 mail.To.Add(new MailAddress(email));
                 mail.From = new
-                MailAddress("bamelisthibeau@gmail.com"); // hier komt jullie Gmail-adres
+                MailAddress("efrathib.ticketing@gmail.com"); // hier komt jullie Gmail-adres
                 mail.Subject = subject;
                 mail.Body = message;
                 mail.IsBodyHtml = true;

@@ -48,6 +48,16 @@ namespace UCL_Ticketverkoop.Controllers
                 return View("Index",cart);
             }
 
+            foreach (var item in cart.Tickets)
+            {
+                bool isTaken = await _ticketService.IsSeatTakenAsync(item.Match.Id, item.Vak.Id, item.Seat);
+                if (isTaken)
+                {
+                    ViewBag.ErrorMessage = $"Sorry,De stoel {item.Seat} in vak {item.Vak.Name} voor de match {item.Match.AwayTeamName} is al bezet!";
+                    return View("Index", cart);
+                }
+            }
+
             Order order = new Order
             {
                
