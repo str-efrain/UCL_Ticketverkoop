@@ -1,5 +1,6 @@
 ﻿using BeerschopNET9_Identity.Extensions;
 using Domains.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NuGet.Versioning;
 using Services.Interfaces;
@@ -38,6 +39,7 @@ namespace UCL_Ticketverkoop.Controllers
             HttpContext.Session.SetObject(CartSession, cart);
         }
 
+        [Authorize]
         public async Task<IActionResult> Buy()
         {
             ShoppingCartVM cart = GetShoppingCart();

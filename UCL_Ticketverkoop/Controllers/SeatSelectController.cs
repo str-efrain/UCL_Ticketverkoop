@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using BeerschopNET9_Identity.Extensions;
 using Domains.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Interfaces;
 using System.Globalization;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using UCL_Ticketverkoop.ViewModels;
 
@@ -45,12 +47,12 @@ namespace UCL_Ticketverkoop.Controllers
             if (!match.HomeClub.Stadium.Vaks.Any(v => v.Id == vakId))
                 return NotFound();
 
-            if(DateTime.Now < match.MatchDate.AddMonths(-1) || DateTime.Now > match.MatchDate)
-            { 
-                ViewBag.ErrorMessage = "Sorry, de kaartverkoop voor deze wedstrijd is nog niet gestart of al afgelopen!";
-                MatchVM VM = _mapper.Map<MatchVM>(match);
-                return View("Index", VM);
-            }
+            //if(DateTime.Now < match.MatchDate.AddMonths(-1) || DateTime.Now > match.MatchDate)
+            //{ 
+            //    ViewBag.ErrorMessage = "Sorry, de kaartverkoop voor deze wedstrijd is nog niet gestart of al afgelopen!";
+            //    MatchVM VM = _mapper.Map<MatchVM>(match);
+            //    return View("Index", VM);
+            //}
 
             
 
@@ -64,6 +66,7 @@ namespace UCL_Ticketverkoop.Controllers
             return View(seatSelectVM);
         }
 
+        [Authorize]
         public async Task<IActionResult> SelectSeat(int MatchId, int VakId, string Seat)
         {
 
@@ -92,6 +95,23 @@ namespace UCL_Ticketverkoop.Controllers
             //shoppingCart ophalen
             ShoppingCartVM cart = new ShoppingCartVM();
             cart = HttpContext.Session.GetObject<ShoppingCartVM>(CartSession) ?? new ShoppingCartVM();
+
+            //check of er al 4 tickets van deze match in de winkelmand of bestellingen zitten
+            var CurrentUserTickets = await _ticketService.GetTicketsByUserAsync(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
+            int TicketsForMatchInCart = cart.Tickets.Where(t => t.Match.Id == MatchId).Count();
+            int TicketsForMatchInDB = CurrentUserTickets.Where(t => t.MatchId == MatchId).Count();
+            if (TicketsForMatchInCart + TicketsForMatchInDB >= 4)
+            {
+                ViewBag.ErrorMessage = "Je kan maar 4 tickets per match kopen!";
+                MatchVM matchVM = _mapper.Map<MatchVM>(match);
+                SeatSelectVM viewModel = new SeatSelectVM
+                {
+                    match = matchVM,
+                    VakId = VakId
+                };
+                return View("SeatSelection", viewModel);
+            }
 
             //Check of het zitje al bezet is
             bool isTaken = await _ticketService.IsSeatTakenAsync(MatchId, VakId, Seat);
