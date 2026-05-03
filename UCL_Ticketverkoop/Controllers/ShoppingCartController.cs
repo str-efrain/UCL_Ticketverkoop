@@ -1,6 +1,7 @@
 ﻿using BeerschopNET9_Identity.Extensions;
 using Domains.Entities;
 using Microsoft.AspNetCore.Mvc;
+using NuGet.Versioning;
 using Services.Interfaces;
 using System.Security.Claims;
 using UCL_Ticketverkoop.ViewModels;
@@ -32,7 +33,7 @@ namespace UCL_Ticketverkoop.Controllers
             var shoppingCartVM = HttpContext.Session.GetObject<ShoppingCartVM>(CartSession);
             return shoppingCartVM;
         }
-        public void SetShoppingCart(List<ShoppingCartVM> cart)
+        public void SetShoppingCart(ShoppingCartVM cart)
         {
             HttpContext.Session.SetObject(CartSession, cart);
         }
@@ -41,7 +42,12 @@ namespace UCL_Ticketverkoop.Controllers
         {
             ShoppingCartVM cart = GetShoppingCart();
 
-            Random rnd = new Random();
+            if(cart == null || !cart.Tickets.Any())
+            {
+                ViewBag.ErrorMessage = "Je mand is leeg!";
+                return View("Index",cart);
+            }
+
             Order order = new Order
             {
                
@@ -67,6 +73,20 @@ namespace UCL_Ticketverkoop.Controllers
 
             return RedirectToAction("Index", "Checkout", new { orderId = order.Id });
 
+        }
+        public IActionResult Delete(int? id) 
+        {
+            ShoppingCartVM cart = GetShoppingCart();
+
+            if (!id.HasValue)
+                return NotFound();            
+
+            cart.Tickets.RemoveAll(t => t.Id == id.Value);
+            cart.TotalPrice = cart.Tickets.Sum(t => t.Vak.Price);
+
+            SetShoppingCart(cart);
+
+            return View("Index", cart);
         }
     }
 }

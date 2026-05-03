@@ -84,7 +84,8 @@ namespace UCL_Ticketverkoop.Controllers
             }
 
             TicketVM ticket = new TicketVM
-            {
+            { 
+                Id = cart.Tickets.Count, //Mag NOOIT naar db enkel voor identificatie in de shopping cart
                 Match = _mapper.Map<MatchVM>(match),
                 Vak = _mapper.Map<VakVM>(vak),
                 Seat = Seat

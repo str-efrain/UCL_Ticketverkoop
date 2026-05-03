@@ -6,9 +6,12 @@
 
 <h1>Index</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+@if (ViewBag.ErrorMessage != null)
+{
+    <div class="alert alert-danger">
+        @ViewBag.ErrorMessage
+    </div>
+}
 
 @foreach (var item in Model.Tickets) {
         <tr>
@@ -25,9 +28,10 @@
         <td>
            € @item.Vak.Price
         </td>
+        <td>
+            <a asp-Controller="ShoppingCart" asp-action="Delete" asp-route-id="@item.Id" >verwijder</a>
+        </td>
         </tr>
-
-
 }
 € @Model.TotalPrice
 

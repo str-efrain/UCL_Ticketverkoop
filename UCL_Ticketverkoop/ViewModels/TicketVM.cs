@@ -2,6 +2,7 @@
 {
     public class TicketVM
     {
+        public int Id { get; set; }
         public MatchVM Match { get; set; }
 
         public VakVM Vak { get; set; }
