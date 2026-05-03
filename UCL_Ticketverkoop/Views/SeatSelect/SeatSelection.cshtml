@@ -1,0 +1,149 @@
+﻿@model UCL_Ticketverkoop.ViewModels.SeatSelectVM
+<link href="~/css/seatselect.css" rel="stylesheet" />
+
+@{
+    ViewData["Title"] = $"{Model.match.HomeTeamName} vs {Model.match.AwayTeamName}";
+    var vak = Model.match.vaks.FirstOrDefault(v => v.Id == Model.VakId);
+}
+
+@if (ViewBag.ErrorMessage != null)
+{
+    <div class="alert alert-danger">@ViewBag.ErrorMessage</div>
+}
+
+@if (vak == null)
+{
+    <p class="ss-empty">Section not found.</p>
+    return;
+}
+
+<!-- ── Match bar ── -->
+<div class="ss-match-bar">
+    <div class="ss-match-teams">
+        <img src="/Images/@Model.match.HomeTeamLogoUrl" alt="@Model.match.HomeTeamName" class="ss-team-logo" />
+        <span class="ss-match-label">@Model.match.HomeTeamName <span class="ss-vs">vs</span> @Model.match.AwayTeamName</span>
+        <img src="/Images/@Model.match.AwayTeamLogoUrl" alt="@Model.match.AwayTeamName" class="ss-team-logo" />
+    </div>
+    <div class="ss-match-details">
+        <span>@Model.match.MatchDate.ToString("ddd d MMM yyyy · HH:mm")</span>
+        <span class="ss-dot">·</span>
+        <span>@Model.match.StadiumName</span>
+    </div>
+</div>
+
+<!-- ── Section info ── -->
+<div class="ss-section-info">
+    <div>
+        <p class="ss-eyebrow">Section</p>
+        <h1 class="ss-section-name">@vak.Name</h1>
+        @if (!string.IsNullOrEmpty(vak.Ring))
+        {
+            <span class="ss-ring-badge">@vak.Ring Ring</span>
+        }
+    </div>
+    <div class="ss-section-stats">
+        <div class="ss-stat">
+            <span class="ss-stat-value">@vak.Rows</span>
+            <span class="ss-stat-label">Rows</span>
+        </div>
+        <div class="ss-stat-divider"></div>
+        <div class="ss-stat">
+            <span class="ss-stat-value">@vak.SeatsPerRow</span>
+            <span class="ss-stat-label">Per Row</span>
+        </div>
+        <div class="ss-stat-divider"></div>
+        <div class="ss-stat">
+            <span class="ss-stat-value">€@vak.Price.ToString("0.##")</span>
+            <span class="ss-stat-label">Per Seat</span>
+        </div>
+    </div>
+</div>
+
+<!-- ── Legend ── -->
+<div class="ss-legend">
+    <div class="ss-legend-item">
+        <svg class="ss-seat-icon ss-seat-available" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="12" width="28" height="16" rx="4" /><rect x="2" y="26" width="6" height="6" rx="2" /><rect x="28" y="26" width="6" height="6" rx="2" /><rect x="8" y="6" width="20" height="10" rx="4" /></svg>
+        <span>Available</span>
+    </div>
+    <div class="ss-legend-item">
+        <svg class="ss-seat-icon ss-seat-taken" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="12" width="28" height="16" rx="4" /><rect x="2" y="26" width="6" height="6" rx="2" /><rect x="28" y="26" width="6" height="6" rx="2" /><rect x="8" y="6" width="20" height="10" rx="4" /></svg>
+        <span>Taken</span>
+    </div>
+    <div class="ss-legend-item">
+        <svg class="ss-seat-icon ss-seat-selected" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="12" width="28" height="16" rx="4" /><rect x="2" y="26" width="6" height="6" rx="2" /><rect x="28" y="26" width="6" height="6" rx="2" /><rect x="8" y="6" width="20" height="10" rx="4" /></svg>
+        <span>Selected</span>
+    </div>
+</div>
+
+<!-- ── Pitch indicator ── -->
+<div class="ss-pitch">
+    <span>PITCH</span>
+</div>
+
+<!-- ── Seat grid ── -->
+<div class="ss-grid-wrapper">
+    <div class="ss-grid" id="seatGrid">
+        @for (int i = 0; i < vak.Rows; i++)
+        {
+            <div class="ss-row">
+                <span class="ss-row-label">@(i + 1)</span>
+                @for (int j = 0; j < vak.SeatsPerRow; j++)
+                {
+                    string seatId = $"{i + 1}-{j + 1}";
+                    <a asp-controller="SeatSelect"
+                       asp-action="SelectSeat"
+                       asp-route-MatchId="@Model.match.Id"
+                       asp-route-VakId="@Model.VakId"
+                       asp-route-Seat="@seatId"
+                       class="ss-seat ss-seat-available"
+                       data-seat="@seatId"
+                       data-row="@(i + 1)"
+                       data-col="@(j + 1)"
+                       title="Row @(i + 1) · Seat @(j + 1)">
+                        <svg viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="4" y="12" width="28" height="16" rx="4" />
+                            <rect x="2" y="26" width="6" height="6" rx="2" />
+                            <rect x="28" y="26" width="6" height="6" rx="2" />
+                            <rect x="8" y="6" width="20" height="10" rx="4" />
+                        </svg>
+                    </a>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // ── SignalR hook-in point ──────────────────────────────────
+        // When you add SignalR, connect here and call:
+        //   markSeatTaken(seatId)   — to grey out a seat in real time
+        //   markSeatFree(seatId)    — to re-enable a seat
+        //
+        // Example:
+        //   const connection = new signalR.HubConnectionBuilder()
+        //       .withUrl("/seatHub")
+        //       .build();
+        //   connection.on("SeatTaken", (seatId) => markSeatTaken(seatId));
+        //   connection.on("SeatReleased", (seatId) => markSeatFree(seatId));
+        //   connection.start();
+
+        function markSeatTaken(seatId) {
+            const seat = document.querySelector(`[data-seat="${seatId}"]`);
+            if (seat) {
+                seat.classList.remove("ss-seat-available", "ss-seat-selected");
+                seat.classList.add("ss-seat-taken");
+                seat.style.pointerEvents = "none";
+            }
+        }
+
+        function markSeatFree(seatId) {
+            const seat = document.querySelector(`[data-seat="${seatId}"]`);
+            if (seat) {
+                seat.classList.remove("ss-seat-taken", "ss-seat-selected");
+                seat.classList.add("ss-seat-available");
+                seat.style.pointerEvents = "auto";
+            }
+        }
+    </script>
+}

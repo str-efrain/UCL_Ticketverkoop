@@ -1,39 +1,96 @@
 ﻿@model UCL_Ticketverkoop.ViewModels.MatchVM
+<link href="~/css/buytickets.css" rel="stylesheet" />
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = $"{Model.HomeTeamName} vs {Model.AwayTeamName}";
 }
-@if (ViewBag.ErrorMessage != null)
-{
-    <div class="alert alert-danger">
-        @ViewBag.ErrorMessage
+
+<!-- ── Match Header ── -->
+<div class="bt-match-header">
+    <div class="bt-team">
+        <img src="/Images/@Model.HomeTeamLogoUrl" alt="@Model.HomeTeamName" class="bt-team-logo" />
+        <span class="bt-team-name">@Model.HomeTeamName</span>
     </div>
-}
 
-<h1>Index</h1>
+    <div class="bt-match-center">
+        <span class="bt-vs">VS</span>
+        <div class="bt-match-meta">
+            <span class="bt-match-date">@Model.MatchDate.ToString("dddd d MMMM yyyy")</span>
+            <span class="bt-match-time">@Model.MatchDate.ToString("HH:mm")</span>
+            <span class="bt-match-stadium">🏟 @Model.StadiumName</span>
+        </div>
+        <div class="bt-ucl-badge">
+            <span>UEFA Champions League</span>
+        </div>
+    </div>
 
-<div class="stadium-container">
-    @foreach (var vak in Model.vaks)
+    <div class="bt-team bt-team-away">
+        <img src="/Images/@Model.AwayTeamLogoUrl" alt="@Model.AwayTeamName" class="bt-team-logo" />
+        <span class="bt-team-name">@Model.AwayTeamName</span>
+    </div>
+</div>
+
+<!-- ── Section picker ── -->
+<div class="bt-section-header">
+    <p class="bt-eyebrow">Step 1</p>
+    <h2 class="bt-section-title">Choose Your Section</h2>
+    <p class="bt-section-sub">Select a section below to continue to seat selection and payment.</p>
+</div>
+
+@if (Model.vaks.Any())
+{
+    
+        var rings = Model.vaks
+            .GroupBy(v => string.IsNullOrEmpty(v.Ring) ? "General" : v.Ring)
+            .OrderBy(g => g.Key)
+            .ToList();
+    
+
+    @foreach (var ring in rings)
     {
-        <div class="vak-container">
-            <h3>Vak: @vak.Name</h3>
-            <div>
-                @for (int i = 0; i < vak.Rows; i++)
+        <div class="bt-ring-group">
+            @if (rings.Count > 1 || ring.Key != "General")
+            {
+                <h3 class="bt-ring-label">@ring.Key </h3>
+            }
+            <div class="bt-vaks-grid">
+                @foreach (var vak in ring.OrderBy(v => v.Name))
                 {
-                    <div>
-                    @for (int j = 0; j < vak.SeatsPerRow; j++)
-                    {
-                            <a asp-Controller="SeatSelect" asp-action="SelectSeat"
-                            asp-route-MatchId="@Model.Id"
-                            asp-route-VakId="@vak.Id"
-                            asp-route-Seat="@($"{i+1}-{j+1}")"
-                            
-                            >S</a>
-                    }
-                    </div>
+                    int seats = vak.Rows * vak.SeatsPerRow;
+                    <a asp-controller="SeatSelect" asp-action="SeatSelection"
+                       asp-route-matchId="@Model.Id"
+                       asp-route-vakId="@vak.Id"
+                       class="bt-vak-card">
+                        <div class="bt-vak-top">
+                            <span class="bt-vak-name">@vak.Name</span>
+                            <span class="bt-vak-price">€@vak.Price.ToString("0.##")</span>
+                        </div>
+                        <div class="bt-vak-stats">
+                            <div class="bt-vak-stat">
+                                <span class="bt-vak-stat-value">@vak.Rows</span>
+                                <span class="bt-vak-stat-label">Rows</span>
+                            </div>
+                            <div class="bt-vak-divider"></div>
+                            <div class="bt-vak-stat">
+                                <span class="bt-vak-stat-value">@vak.SeatsPerRow</span>
+                                <span class="bt-vak-stat-label">Per Row</span>
+                            </div>
+                            <div class="bt-vak-divider"></div>
+                            <div class="bt-vak-stat">
+                                <span class="bt-vak-stat-value">@seats</span>
+                                <span class="bt-vak-stat-label">Seats</span>
+                            </div>
+                        </div>
+                        <div class="bt-vak-footer">
+                            <span class="bt-vak-cta">Select Section →</span>
+                        </div>
+                    </a>
                 }
             </div>
         </div>
     }
-</div>
-
+}
+else
+{
+    <p class="bt-empty">No sections are available for this match yet.</p>
+}

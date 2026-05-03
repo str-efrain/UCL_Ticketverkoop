@@ -32,9 +32,10 @@
             </div>
 
             <div class="match-action">
-                @Html.ActionLink("Buy tickets", "Index", "SeatSelect",
-                new { matchId = item.Id },
-                        new { @class = "btn-ticket" })
+                
+                <a asp-Controller="SeatSelect" asp-action="Index"
+                   asp-route-MatchId="@item.Id"
+                   >Buy tickets</a>
             </div>
         </div>
     }

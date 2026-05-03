@@ -27,12 +27,28 @@ namespace UCL_Ticketverkoop.Controllers
         public async Task<IActionResult> Index(int matchId)
         {
             Match match = await _matchService.FindByIdAsync(matchId);
+            if (match == null)
+                return NotFound();
+
+            MatchVM viewModel = _mapper.Map<MatchVM>(match);
+
+            return View(viewModel);
+        }
+
+        public async Task<IActionResult> SeatSelection(int matchId, int vakId)
+        {
+            Match match = await _matchService.FindByIdAsync(matchId);
             if (match == null) 
                 return NotFound();
            
             MatchVM viewModel = _mapper.Map<MatchVM>(match);  
+            SeatSelectVM seatSelectVM = new SeatSelectVM
+            {
+                match = viewModel,
+                VakId = vakId
+            };
 
-            return View(viewModel);
+            return View(seatSelectVM);
         }
 
         public async Task<IActionResult> SelectSeat(int? MatchId, int? VakId, string? Seat)

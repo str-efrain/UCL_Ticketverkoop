@@ -1,0 +1,323 @@
+﻿/* ── Match bar ───────────────────────────────────────────────── */
+.ss-match-bar {
+    background: linear-gradient(135deg, #001540 0%, #002d72 100%);
+    border-left: 5px solid #d4af37;
+    border-radius: 12px;
+    padding: 1rem 1.75rem;
+    margin-bottom: 1.25rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.ss-match-teams {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.ss-team-logo {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 4px rgba(255,255,255,0.2));
+}
+
+.ss-match-label {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.ss-vs {
+    color: #d4af37;
+    font-weight: 800;
+    margin: 0 0.25rem;
+}
+
+.ss-match-details {
+    font-size: 0.78rem;
+    color: #8fa3d0;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+}
+
+.ss-dot {
+    opacity: 0.4;
+}
+
+/* ── Section info ────────────────────────────────────────────── */
+.ss-section-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.ss-eyebrow {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #d4af37;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 0.25rem;
+}
+
+    .ss-eyebrow::before {
+        content: '';
+        display: inline-block;
+        width: 16px;
+        height: 2px;
+        background: #d4af37;
+    }
+
+.ss-section-name {
+    font-size: clamp(1.4rem, 3vw, 2rem);
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0 0 0.4rem;
+    line-height: 1;
+}
+
+.ss-ring-badge {
+    display: inline-block;
+    padding: 0.2rem 0.7rem;
+    background: rgba(212, 175, 55, 0.1);
+    border: 1px solid rgba(212, 175, 55, 0.35);
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #d4af37;
+}
+
+.ss-section-stats {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: linear-gradient(135deg, #001540 0%, #002d72 100%);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    padding: 0.75rem 1.25rem;
+}
+
+.ss-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.ss-stat-value {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #d4af37;
+    line-height: 1;
+}
+
+.ss-stat-label {
+    font-size: 0.62rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #8fa3d0;
+    margin-top: 0.2rem;
+}
+
+.ss-stat-divider {
+    width: 1px;
+    height: 28px;
+    background: rgba(255,255,255,0.1);
+}
+
+/* ── Legend ──────────────────────────────────────────────────── */
+.ss-legend {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.ss-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.78rem;
+    color: #8fa3d0;
+}
+
+    .ss-legend-item .ss-seat-icon {
+        width: 20px;
+        height: 20px;
+        pointer-events: none;
+    }
+
+/* ── Pitch indicator ─────────────────────────────────────────── */
+.ss-pitch {
+    width: 60%;
+    max-width: 340px;
+    margin: 0 auto 1.25rem;
+    padding: 0.4rem;
+    background: rgba(0, 100, 40, 0.25);
+    border: 1px solid rgba(0, 180, 80, 0.3);
+    border-radius: 6px;
+    text-align: center;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(0, 220, 100, 0.7);
+}
+
+/* ── Grid wrapper (horizontal scroll on mobile) ──────────────── */
+.ss-grid-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 1rem;
+}
+
+.ss-grid {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: max-content;
+    margin: 0 auto;
+    padding: 0.5rem;
+}
+
+/* ── Row ─────────────────────────────────────────────────────── */
+.ss-row {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.ss-row-label {
+    width: 22px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: #8fa3d0;
+    text-align: right;
+    flex-shrink: 0;
+    margin-right: 4px;
+}
+
+/* ── Seat ────────────────────────────────────────────────────── */
+.ss-seat {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 4px;
+    border: none;
+    transition: transform 0.15s, opacity 0.15s;
+    flex-shrink: 0;
+}
+
+    .ss-seat svg {
+        width: 20px;
+        height: 20px;
+        pointer-events: none;
+    }
+
+    .ss-seat:hover {
+        transform: scale(1.25);
+        z-index: 10;
+        position: relative;
+    }
+
+/* State: available */
+.ss-seat-available svg rect {
+    fill: #1a3a8f;
+}
+
+.ss-seat-available:hover svg rect {
+    fill: #2a5abf;
+}
+
+/* State: taken — also used as CSS class for SignalR updates */
+.ss-seat-taken {
+    pointer-events: none;
+    opacity: 0.35;
+}
+
+    .ss-seat-taken svg rect {
+        fill: #3a3a4a;
+    }
+
+/* State: selected */
+.ss-seat-selected svg rect {
+    fill: #d4af37;
+}
+
+/* Legend icon colors */
+.ss-legend .ss-seat-available svg rect {
+    fill: #1a3a8f;
+}
+
+.ss-legend .ss-seat-taken svg rect {
+    fill: #3a3a4a;
+}
+
+.ss-legend .ss-seat-selected svg rect {
+    fill: #d4af37;
+}
+
+/* ── Mobile ──────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    .ss-match-bar {
+        padding: 0.9rem 1.25rem;
+    }
+
+    .ss-section-info {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .ss-section-stats {
+        width: 100%;
+        justify-content: space-around;
+    }
+
+    .ss-seat {
+        width: 24px;
+        height: 24px;
+    }
+
+        .ss-seat svg {
+            width: 17px;
+            height: 17px;
+        }
+}
+
+@media (max-width: 480px) {
+    .ss-seat {
+        width: 20px;
+        height: 20px;
+    }
+
+        .ss-seat svg {
+            width: 14px;
+            height: 14px;
+        }
+
+    .ss-row {
+        gap: 3px;
+    }
+
+    .ss-row-label {
+        width: 16px;
+        font-size: 0.58rem;
+    }
+}

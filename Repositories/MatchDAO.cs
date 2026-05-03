@@ -51,6 +51,7 @@ namespace Repositories
                 .Include(o=>o.HomeClub)
                     .ThenInclude(c => c.Stadium)
                     .ThenInclude(v=>v.Vaks)
+                .Include(o => o.AwayClub)
                 .AsNoTracking()
                 .SingleOrDefaultAsync(o => o.Id == Id);
         }
