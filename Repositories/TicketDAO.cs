@@ -93,6 +93,7 @@ namespace Repositories
             return await _context.Tickets
                 .Include(t=> t.Order)
                 .Where(t => t.Order.UserId == userId)
+                .Include(t => t.Match)
                 .ToListAsync();
 
 

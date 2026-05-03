@@ -3,14 +3,35 @@ using BeerschopNET9_Identity.Extensions;
 using Domains.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
+using NuGet.Common;
 using Services.Interfaces;
+using System;
 using System.Globalization;
+using System.Net.Sockets;
+using System.Runtime.ConstrainedExecution;
 using System.Security.Claims;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using UCL_Ticketverkoop.ViewModels;
 
 namespace UCL_Ticketverkoop.Controllers
 {
+    // TODO buisness rules:
+    //• Per ticket wordt een voucher gegenereerd en via e-mail verstuurd.
+    //• Abonnementen kunnen enkel aangekocht worden vóór de start van de competitie.
+    //Een abonnement-plaats kan niet meer als los ticket verkocht worden.
+    //• Overboeking is niet toegestaan; capaciteitslimieten mogen nooit overschreden
+    //worden.
+    //• Gratis annulatie is mogelijk tot 1 week vóór de wedstrijd.
+    //• Gebruikers registreren zich éénmalig en kunnen nadien inloggen.
+    //• Wachtwoord vergeten verloopt via e-mail.
+    //• Supporters kunnen een hotelovernachting boeken via externe API’s.Deze moeten
+    //niet bijgehouden worden
+    //Gebruik bestaande externe API’s (bv.hotel-search/booking API via een publieke
+    //provider of API-platform).
+    //Je hoeft geen echte betaling bij hotel te doen
     public class SeatSelectController : Controller
     {
         private const string CartSession = "shoppingCart";
@@ -69,6 +90,7 @@ namespace UCL_Ticketverkoop.Controllers
         [Authorize]
         public async Task<IActionResult> SelectSeat(int MatchId, int VakId, string Seat)
         {
+            var CurrentUserTickets = await _ticketService.GetTicketsByUserAsync(User.FindFirst(ClaimTypes.NameIdentifier)?.Value) ?? new List<Ticket>(); ;
 
             //Match en vak ophalen
             Match match = await _matchService.FindByIdAsync(MatchId);
@@ -90,20 +112,31 @@ namespace UCL_Ticketverkoop.Controllers
                 return NotFound();
             }
 
-
-
             //shoppingCart ophalen
             ShoppingCartVM cart = new ShoppingCartVM();
             cart = HttpContext.Session.GetObject<ShoppingCartVM>(CartSession) ?? new ShoppingCartVM();
 
             //check of er al 4 tickets van deze match in de winkelmand of bestellingen zitten
-            var CurrentUserTickets = await _ticketService.GetTicketsByUserAsync(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-
             int TicketsForMatchInCart = cart.Tickets.Where(t => t.Match.Id == MatchId).Count();
             int TicketsForMatchInDB = CurrentUserTickets.Where(t => t.MatchId == MatchId).Count();
             if (TicketsForMatchInCart + TicketsForMatchInDB >= 4)
             {
                 ViewBag.ErrorMessage = "Je kan maar 4 tickets per match kopen!";
+                MatchVM matchVM = _mapper.Map<MatchVM>(match);
+                SeatSelectVM viewModel = new SeatSelectVM
+                {
+                    match = matchVM,
+                    VakId = VakId
+                };
+                return View("SeatSelection", viewModel);
+            }
+
+            //controle of de deze persoon al tickets heeft voor een andere match op dezelfde dag
+            bool OtherMatchSameDayDB = CurrentUserTickets.Where(t => t.Match.MatchDate.Date == match.MatchDate.Date && t.Match.Id != MatchId).Any();
+            bool OtherMatchSameDayCart = cart.Tickets.Where(t => t.Match.MatchDate.Date == match.MatchDate.Date && t.Match.Id != MatchId).Any();
+            if (OtherMatchSameDayDB||OtherMatchSameDayCart) 
+            {
+                ViewBag.ErrorMessage = "Je hebt al ticket(s) voor een wedstrijd op" +match.MatchDate.ToShortDateString();
                 MatchVM matchVM = _mapper.Map<MatchVM>(match);
                 SeatSelectVM viewModel = new SeatSelectVM
                 {
