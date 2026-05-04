@@ -66,6 +66,7 @@ namespace Repositories
                         .ThenInclude(c => c.Stadium)
                     .Include(a=>a.AwayClub)
                     .Include(o => o.Seizoen)
+                    .Where(s => s.Seizoen.IsCurrentSeason)//Zorgt dat enkel de wedstrijden van het huidige seizoen worden opgehaald
                     .AsNoTracking().ToListAsync();
             }
             catch (Exception ex)
@@ -83,6 +84,7 @@ namespace Repositories
                         .ThenInclude(c => c.Stadium)
                     .Include(a => a.AwayClub)
                     .Include(s => s.Seizoen)
+                    .Where(s => s.Seizoen.IsCurrentSeason)//Zorgt dat enkel de wedstrijden van het huidige seizoen worden opgehaald
                     .Where(m => m.HomeClubId == clubId || m.AwayClubId == clubId).ToListAsync();
             }
             catch 
