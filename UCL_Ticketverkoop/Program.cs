@@ -20,38 +20,33 @@ using Util.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//// Key Vault settings ophalen
-//string vaultUrl = builder.Configuration["KeyVault:VaultUrl"] ?? throw new InvalidOperationException("KeyVault:VaultUrl is not configured.");
-//string connectionStringDB = builder.Configuration["KeyVault:ConnectionStringDB"] ?? throw new InvalidOperationException("KeyVault:ConnectionStringDB is not configured.");
-//string? emailPassword = builder.Configuration["KeyVault:EmailPassword"];
+// Key Vault settings ophalen
+string vaultUrl = builder.Configuration["KeyVault:VaultUrl"] ?? throw new InvalidOperationException("KeyVault:VaultUrl is not configured.");
+string connectionStringDB = builder.Configuration["KeyVault:ConnectionStringDB"] ?? throw new InvalidOperationException("KeyVault:ConnectionStringDB is not configured.");
+string? emailPassword = builder.Configuration["KeyVault:EmailPassword"];
 
-//// Split the instantiation into separate variables to prevent the Visual Studio analyzer crash
-//var vaultUri = new Uri(vaultUrl);
-//var credentials = new DefaultAzureCredential();
+// Split the instantiation into separate variables to prevent the Visual Studio analyzer crash
+var vaultUri = new Uri(vaultUrl);
+var credentials = new DefaultAzureCredential();
 
-//// Maak een client met default credentials
-//var client = new SecretClient(vaultUri, credentials);
+// Maak een client met default credentials
+var client = new SecretClient(vaultUri, credentials);
 
-////Haal de connectionstring op
-//KeyVaultSecret connectionStringSecret = client.GetSecret(connectionStringDB);
-////De slashes er uithalen
-//string connectionStringVal = connectionStringSecret.Value.Replace("\\\\", "\\");
-//// Voeg toe aan configuration
-//builder.Configuration["ConnectionStrings:DefaultConnection"] = connectionStringVal;
+//Haal de connectionstring op
+KeyVaultSecret connectionStringSecret = client.GetSecret(connectionStringDB);
+//De slashes er uithalen
+string connectionStringVal = connectionStringSecret.Value.Replace("\\\\", "\\");
+// Voeg toe aan configuration
+builder.Configuration["ConnectionStrings:DefaultConnection"] = connectionStringVal;
 
-////Haal het emailpasswoord op
-//KeyVaultSecret emailPasswordSecret = client.GetSecret(emailPassword);
-//string emailPasswordVal = emailPasswordSecret.Value;
-//builder.Configuration["EmailSettings:Password"] = emailPasswordVal;
-
-
-////Connection string ophalen
-//var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+//Haal het emailpasswoord op
+KeyVaultSecret emailPasswordSecret = client.GetSecret(emailPassword);
+string emailPasswordVal = emailPasswordSecret.Value;
+builder.Configuration["EmailSettings:Password"] = emailPasswordVal;
 
 
-//temp connection string
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+//Connection string ophalen
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 //Add UCL_TicketingDbContext
 builder.Services.AddDbContext<UCL_TicketingDbContext>(options =>
