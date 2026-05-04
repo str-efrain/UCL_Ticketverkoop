@@ -33,6 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Resources\Views\Shared\" />
     <Folder Include="wwwroot\Images\" />
   </ItemGroup>
 

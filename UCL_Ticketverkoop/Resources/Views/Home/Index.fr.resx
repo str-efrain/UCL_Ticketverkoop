@@ -1,0 +1,250 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="browse_matches" xml:space="preserve">
+    <value>Parcourir les matchs</value>
+  </data>
+  <data name="description hero" xml:space="preserve">
+    <value>EfraThib Ticketing est la plateforme unique pour acheter et gérer
+vos billets pour les matchs de l'UEFA Champions League. Parcourez la liste des clubs, choisissez votre match
+et réservez votre place — le tout en un seul endroit.
+</value>
+  </data>
+  <data name="europe's" xml:space="preserve">
+    <value>la plus grande scène</value>
+  </data>
+  <data name="greatest stage" xml:space="preserve">
+    <value>d'Europe</value>
+  </data>
+  <data name="ucl_tickets" xml:space="preserve">
+    <value>Billets pour la UEFA Champions League</value>
+  </data>
+  <data name="view_clubs" xml:space="preserve">
+    <value>Voir les clubs</value>
+  </data>
+  <data name="your seat at" xml:space="preserve">
+    <value>Votre place sur</value>
+  </data>
+  <data name="ucl" xml:space="preserve">
+    <value>Ligue des champions de l'UEFA</value>
+  </data>
+  <data name="topclubs" xml:space="preserve">
+    <value>Clubs de Haut Niveau</value>
+  </data>
+  <data name="matches_available" xml:space="preserve">
+    <value>Matchs disponibles</value>
+  </data>
+  <data name="secure_checkout" xml:space="preserve">
+    <value>Paiement Sécurisé</value>
+  </data>
+  <data name="support" xml:space="preserve">
+    <value>Assistance</value>
+  </data>
+  <data name="about_us" xml:space="preserve">
+    <value>Qui sommes-nous ?</value>
+  </data>
+  <data name="one_platform" xml:space="preserve">
+    <value>Une seule plateforme.</value>
+  </data>
+  <data name="every_ucl_ticket" xml:space="preserve">
+    <value>Tous les billets pour l'UCL.</value>
+  </data>
+  <data name="we_centralize" xml:space="preserve">
+    <value>EfraThib Ticketing a été conçu pour remédier à la fragmentation de l'expérience des supporters.
+Au lieu de devoir parcourir le site web de chaque club, de gérer plusieurs
+comptes et de faire face à une disponibilité des places dispersée, nous centralisons tout cela.</value>
+  </data>
+  <data name="no_more_juggling" xml:space="preserve">
+    <value>Que vous suiviez le FC Barcelone au Camp Nou ou que vous encouragiez
+le Club Bruges au stade Jan Breydel, vous trouverez vos billets ici grâce à un
+compte unique et un processus de paiement fluide.</value>
+  </data>
+  <data name="how_it_works" xml:space="preserve">
+    <value>Comment ça marche</value>
+  </data>
+  <data name="four_steps" xml:space="preserve">
+    <value>&#x8;Quatre étapes pour une soirée de match parfaite</value>
+  </data>
+  <data name="choose_club" xml:space="preserve">
+    <value>Choisissez votre club</value>
+  </data>
+  <data name="choose_club_desc" xml:space="preserve">
+    <value>Découvrez notre sélection des meilleurs clubs de l'UCL et consultez le calendrier de leurs prochains matchs à domicile.</value>
+  </data>
+  <data name="pick_match" xml:space="preserve">
+    <value>Choisissez votre match</value>
+  </data>
+  <data name="secure_seat" xml:space="preserve">
+    <value>Réservez votre place</value>
+  </data>
+  <data name="pick_match_desc" xml:space="preserve">
+    <value>Sélectionnez le match, choisissez votre catégorie de places et vérifiez les disponibilités en temps réel.</value>
+  </data>
+  <data name="secure_seat_desc" xml:space="preserve">
+    <value>Paiement rapide et sécurisé. Votre billet électronique est associé à votre compte pour une gestion simplifiée.</value>
+  </data>
+  <data name="enjoy_match" xml:space="preserve">
+    <value>Profitez de la soirée</value>
+  </data>
+  <data name="enjoy_match_desc" xml:space="preserve">
+    <value>Présentez votre billet électronique à l'entrée et imprégnez-vous de l'ambiance de la Ligue des champions.</value>
+  </data>
+  <data name="why_efrathib" xml:space="preserve">
+    <value>Pourquoi EfraThib</value>
+  </data>
+  <data name="real_fans" xml:space="preserve">
+    <value>Conçu pour les vrais fans</value>
+  </data>
+  <data name="verified" xml:space="preserve">
+    <value>Vérifié &amp;amp; Sécurisé</value>
+  </data>
+  <data name="verified_desc" xml:space="preserve">
+    <value>Tous les billets sont vendus par les canaux officiels du club. Chaque transaction est cryptée et protégée contre la fraude.</value>
+  </data>
+  <data name="real_time" xml:space="preserve">
+    <value>Disponibilité en temps réel</value>
+  </data>
+  <data name="real_time_desc" xml:space="preserve">
+    <value>Mise à jour en direct du nombre de places disponibles — ne perdez plus jamais de temps pour un match complet.</value>
+  </data>
+  <data name="major" xml:space="preserve">
+    <value>Tous les principaux clubs de l'UCL</value>
+  </data>
+  <data name="major_desc" xml:space="preserve">
+    <value>Les géants de la Liga, les poids lourds de la Bundesliga et la fierté belge : tout y est.</value>
+  </data>
+  <data name="one_account" xml:space="preserve">
+    <value>Un seul compte, tous les clubs</value>
+  </data>
+  <data name="one_account_desc" xml:space="preserve">
+    <value>Gérez tous vos billets depuis un seul tableau de bord. Plus besoin de jongler entre les différents comptes sur les sites web des clubs.</value>
+  </data>
+  <data name="cta" xml:space="preserve">
+    <value>Prêt à regarder le football de l'UCL en direct ?</value>
+  </data>
+  <data name="cta_desc" xml:space="preserve">
+    <value>Créez un compte gratuit et commencez à parcourir les annonces en moins d'une minute.</value>
+  </data>
+  <data name="create_account" xml:space="preserve">
+    <value>Créer un compte gratuit</value>
+  </data>
+  <data name="see_matches" xml:space="preserve">
+    <value>Voir tous les matchs</value>
+  </data>
+</root>

@@ -4,6 +4,7 @@ using Domains.Data;
 using Domains.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -64,7 +65,23 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 //Default identity voor EF Core, hiermee kunnen we gebruikers beheren en authenticeren
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
-builder.Services.AddControllersWithViews();
+
+builder.Services.AddControllersWithViews()
+    .AddDataAnnotationsLocalization()//Add data localization !!! Voor in de ViewModels te kunnen vertalen
+    .AddViewLocalization(LanguageViewLocationExpanderFormat.SubFolder); // vertaling op View  // zoek in Viewmappen binnen resources naar taalspecifieke resourcebestand  ; 
+
+//Localization
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+
+// we need to decide which cultures we support, and which is the default culture.
+var supportedCultures = new[] { "nl", "en", "fr" };
+
+//Dit configureert de standaard instellingen voor RequestLocalizationOptions en slaat ze op in de dependency injection-container (DI).
+builder.Services.Configure<RequestLocalizationOptions>(options => {
+    options.SetDefaultCulture(supportedCultures[1])
+      .AddSupportedCultures(supportedCultures)  //Culture is used when formatting or parsing culture dependent data like dates, numbers, currencies, etc
+      .AddSupportedUICultures(supportedCultures);  //UICulture is used when localizing strings, for example when using resource files.
+});
 
 //Swagger
 builder.Services.AddSwaggerGen(c =>
@@ -113,9 +130,6 @@ builder.Services.AddScoped<IService<Order>, OrderService>();
 
 builder.Services.AddScoped<ITicketDAO, TicketDAO>();
 builder.Services.AddScoped<ITicketService,TicketService>();
-
-
-
 
 //JWT Bearer tokens
 builder.Services.AddAuthentication()
@@ -204,6 +218,20 @@ app.UseSwaggerUI(option =>
     option.SwaggerEndpoint(swaggerOptions.UiEndpoint, swaggerOptions.Description);
 });
 app.UseSwagger();
+
+// deze lijn bepaalt voor elke inkomende HTTP request
+//welke Culture gebruikt wordt
+//welke UICulture gebruikt wordt
+// hoe, probeert de juiste cultuur te bepalen
+//Op basis van (in volgorde):
+// Querystring
+//?culture=nl
+//Cookie
+//opgeslagen gebruikersvoorkeur
+//Browser instellingen
+//(Accept-Language header)
+//app.UseRequestLocalization(localizationOptions);
+app.UseRequestLocalization();
 
 
 //User CORS
