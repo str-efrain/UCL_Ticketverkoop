@@ -88,6 +88,15 @@ namespace Repositories
                                t.Seat.Equals(seat));
         }
 
+        public async Task<List<string>> GetTakenSeatsAsync(int matchId, int vakId)
+        {
+            return await _context.Tickets
+                .AsNoTracking()
+                .Where(t => t.MatchId == matchId && t.VakId == vakId)
+                .Select(t => t.Seat)
+                .ToListAsync();
+        }
+
         public async Task<IEnumerable<Ticket>> GetTicketsByUserAsync(String userId)
         {
             return await _context.Tickets

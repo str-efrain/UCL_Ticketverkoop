@@ -9,6 +9,7 @@ using NuGet.Common;
 using Services.Interfaces;
 using System;
 using System.Globalization;
+using System.Linq;
 using System.Net.Sockets;
 using System.Runtime.ConstrainedExecution;
 using System.Security.Claims;
@@ -77,13 +78,7 @@ namespace UCL_Ticketverkoop.Controllers
 
             
 
-            MatchVM viewModel = _mapper.Map<MatchVM>(match);  
-            SeatSelectVM seatSelectVM = new SeatSelectVM
-            {
-                match = viewModel,
-                VakId = vakId
-            };
-
+            SeatSelectVM seatSelectVM = await BuildSeatSelectVm(match, vakId);
             return View(seatSelectVM);
         }
 
@@ -122,12 +117,7 @@ namespace UCL_Ticketverkoop.Controllers
             if (TicketsForMatchInCart + TicketsForMatchInDB >= 4)
             {
                 ViewBag.ErrorMessage = "Je kan maar 4 tickets per match kopen!";
-                MatchVM matchVM = _mapper.Map<MatchVM>(match);
-                SeatSelectVM viewModel = new SeatSelectVM
-                {
-                    match = matchVM,
-                    VakId = VakId
-                };
+                SeatSelectVM viewModel = await BuildSeatSelectVm(match, VakId);
                 return View("SeatSelection", viewModel);
             }
 
@@ -136,13 +126,8 @@ namespace UCL_Ticketverkoop.Controllers
             bool OtherMatchSameDayCart = cart.Tickets.Where(t => t.Match.MatchDate.Date == match.MatchDate.Date && t.Match.Id != MatchId).Any();
             if (OtherMatchSameDayDB||OtherMatchSameDayCart) 
             {
-                ViewBag.ErrorMessage = "Je hebt al ticket(s) voor een wedstrijd op" +match.MatchDate.ToShortDateString();
-                MatchVM matchVM = _mapper.Map<MatchVM>(match);
-                SeatSelectVM viewModel = new SeatSelectVM
-                {
-                    match = matchVM,
-                    VakId = VakId
-                };
+                ViewBag.ErrorMessage = "Je hebt al ticket(s) voor een wedstrijd op " +match.MatchDate.ToShortDateString();
+                SeatSelectVM viewModel = await BuildSeatSelectVm(match, VakId);
                 return View("SeatSelection", viewModel);
             }
 
@@ -151,25 +136,15 @@ namespace UCL_Ticketverkoop.Controllers
             bool isInShoppingCart = cart.Tickets.Any(t => t.Match.Id == MatchId && t.Vak.Id == VakId && t.Seat == Seat);
             if (isTaken)
             {
-                ViewBag.ErrorMessage = "Sorry,Deze stoel is al bezet!";
-                MatchVM matchVM = _mapper.Map<MatchVM>(match);
-                SeatSelectVM viewModel = new SeatSelectVM
-                {
-                    match = matchVM,
-                    VakId = VakId
-                };
+                ViewBag.ErrorMessage = "Sorry, Deze stoel is al bezet!";
+                SeatSelectVM viewModel = await BuildSeatSelectVm(match, VakId);
                 return View("SeatSelection", viewModel);
             }
 
             if(isInShoppingCart)
             {
                 ViewBag.ErrorMessage = "Je hebt deze stoel al in je winkelmand!";
-                MatchVM matchVM = _mapper.Map<MatchVM>(match);
-                SeatSelectVM viewModel = new SeatSelectVM
-                {
-                    match = matchVM,
-                    VakId = VakId
-                };
+                SeatSelectVM viewModel = await BuildSeatSelectVm(match, VakId);
                 return View("SeatSelection", viewModel);
             }
 
@@ -195,6 +170,7 @@ namespace UCL_Ticketverkoop.Controllers
         {
             var currentUserTickets = await _ticketService.GetTicketsByUserAsync(User.FindFirst(ClaimTypes.NameIdentifier)?.Value) ?? new List<Ticket>();
 
+            //Match en vak ophalen
             Match match = await _matchService.FindByIdAsync(MatchId);
             Vak vak = await _vakService.FindByIdAsync(VakId);
 
@@ -210,11 +186,7 @@ namespace UCL_Ticketverkoop.Controllers
             if (seatsToAdd.Count == 0)
             {
                 ViewBag.ErrorMessage = "Selecteer minstens één stoel.";
-                SeatSelectVM emptySelection = new SeatSelectVM
-                {
-                    match = _mapper.Map<MatchVM>(match),
-                    VakId = VakId
-                };
+                SeatSelectVM emptySelection = await BuildSeatSelectVm(match, VakId);
                 return View("SeatSelection", emptySelection);
             }
 
@@ -225,11 +197,7 @@ namespace UCL_Ticketverkoop.Controllers
             if (ticketsForMatchInCart + ticketsForMatchInDb + seatsToAdd.Count > 4)
             {
                 ViewBag.ErrorMessage = "Je kan maar 4 tickets per match kopen!";
-                SeatSelectVM limitViewModel = new SeatSelectVM
-                {
-                    match = _mapper.Map<MatchVM>(match),
-                    VakId = VakId
-                };
+                SeatSelectVM limitViewModel = await BuildSeatSelectVm(match, VakId);
                 return View("SeatSelection", limitViewModel);
             }
 
@@ -237,12 +205,8 @@ namespace UCL_Ticketverkoop.Controllers
             bool otherMatchSameDayCart = cart.Tickets.Any(t => t.Match.MatchDate.Date == match.MatchDate.Date && t.Match.Id != MatchId);
             if (otherMatchSameDayDb || otherMatchSameDayCart)
             {
-                ViewBag.ErrorMessage = "Je hebt al ticket(s) voor een wedstrijd op" + match.MatchDate.ToShortDateString();
-                SeatSelectVM sameDayViewModel = new SeatSelectVM
-                {
-                    match = _mapper.Map<MatchVM>(match),
-                    VakId = VakId
-                };
+                ViewBag.ErrorMessage = "Je hebt al ticket(s) voor een wedstrijd op " + match.MatchDate.ToShortDateString();
+                SeatSelectVM sameDayViewModel = await BuildSeatSelectVm(match, VakId);
                 return View("SeatSelection", sameDayViewModel);
             }
 
@@ -253,22 +217,14 @@ namespace UCL_Ticketverkoop.Controllers
                 if (seatRowCol.Length != 2 || !int.TryParse(seatRowCol[0], out int seatRow) || !int.TryParse(seatRowCol[1], out int seatCol))
                 {
                     ViewBag.ErrorMessage = "Ongeldige stoel geselecteerd.";
-                    SeatSelectVM invalidSeatViewModel = new SeatSelectVM
-                    {
-                        match = _mapper.Map<MatchVM>(match),
-                        VakId = VakId
-                    };
+                    SeatSelectVM invalidSeatViewModel = await BuildSeatSelectVm(match, VakId);
                     return View("SeatSelection", invalidSeatViewModel);
                 }
 
                 if (seatRow < 1 || seatRow >= vak.Rows || seatCol < 1 || seatCol >= vak.SeatsPerRow)
                 {
                     ViewBag.ErrorMessage = "Ongeldige stoel geselecteerd.";
-                    SeatSelectVM invalidSeatViewModel = new SeatSelectVM
-                    {
-                        match = _mapper.Map<MatchVM>(match),
-                        VakId = VakId
-                    };
+                    SeatSelectVM invalidSeatViewModel = await BuildSeatSelectVm(match, VakId);
                     return View("SeatSelection", invalidSeatViewModel);
                 }
 
@@ -277,11 +233,7 @@ namespace UCL_Ticketverkoop.Controllers
                 if (isTaken || isInShoppingCart)
                 {
                     ViewBag.ErrorMessage = "Een of meer geselecteerde stoelen zijn niet beschikbaar.";
-                    SeatSelectVM unavailableViewModel = new SeatSelectVM
-                    {
-                        match = _mapper.Map<MatchVM>(match),
-                        VakId = VakId
-                    };
+                    SeatSelectVM unavailableViewModel = await BuildSeatSelectVm(match, VakId);
                     return View("SeatSelection", unavailableViewModel);
                 }
 
@@ -299,6 +251,19 @@ namespace UCL_Ticketverkoop.Controllers
 
             HttpContext.Session.SetObject(CartSession, cart);
             return RedirectToAction("Index", "ShoppingCart");
+        }
+        
+        //Omdat we overal SeatSelectVM's maken heb ik hier een mehod voor gemaakt
+        private async Task<SeatSelectVM> BuildSeatSelectVm(Match match, int vakId)
+        {
+            MatchVM viewModel = _mapper.Map<MatchVM>(match);
+            var takenSeats = await _ticketService.GetTakenSeatsAsync(match.Id, vakId);
+            return new SeatSelectVM
+            {
+                match = viewModel,
+                VakId = vakId,
+                TakenSeats = new HashSet<string>(takenSeats ?? Enumerable.Empty<string>(), StringComparer.OrdinalIgnoreCase)
+            };
         }
     }
 }

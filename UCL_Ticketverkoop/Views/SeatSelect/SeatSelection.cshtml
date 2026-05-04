@@ -95,12 +95,15 @@
                     @for (int j = 0; j < vak.SeatsPerRow; j++)
                     {
                         string seatId = $"{i + 1}-{j + 1}";
+                        bool isTaken = Model.TakenSeats.Contains(seatId);
+                        string seatClass = isTaken ? "ss-seat ss-seat-taken" : "ss-seat ss-seat-available";
                         <button type="button"
-                                class="ss-seat ss-seat-available"
+                                class="@seatClass"
                                 data-seat="@seatId"
                                 data-row="@(i + 1)"
                                 data-col="@(j + 1)"
-                                title="Row @(i + 1) · Seat @(j + 1)">
+                                title="Row @(i + 1) · Seat @(j + 1)"
+                                disabled="@(isTaken ? "disabled" : null)">
                             <svg viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
                                 <rect x="4" y="12" width="28" height="16" rx="4" />
                                 <rect x="2" y="26" width="6" height="6" rx="2" />
