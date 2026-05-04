@@ -48,8 +48,8 @@ h1 {
     margin-bottom: 0.3rem;
 }
 
-    h1::after {
-        content: "UEFA Champions League · 2025/26";
+    h2 {
+       
         display: block;
         font-family: 'DM Sans', sans-serif;
         font-size: 0.68rem;

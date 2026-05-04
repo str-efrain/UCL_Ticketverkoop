@@ -52,6 +52,7 @@ namespace Repositories
                     .ThenInclude(c => c.Stadium)
                     .ThenInclude(v=>v.Vaks)
                 .Include(o => o.AwayClub)
+                .Include(o => o.Seizoen)
                 .AsNoTracking()
                 .SingleOrDefaultAsync(o => o.Id == Id);
         }
@@ -64,6 +65,7 @@ namespace Repositories
                     .Include(h=>h.HomeClub)
                         .ThenInclude(c => c.Stadium)
                     .Include(a=>a.AwayClub)
+                    .Include(o => o.Seizoen)
                     .AsNoTracking().ToListAsync();
             }
             catch (Exception ex)
@@ -80,6 +82,7 @@ namespace Repositories
                     .Include(h => h.HomeClub)
                         .ThenInclude(c => c.Stadium)
                     .Include(a => a.AwayClub)
+                    .Include(s => s.Seizoen)
                     .Where(m => m.HomeClubId == clubId || m.AwayClubId == clubId).ToListAsync();
             }
             catch 

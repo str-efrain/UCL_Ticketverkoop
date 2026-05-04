@@ -12,6 +12,7 @@ public partial class Seizoen
     public DateOnly StartDate { get; set; }
 
     public DateOnly EndDate { get; set; }
+    public bool IsCurrentSeason { get; set; }
 
     public virtual ICollection<Abonnement> Abonnements { get; set; } = new List<Abonnement>();
 
