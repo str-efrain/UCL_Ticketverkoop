@@ -87,6 +87,17 @@ namespace Repositories
                                t.VakId == vakId &&
                                t.Seat.Equals(seat));
         }
+
+        public async Task<IEnumerable<Ticket>> GetTicketsByUserAsync(String userId)
+        {
+            return await _context.Tickets
+                .Include(t=> t.Order)
+                .Where(t => t.Order.UserId == userId)
+                .Include(t => t.Match)
+                .ToListAsync();
+
+
+        }
     }
 
 

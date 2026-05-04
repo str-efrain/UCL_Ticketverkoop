@@ -37,6 +37,11 @@ namespace Services
             return await _ticketDAO.GetAllAsync();
         }
 
+        public Task<IEnumerable<Ticket>> GetTicketsByUserAsync(string userId)
+        {
+            return _ticketDAO.GetTicketsByUserAsync(userId);
+        }
+
         public async Task<bool> IsSeatTakenAsync(int matchId, int vakId, string seat)
         {
             return await _ticketDAO.IsSeatTakenAsync(matchId, vakId, seat);
