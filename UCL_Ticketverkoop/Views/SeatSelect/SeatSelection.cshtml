@@ -81,37 +81,43 @@
 </div>
 
 <!-- ── Seat grid ── -->
-<div class="ss-grid-wrapper">
-    <div class="ss-grid" id="seatGrid">
-        @for (int i = 0; i < vak.Rows; i++)
-        {
-            <div class="ss-row">
-                <span class="ss-row-label">@(i + 1)</span>
-                @for (int j = 0; j < vak.SeatsPerRow; j++)
-                {
-                    string seatId = $"{i + 1}-{j + 1}";
-                    <a asp-controller="SeatSelect"
-                       asp-action="SelectSeat"
-                       asp-route-MatchId="@Model.match.Id"
-                       asp-route-VakId="@Model.VakId"
-                       asp-route-Seat="@seatId"
-                       class="ss-seat ss-seat-available"
-                       data-seat="@seatId"
-                       data-row="@(i + 1)"
-                       data-col="@(j + 1)"
-                       title="Row @(i + 1) · Seat @(j + 1)">
-                        <svg viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
-                            <rect x="4" y="12" width="28" height="16" rx="4" />
-                            <rect x="2" y="26" width="6" height="6" rx="2" />
-                            <rect x="28" y="26" width="6" height="6" rx="2" />
-                            <rect x="8" y="6" width="20" height="10" rx="4" />
-                        </svg>
-                    </a>
-                }
-            </div>
-        }
+<form asp-controller="SeatSelect" asp-action="AddSeats" method="post">
+    <input type="hidden" name="MatchId" value="@Model.match.Id" />
+    <input type="hidden" name="VakId" value="@Model.VakId" />
+    <div id="selectedSeatsContainer"></div>
+
+    <div class="ss-grid-wrapper">
+        <div class="ss-grid" id="seatGrid">
+            @for (int i = 0; i < vak.Rows; i++)
+            {
+                <div class="ss-row">
+                    <span class="ss-row-label">@(i + 1)</span>
+                    @for (int j = 0; j < vak.SeatsPerRow; j++)
+                    {
+                        string seatId = $"{i + 1}-{j + 1}";
+                        <button type="button"
+                                class="ss-seat ss-seat-available"
+                                data-seat="@seatId"
+                                data-row="@(i + 1)"
+                                data-col="@(j + 1)"
+                                title="Row @(i + 1) · Seat @(j + 1)">
+                            <svg viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="4" y="12" width="28" height="16" rx="4" />
+                                <rect x="2" y="26" width="6" height="6" rx="2" />
+                                <rect x="28" y="26" width="6" height="6" rx="2" />
+                                <rect x="8" y="6" width="20" height="10" rx="4" />
+                            </svg>
+                        </button>
+                    }
+                </div>
+            }
+        </div>
     </div>
-</div>
+
+    <div class="ss-section-actions">
+        <button type="submit" class="btn btn-primary">Ga naar winkelmand</button>
+    </div>
+</form>
 
 @section Scripts {
     <script>
@@ -128,12 +134,49 @@
         //   connection.on("SeatReleased", (seatId) => markSeatFree(seatId));
         //   connection.start();
 
+        const selectedSeats = new Set();
+        const selectedSeatsContainer = document.getElementById("selectedSeatsContainer");
+
+        document.querySelectorAll(".ss-seat").forEach((seat) => {
+            seat.addEventListener("click", () => {
+                if (seat.classList.contains("ss-seat-taken")) {
+                    return;
+                }
+
+                const seatId = seat.dataset.seat;
+                if (selectedSeats.has(seatId)) {
+                    selectedSeats.delete(seatId);
+                    seat.classList.remove("ss-seat-selected");
+                    seat.classList.add("ss-seat-available");
+                } else {
+                    selectedSeats.add(seatId);
+                    seat.classList.remove("ss-seat-available");
+                    seat.classList.add("ss-seat-selected");
+                }
+
+                renderSelectedSeats();
+            });
+        });
+
+        function renderSelectedSeats() {
+            selectedSeatsContainer.innerHTML = "";
+            selectedSeats.forEach((seatId) => {
+                const input = document.createElement("input");
+                input.type = "hidden";
+                input.name = "selectedSeats";
+                input.value = seatId;
+                selectedSeatsContainer.appendChild(input);
+            });
+        }
+
         function markSeatTaken(seatId) {
             const seat = document.querySelector(`[data-seat="${seatId}"]`);
             if (seat) {
                 seat.classList.remove("ss-seat-available", "ss-seat-selected");
                 seat.classList.add("ss-seat-taken");
                 seat.style.pointerEvents = "none";
+                selectedSeats.delete(seatId);
+                renderSelectedSeats();
             }
         }
 

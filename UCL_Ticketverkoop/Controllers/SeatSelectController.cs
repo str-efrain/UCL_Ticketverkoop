@@ -188,5 +188,117 @@ namespace UCL_Ticketverkoop.Controllers
             return RedirectToAction("Index", "ShoppingCart");
 
         }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> AddSeats(int MatchId, int VakId, List<string> selectedSeats)
+        {
+            var currentUserTickets = await _ticketService.GetTicketsByUserAsync(User.FindFirst(ClaimTypes.NameIdentifier)?.Value) ?? new List<Ticket>();
+
+            Match match = await _matchService.FindByIdAsync(MatchId);
+            Vak vak = await _vakService.FindByIdAsync(VakId);
+
+            if (match == null || vak == null)
+            {
+                return NotFound();
+            }
+
+            var seatsToAdd = selectedSeats?.Where(s => !string.IsNullOrWhiteSpace(s))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList() ?? new List<string>();
+
+            if (seatsToAdd.Count == 0)
+            {
+                ViewBag.ErrorMessage = "Selecteer minstens één stoel.";
+                SeatSelectVM emptySelection = new SeatSelectVM
+                {
+                    match = _mapper.Map<MatchVM>(match),
+                    VakId = VakId
+                };
+                return View("SeatSelection", emptySelection);
+            }
+
+            ShoppingCartVM cart = HttpContext.Session.GetObject<ShoppingCartVM>(CartSession) ?? new ShoppingCartVM();
+
+            int ticketsForMatchInCart = cart.Tickets.Count(t => t.Match.Id == MatchId);
+            int ticketsForMatchInDb = currentUserTickets.Count(t => t.MatchId == MatchId);
+            if (ticketsForMatchInCart + ticketsForMatchInDb + seatsToAdd.Count > 4)
+            {
+                ViewBag.ErrorMessage = "Je kan maar 4 tickets per match kopen!";
+                SeatSelectVM limitViewModel = new SeatSelectVM
+                {
+                    match = _mapper.Map<MatchVM>(match),
+                    VakId = VakId
+                };
+                return View("SeatSelection", limitViewModel);
+            }
+
+            bool otherMatchSameDayDb = currentUserTickets.Any(t => t.Match.MatchDate.Date == match.MatchDate.Date && t.Match.Id != MatchId);
+            bool otherMatchSameDayCart = cart.Tickets.Any(t => t.Match.MatchDate.Date == match.MatchDate.Date && t.Match.Id != MatchId);
+            if (otherMatchSameDayDb || otherMatchSameDayCart)
+            {
+                ViewBag.ErrorMessage = "Je hebt al ticket(s) voor een wedstrijd op" + match.MatchDate.ToShortDateString();
+                SeatSelectVM sameDayViewModel = new SeatSelectVM
+                {
+                    match = _mapper.Map<MatchVM>(match),
+                    VakId = VakId
+                };
+                return View("SeatSelection", sameDayViewModel);
+            }
+
+            int nextId = cart.Tickets.Count;
+            foreach (string seat in seatsToAdd)
+            {
+                string[] seatRowCol = seat.Split('-');
+                if (seatRowCol.Length != 2 || !int.TryParse(seatRowCol[0], out int seatRow) || !int.TryParse(seatRowCol[1], out int seatCol))
+                {
+                    ViewBag.ErrorMessage = "Ongeldige stoel geselecteerd.";
+                    SeatSelectVM invalidSeatViewModel = new SeatSelectVM
+                    {
+                        match = _mapper.Map<MatchVM>(match),
+                        VakId = VakId
+                    };
+                    return View("SeatSelection", invalidSeatViewModel);
+                }
+
+                if (seatRow < 1 || seatRow >= vak.Rows || seatCol < 1 || seatCol >= vak.SeatsPerRow)
+                {
+                    ViewBag.ErrorMessage = "Ongeldige stoel geselecteerd.";
+                    SeatSelectVM invalidSeatViewModel = new SeatSelectVM
+                    {
+                        match = _mapper.Map<MatchVM>(match),
+                        VakId = VakId
+                    };
+                    return View("SeatSelection", invalidSeatViewModel);
+                }
+
+                bool isTaken = await _ticketService.IsSeatTakenAsync(MatchId, VakId, seat);
+                bool isInShoppingCart = cart.Tickets.Any(t => t.Match.Id == MatchId && t.Vak.Id == VakId && t.Seat == seat);
+                if (isTaken || isInShoppingCart)
+                {
+                    ViewBag.ErrorMessage = "Een of meer geselecteerde stoelen zijn niet beschikbaar.";
+                    SeatSelectVM unavailableViewModel = new SeatSelectVM
+                    {
+                        match = _mapper.Map<MatchVM>(match),
+                        VakId = VakId
+                    };
+                    return View("SeatSelection", unavailableViewModel);
+                }
+
+                TicketVM ticket = new TicketVM
+                {
+                    Id = nextId++,
+                    Match = _mapper.Map<MatchVM>(match),
+                    Vak = _mapper.Map<VakVM>(vak),
+                    Seat = seat
+                };
+
+                cart.Tickets.Add(ticket);
+                cart.TotalPrice += vak.Price;
+            }
+
+            HttpContext.Session.SetObject(CartSession, cart);
+            return RedirectToAction("Index", "ShoppingCart");
+        }
     }
 }
