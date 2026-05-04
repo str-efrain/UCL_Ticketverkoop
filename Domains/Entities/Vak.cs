@@ -18,6 +18,7 @@ public partial class Vak
     public string? Ring { get; set; }
 
     public double Price { get; set; }
+    public double SubscriptionPrice { get; set; }
 
     public virtual ICollection<Abonnement> Abonnements { get; set; } = new List<Abonnement>();
 

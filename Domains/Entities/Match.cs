@@ -13,6 +13,9 @@ public partial class Match
 
     public DateTime MatchDate { get; set; }
 
+    public int SeizoenId { get; set; }
+    public virtual Seizoen Seizoen { get; set; } = null!;
+
     public virtual Club AwayClub { get; set; } = null!;
 
     public virtual Club HomeClub { get; set; } = null!;

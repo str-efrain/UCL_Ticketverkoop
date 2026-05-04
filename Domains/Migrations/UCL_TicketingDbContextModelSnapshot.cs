@@ -113,8 +113,13 @@ namespace Domains.Migrations
                     b.Property<DateTime>("MatchDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("SeizoenId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id")
                         .HasName("PK__Match__3214EC07B87B1E28");
+
+                    b.HasIndex("SeizoenId");
 
                     b.HasIndex(new[] { "AwayClubId" }, "IX_Match_AwayClubId");
 
@@ -162,8 +167,9 @@ namespace Domains.Migrations
                     b.Property<DateOnly>("EndDate")
                         .HasColumnType("date");
 
-                    b.Property<int>("Name")
-                        .HasColumnType("int");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateOnly>("StartDate")
                         .HasColumnType("date");
@@ -273,6 +279,9 @@ namespace Domains.Migrations
 
                     b.Property<int>("StadiumId")
                         .HasColumnType("int");
+
+                    b.Property<double>("SubscriptionPrice")
+                        .HasColumnType("float");
 
                     b.HasKey("Id")
                         .HasName("PK__Vak__3214EC078AD48789");
@@ -399,9 +408,17 @@ namespace Domains.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_Match_HomeClub");
 
+                    b.HasOne("Domains.Entities.Seizoen", "Seizoen")
+                        .WithMany("Matches")
+                        .HasForeignKey("SeizoenId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("AwayClub");
 
                     b.Navigation("HomeClub");
+
+                    b.Navigation("Seizoen");
                 });
 
             modelBuilder.Entity("Domains.Entities.Order", b =>
@@ -480,6 +497,8 @@ namespace Domains.Migrations
             modelBuilder.Entity("Domains.Entities.Seizoen", b =>
                 {
                     b.Navigation("Abonnements");
+
+                    b.Navigation("Matches");
                 });
 
             modelBuilder.Entity("Domains.Entities.Stadium", b =>

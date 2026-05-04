@@ -7,11 +7,13 @@ public partial class Seizoen
 {
     public int Id { get; set; }
 
-    public int Name { get; set; }
+    public string Name { get; set; }
 
     public DateOnly StartDate { get; set; }
 
     public DateOnly EndDate { get; set; }
 
     public virtual ICollection<Abonnement> Abonnements { get; set; } = new List<Abonnement>();
+
+    public virtual ICollection<Match> Matches { get; set; } = new List<Match>();
 }
