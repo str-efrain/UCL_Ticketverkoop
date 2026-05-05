@@ -12,7 +12,7 @@ namespace UCL_Ticketverkoop.Controllers
         private readonly IMapper _mapper;
         private IService<Club> _clubService;
 
-        public SubscriptionController(IMapper mapper,IService<Club> clubService)
+        public SubscriptionController(IMapper mapper, IService<Club> clubService)
         {
             _mapper = mapper;
             _clubService = clubService;
@@ -22,9 +22,14 @@ namespace UCL_Ticketverkoop.Controllers
             SubSelectVM viewModel = new SubSelectVM
             {
                 VakId = vakId,
-                Club = _mapper.Map<ClubVM>( await _clubService.FindByIdAsync(clubId))
+                Club = _mapper.Map<ClubVM>(await _clubService.FindByIdAsync(clubId))
             };
             return View(viewModel);
+        }
+
+        public async Task<IActionResult> AddSubscriptions(int ClubId, int VakId, List<string> selectedSeats)
+        {
+            return View();
         }
     }
 }
