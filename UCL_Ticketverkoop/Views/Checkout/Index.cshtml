@@ -1,50 +1,89 @@
 ﻿@model UCL_Ticketverkoop.ViewModels.OrderVM
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Checkout";
+    var order = Model as UCL_Ticketverkoop.ViewModels.OrderVM;
+    var tickets = order?.Tickets ?? new List<UCL_Ticketverkoop.ViewModels.TicketVM>();
 }
 
-<h1>Index</h1>
-<div>
-    <h4>OrderVM</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Id)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Id)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.OrderDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.OrderDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TotalPrice)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TotalPrice)
-        </dd>
-    </dl>
+@section Styles {
+    <link rel="stylesheet" href="~/css/Checkout.css" asp-append-version="true" />
+}
 
-    <div>
-        @foreach(var item in Model.Tickets)
-        {
-            <div>
-                <p>
-                    @item.Match.HomeTeamName vs @item.Match.AwayTeamName
-                </p>
-                <p>
-                    Vak: @item.Vak.Name, Stoel: @item.Seat
-                </p>
-                <p>
-                    Prijs: € @item.Vak.Price
-                </p>
-            </div>
-        }
-
-    </div>
+<div class="co-header">
+    <p class="co-eyebrow">Checkout</p>
+    <h1 class="co-title">Order Confirmation</h1>
+    <p class="co-subtitle">Thanks for your purchase! Your order is confirmed.</p>
 </div>
+
+@if (order != null)
+{
+    <section class="co-summary">
+        <div class="co-summary-line">
+            <span>Order number</span>
+            <strong>#@order.Id</strong>
+        </div>
+        <div class="co-summary-line">
+            <span>Order date</span>
+            <strong>@order.OrderDate.ToString("ddd d MMM yyyy · HH:mm")</strong>
+        </div>
+        <div class="co-summary-line co-summary-total">
+            <span>Total paid</span>
+            <strong>€@((order.TotalPrice ?? 0).ToString("0.##"))</strong>
+        </div>
+        <div class="co-email-note">
+            A confirmation email with your tickets and full order details is on its way.
+        </div>
+    </section>
+
+    @if (tickets.Count > 0)
+    {
+        <div class="co-ticket-list">
+            @foreach (var item in tickets)
+            {
+                <article class="co-ticket">
+                    <div class="co-ticket-main">
+                        <img src="/Images/@item.Match.HomeTeamLogoUrl" alt="@item.Match.HomeTeamName" class="co-logo" />
+                        <div class="co-match-info">
+                            <div class="co-teams">@item.Match.HomeTeamName <span class="co-vs">vs</span> @item.Match.AwayTeamName</div>
+                            <div class="co-meta">@item.Match.MatchDate.ToString("ddd d MMM yyyy · HH:mm")</div>
+                            <div class="co-meta">@item.Match.StadiumName</div>
+                        </div>
+                        <img src="/Images/@item.Match.AwayTeamLogoUrl" alt="@item.Match.AwayTeamName" class="co-logo" />
+                    </div>
+
+                    <div class="co-ticket-details">
+                        <div class="co-detail">
+                            <span class="co-detail-label">Section</span>
+                            <span class="co-detail-value">@item.Vak.Name</span>
+                        </div>
+                        @if (!string.IsNullOrEmpty(item.Vak.Ring))
+                        {
+                            <div class="co-detail">
+                                <span class="co-detail-label">Ring</span>
+                                <span class="co-detail-value">@item.Vak.Ring</span>
+                            </div>
+                        }
+                        <div class="co-detail">
+                            <span class="co-detail-label">Seat</span>
+                            <span class="co-seat-badge">@item.Seat</span>
+                        </div>
+                        <div class="co-detail co-price-col">
+                            <span class="co-detail-label">Price</span>
+                            <span class="co-ticket-price">€@item.Vak.Price.ToString("0.##")</span>
+                        </div>
+                    </div>
+                </article>
+            }
+        </div>
+    }
+}
+else
+{
+    <div class="co-empty">
+        <p class="co-empty-title">No order found</p>
+        <p class="co-empty-sub">Return to the matches page to start a new order.</p>
+        <a asp-controller="Match" asp-action="Index" class="co-primary-btn">Browse Matches</a>
+    </div>
+}
 

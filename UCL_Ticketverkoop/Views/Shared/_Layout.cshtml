@@ -35,7 +35,7 @@
                    asp-controller="Match" asp-action="Index">
                     Matchcalendar
                 </a>
-                <a class="@(currentController == "ShoppingCart" ? "active" : "")"
+                <a class="@(currentController == "ShoppingCart" || currentController == "Checkout" ? "active" : "")"
                    asp-controller="ShoppingCart" asp-action="Index">
                     ShoppingCart
                 </a>

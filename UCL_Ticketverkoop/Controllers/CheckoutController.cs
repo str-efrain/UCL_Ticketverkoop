@@ -1,12 +1,13 @@
 ﻿using AutoMapper;
 using Domains.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Interfaces;
 using UCL_Ticketverkoop.ViewModels;
 
 namespace UCL_Ticketverkoop.Controllers
 {
-   
+    [Authorize]
     public class CheckoutController : Controller
     {
         IOrderService _orderService;
