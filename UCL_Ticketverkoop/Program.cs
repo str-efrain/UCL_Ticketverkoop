@@ -15,6 +15,7 @@ using Services;
 using Services.Interfaces;
 using System.Text;
 using UCL_Ticketverkoop.Data;
+using UCL_Ticketverkoop.Hubs;
 using Util;
 using Util.Interfaces;
 
@@ -192,6 +193,8 @@ builder.Services.AddSession(options =>
     options.IdleTimeout = TimeSpan.FromMinutes(20); //Default = 20 min
 });
 
+//Add SignalR
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
@@ -241,6 +244,9 @@ app.UseRouting();
 
 //Session
 app.UseSession();
+
+//Hub toevoegen aan de pipeline
+app.MapHub<SeatHub>("/seathub");
 
 app.UseAuthentication();
 app.UseAuthorization();

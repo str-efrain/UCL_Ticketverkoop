@@ -98,7 +98,7 @@
                                 <span class="sd-vak-detail-label">Seats</span>
                             </div>
                         </div>
-                        <a asp-controller="Subscription" asp-action="Index" asp-route-vakId="@vak.Id" class="sd-vak-btn">
+                        <a asp-controller="Subscription" asp-action="Index" asp-route-vakId="@vak.Id" asp-route-clubId="@Model.Id" class="sd-vak-btn">
                             Buy Season Ticket
                         </a>
                     </div>
