@@ -1,41 +1,133 @@
 ﻿@model UCL_Ticketverkoop.ViewModels.ShoppingCartVM
+<link href="~/css/shoppingcart.css" rel="stylesheet" />
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Shopping Cart";
 }
 
-<h1>Index</h1>
+<div class="sc-header">
+    <p class="sc-eyebrow">Checkout</p>
+    <h1 class="sc-title">Shopping Cart</h1>
+</div>
 
 @if (ViewBag.ErrorMessage != null)
 {
-    <div class="alert alert-danger">
-        @ViewBag.ErrorMessage
+    <div class="alert alert-danger">@ViewBag.ErrorMessage</div>
+}
+
+@if (Model?.Tickets != null && Model.Tickets.Count > 0)
+{
+    <div class="sc-layout">
+
+        <!-- ── Ticket list ── -->
+        <div class="sc-tickets">
+            @foreach (var item in Model.Tickets)
+            {
+                <div class="sc-ticket">
+                    <!-- Teams -->
+                    <div class="sc-ticket-match">
+                        <img src="/Images/@item.Match.HomeTeamLogoUrl" alt="@item.Match.HomeTeamName" class="sc-logo" />
+                        <div class="sc-match-info">
+                            <span class="sc-teams">@item.Match.HomeTeamName <span class="sc-vs">vs</span> @item.Match.AwayTeamName</span>
+                            <span class="sc-meta">@item.Match.MatchDate.ToString("ddd d MMM yyyy · HH:mm")</span>
+                            <span class="sc-meta">@item.Match.StadiumName</span>
+                        </div>
+                        <img src="/Images/@item.Match.AwayTeamLogoUrl" alt="@item.Match.AwayTeamName" class="sc-logo" />
+                    </div>
+
+                    <!-- Divider -->
+                    <div class="sc-ticket-divider"></div>
+
+                    <!-- Seat details -->
+                    <div class="sc-ticket-details">
+                        <div class="sc-detail">
+                            <span class="sc-detail-label">Section</span>
+                            <span class="sc-detail-value">@item.Vak.Name</span>
+                        </div>
+                        @if (!string.IsNullOrEmpty(item.Vak.Ring))
+                        {
+                            <div class="sc-detail">
+                                <span class="sc-detail-label">Ring</span>
+                                <span class="sc-detail-value">@item.Vak.Ring</span>
+                            </div>
+                        }
+                        <div class="sc-detail">
+                            <span class="sc-detail-label">Seat</span>
+                            <span class="sc-detail-value sc-seat-badge">@item.Seat</span>
+                        </div>
+                        @if (!string.IsNullOrEmpty(item.Status))
+                        {
+                            <div class="sc-detail">
+                                <span class="sc-detail-label">Status</span>
+                                <span class="sc-status-badge">@item.Status</span>
+                            </div>
+                        }
+                        <div class="sc-detail sc-price-col">
+                            <span class="sc-detail-label">Price</span>
+                            <span class="sc-ticket-price">€@item.Vak.Price.ToString("0.##")</span>
+                        </div>
+                    </div>
+
+                    <!-- Remove -->
+                    <a asp-controller="ShoppingCart"
+                       asp-action="Delete"
+                       asp-route-id="@item.Id"
+                       class="sc-remove"
+                       title="Remove ticket">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="3 6 5 6 21 6" />
+                            <path d="M19 6l-1 14H6L5 6" />
+                            <path d="M10 11v6" />
+                            <path d="M14 11v6" />
+                            <path d="M9 6V4h6v2" />
+                        </svg>
+                    </a>
+                </div>
+            }
+        </div>
+
+        <!-- ── Order summary ── -->
+        <div class="sc-summary">
+            <h2 class="sc-summary-title">Order Summary</h2>
+
+            <div class="sc-summary-lines">
+                @foreach (var item in Model.Tickets)
+                {
+                    <div class="sc-summary-line">
+                        <span>@item.Match.HomeTeamName vs @item.Match.AwayTeamName</span>
+                        <span>€@item.Vak.Price.ToString("0.##")</span>
+                    </div>
+                    <span class="sc-summary-sub">@item.Vak.Name · Seat @item.Seat</span>
+                }
+            </div>
+
+            <div class="sc-summary-total">
+                <span>Total</span>
+                <span class="sc-total-price">€@Model.TotalPrice.ToString("0.##")</span>
+            </div>
+
+            <a asp-controller="ShoppingCart" asp-action="Buy" class="sc-buy-btn">
+                Confirm &amp; Buy
+            </a>
+
+            <a asp-controller="Match" asp-action="Index" class="sc-continue-link">
+                ← Continue browsing matches
+            </a>
+        </div>
+
     </div>
 }
-
-@foreach (var item in Model.Tickets) {
-        <tr>
-            <td>
-                  @item.Match.HomeTeamName
-            </td>
-            <td>
-            @item.Match.AwayTeamName
-            </td>
-            <td>
-                @item.Vak.Name
-                    stoeltje: @item.Seat
-            </td>
-        <td>
-           € @item.Vak.Price
-        </td>
-        <td>
-            <a asp-Controller="ShoppingCart" asp-action="Delete" asp-route-id="@item.Id" >verwijder</a>
-        </td>
-        </tr>
+else
+{
+    <div class="sc-empty">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="32" cy="32" r="30" stroke="#1a3a8f" stroke-width="2" />
+            <path d="M20 24h4l4 16h12l4-12H28" stroke="#d4af37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            <circle cx="30" cy="44" r="2" fill="#d4af37" />
+            <circle cx="40" cy="44" r="2" fill="#d4af37" />
+        </svg>
+        <p class="sc-empty-title">Your cart is empty</p>
+        <p class="sc-empty-sub">Head to the match calendar and grab your tickets.</p>
+        <a asp-controller="Match" asp-action="Index" class="sc-buy-btn">Browse Matches</a>
+    </div>
 }
-€ @Model.TotalPrice
-
-                            <a asp-Controller="ShoppingCart" asp-action="Buy"
-                            >Buy</a>
-    </tbody>
-</table>
