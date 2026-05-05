@@ -46,14 +46,18 @@
                     Home
                 </a>
 
-                <a class="@(currentController == "Club" ? "active" : "")"
+                <a class="@(currentController == "Club" || currentController == "Stadium" ? "active" : "")"
                    asp-controller="Club" asp-action="Index">
                     Clubs
                 </a>
 
-                <a class="@(currentController == "Match" ? "active" : "")"
+                <a class="@(currentController == "Match" || currentController == "SeatSelect" ? "active" : "")"
                    asp-controller="Match" asp-action="Index">
                     Matchcalendar
+                </a>
+                <a class="@(currentController == "ShoppingCart" ? "active" : "")"
+                   asp-controller="ShoppingCart" asp-action="Index">
+                    ShoppingCart
                 </a>
             </div>
 
