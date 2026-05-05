@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Repositories
 {
-    public class AbonnementDAO : IDAO<Abonnement>
+    public class AbonnementDAO : IAbonnementDAO
     {
         private readonly UCL_TicketingDbContext _context;
 
@@ -75,6 +75,15 @@ namespace Repositories
             {
                 Console.WriteLine(ex);
             }
+        }
+
+        public async Task<bool> isSeatTakenAsync(int clubId, int vakId, string seat, int seasonId)
+        {
+            return await _context.Abonnements
+                .AnyAsync(a => a.ClubId == clubId &&
+                               a.VakId == vakId &&
+                               a.Seat == seat &&
+                               a.SeizoenId == seasonId);
         }
     }
 }

@@ -130,6 +130,11 @@ builder.Services.AddScoped<ISeizoenService, SeizoenService>();
 builder.Services.AddScoped<IOrderDAO, OrderDAO>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 
+builder.Services.AddScoped<ISeatService, SeatService>();
+
+builder.Services.AddScoped<IAbonnementDAO, AbonnementDAO>();
+builder.Services.AddScoped<IAbonnementService, AbonnementService>();
+
 //JWT Bearer tokens
 builder.Services.AddAuthentication()
     .AddJwtBearer(cfg =>

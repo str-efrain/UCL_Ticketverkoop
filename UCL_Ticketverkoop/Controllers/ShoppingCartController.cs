@@ -14,11 +14,16 @@ namespace UCL_Ticketverkoop.Controllers
         private const string CartSession = "shoppingCart";
         private readonly IOrderService _orderService;
         private readonly ITicketService _ticketService;
+        private readonly ISeatService _seatService; 
+        private readonly IAbonnementService _abonnementService;
 
-        public ShoppingCartController(IOrderService orderService, ITicketService ticketService)
+        public ShoppingCartController(IOrderService orderService, ITicketService ticketService,ISeatService seatService,IAbonnementService abonnementService)
         {
             _orderService = orderService;
             _ticketService = ticketService;
+            _seatService = seatService;
+            _abonnementService = abonnementService;
+
         }
 
 
@@ -44,7 +49,7 @@ namespace UCL_Ticketverkoop.Controllers
         {
             ShoppingCartVM cart = GetShoppingCart();
 
-            if(cart == null || !cart.Tickets.Any())
+            if(cart == null || (!cart.Tickets.Any()&&!cart.Subscriptions.Any()))
             {
                 ViewBag.ErrorMessage = "Je mand is leeg!";
                 return View("Index",cart);
@@ -52,13 +57,24 @@ namespace UCL_Ticketverkoop.Controllers
 
             foreach (var item in cart.Tickets)
             {
-                bool isTaken = await _ticketService.IsSeatTakenAsync(item.Match.Id, item.Vak.Id, item.Seat);
+                bool isTaken = await _seatService.isSeatTakenAsync(item.Match.HomeTeamId, item.Vak.Id, item.Seat, item.Match.SeizoenId,item.Match.Id);
                 if (isTaken)
                 {
                     ViewBag.ErrorMessage = $"Sorry,De stoel {item.Seat} in vak {item.Vak.Name} voor de match {item.Match.AwayTeamName} is al bezet!";
                     return View("Index", cart);
                 }
             }
+
+            foreach (var item in cart.Subscriptions)
+            {
+                bool isTaken = await _seatService.isSeatTakenAsync(item.Club.Id, item.Vak.Id, item.Seat, item.SeizoenId, null);
+                if (isTaken)
+                {
+                    ViewBag.ErrorMessage = $"Sorry,De stoel {item.Seat} in vak {item.Vak.Name} voor de dit seizoen is al bezet!";
+                    return View("Index", cart);
+                }
+            }
+
 
             Order order = new Order
             {
@@ -81,6 +97,19 @@ namespace UCL_Ticketverkoop.Controllers
                 });
                 
                 
+            }
+            foreach (var item in cart.Subscriptions)
+            {
+               await _abonnementService.AddAsync(new Abonnement
+                {
+                    OrderId = order.Id,
+                    ClubId = item.Club.Id,
+                    VakId = item.Vak.Id,
+                    Seat = item.Seat,
+                    SeizoenId = item.SeizoenId
+                });
+
+
             }
 
             return RedirectToAction("Index", "Checkout", new { orderId = order.Id });
