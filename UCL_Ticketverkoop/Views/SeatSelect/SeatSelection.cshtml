@@ -123,26 +123,30 @@
 </form>
 
 @section Scripts {
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
     <script>
-        // ── SignalR hook-in point ──────────────────────────────────
-        // When you add SignalR, connect here and call:
-        //   markSeatTaken(seatId)   — to grey out a seat in real time
-        //   markSeatFree(seatId)    — to re-enable a seat
-        //
-        // Example:
-        //   const connection = new signalR.HubConnectionBuilder()
-        //       .withUrl("/seatHub")
-        //       .build();
-        //   connection.on("SeatTaken", (seatId) => markSeatTaken(seatId));
-        //   connection.on("SeatReleased", (seatId) => markSeatFree(seatId));
-        //   connection.start();
-
+        const matchId = @Model.match.Id;
+        const vakId = @Model.VakId;
         const selectedSeats = new Set();
         const selectedSeatsContainer = document.getElementById("selectedSeatsContainer");
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/seathub")
+            .withAutomaticReconnect()
+            .build();
+
+        connection.on("SeatReserved", (seatId) => markSeatTaken(seatId));
+        connection.on("SeatReleased", (seatId) => markSeatFree(seatId));
+        connection.on("SeatsReserved", (seatIds) => seatIds.forEach((seatId) => markSeatTaken(seatId)));
+        connection.on("SeatsReleased", (seatIds) => seatIds.forEach((seatId) => markSeatFree(seatId)));
+
+        const connectionReady = connection
+            .start()
+            .then(() => connection.invoke("JoinGroup", matchId, vakId))
+            .catch((err) => console.error(err.toString()));
 
         document.querySelectorAll(".ss-seat").forEach((seat) => {
-            seat.addEventListener("click", () => {
-                if (seat.classList.contains("ss-seat-taken")) {
+            seat.addEventListener("click", async () => {
+                if (seat.classList.contains("ss-seat-taken") || seat.hasAttribute("disabled")) {
                     return;
                 }
 
@@ -151,15 +155,38 @@
                     selectedSeats.delete(seatId);
                     seat.classList.remove("ss-seat-selected");
                     seat.classList.add("ss-seat-available");
-                } else {
-                    selectedSeats.add(seatId);
-                    seat.classList.remove("ss-seat-available");
-                    seat.classList.add("ss-seat-selected");
+                    renderSelectedSeats();
+
+                    if (await ensureConnection()) {
+                        await connection.invoke("UnselectSeat", matchId, vakId, seatId);
+                    }
+                    return;
                 }
 
+                if (await ensureConnection()) {
+                    const canSelect = await connection.invoke("TrySelectSeat", matchId, vakId, seatId);
+                    if (!canSelect) {
+                        markSeatTaken(seatId);
+                        return;
+                    }
+                }
+
+                selectedSeats.add(seatId);
+                seat.classList.remove("ss-seat-available");
+                seat.classList.add("ss-seat-selected");
                 renderSelectedSeats();
             });
         });
+
+        async function ensureConnection() {
+            try {
+                await connectionReady;
+                return true;
+            } catch (err) {
+                console.error(err);
+                return false;
+            }
+        }
 
         function renderSelectedSeats() {
             selectedSeatsContainer.innerHTML = "";
@@ -178,17 +205,23 @@
                 seat.classList.remove("ss-seat-available", "ss-seat-selected");
                 seat.classList.add("ss-seat-taken");
                 seat.style.pointerEvents = "none";
+                seat.setAttribute("disabled", "disabled");
                 selectedSeats.delete(seatId);
                 renderSelectedSeats();
             }
         }
 
         function markSeatFree(seatId) {
+            if (selectedSeats.has(seatId)) {
+                return;
+            }
+
             const seat = document.querySelector(`[data-seat="${seatId}"]`);
             if (seat) {
                 seat.classList.remove("ss-seat-taken", "ss-seat-selected");
                 seat.classList.add("ss-seat-available");
                 seat.style.pointerEvents = "auto";
+                seat.removeAttribute("disabled");
             }
         }
     </script>
