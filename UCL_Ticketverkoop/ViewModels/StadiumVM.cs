@@ -1,4 +1,5 @@
 ﻿using Domains.Entities;
+using System.Text.Json.Serialization;
 
 namespace UCL_Ticketverkoop.ViewModels
 {
@@ -9,6 +10,7 @@ namespace UCL_Ticketverkoop.ViewModels
 
         public string? city { get; set; }
 
+        [JsonIgnore]
         public virtual List<ClubVM> clubs { get; set; } = new List<ClubVM>();
 
         public  List<VakVM> vaks{ get; set; } = new List<VakVM>();

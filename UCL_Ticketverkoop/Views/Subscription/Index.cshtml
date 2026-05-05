@@ -2,8 +2,7 @@
 <link href="~/css/seatselect.css" rel="stylesheet" />
 
 @{
-    ViewData["Title"] = $"{Model.Club.Stadium.name}";
-    var vak = Model.Club.Stadium.vaks.FirstOrDefault(v => v.Id == Model.VakId);
+    ViewData["Title"] = $"{Model.Club.Name}";
 }
 
 @if (ViewBag.ErrorMessage != null)
@@ -11,37 +10,38 @@
     <div class="alert alert-danger">@ViewBag.ErrorMessage</div>
 }
 
-@if (vak == null)
+@if (Model.Vak == null)
 {
     <p class="ss-empty">Section not found.</p>
     return;
 }
 
+<!-- ── Match bar ── -->
 
 
 <!-- ── Section info ── -->
 <div class="ss-section-info">
     <div>
         <p class="ss-eyebrow">Section</p>
-        <h1 class="ss-section-name">@vak.Name</h1>
-        @if (!string.IsNullOrEmpty(vak.Ring))
+        <h1 class="ss-section-name">@Model.Vak.Name</h1>
+        @if (!string.IsNullOrEmpty(Model.Vak.Ring))
         {
-            <span class="ss-ring-badge">@vak.Ring</span>
+            <span class="ss-ring-badge">@Model.Vak.Ring</span>
         }
     </div>
     <div class="ss-section-stats">
         <div class="ss-stat">
-            <span class="ss-stat-value">@vak.Rows</span>
+            <span class="ss-stat-value">@Model.Vak.Rows</span>
             <span class="ss-stat-label">Rows</span>
         </div>
         <div class="ss-stat-divider"></div>
         <div class="ss-stat">
-            <span class="ss-stat-value">@vak.SeatsPerRow</span>
+            <span class="ss-stat-value">@Model.Vak.SeatsPerRow</span>
             <span class="ss-stat-label">Per Row</span>
         </div>
         <div class="ss-stat-divider"></div>
         <div class="ss-stat">
-            <span class="ss-stat-value">€@vak.Price.ToString("0.##")</span>
+            <span class="ss-stat-value">€@Model.Vak.Price.ToString("0.##")</span>
             <span class="ss-stat-label">Per Seat</span>
         </div>
     </div>
@@ -73,25 +73,29 @@
 
 
 <!-- ── Seat grid ── -->
-<form asp-controller="Subscription" asp-action="AddSeats" method="post">
-    <input type="hidden" name="VakId" value="@Model.VakId" />
+<form asp-controller="Subscription" asp-action="AddSubscriptions" method="post">
+    <input type="hidden" name="ClubId" value="@Model.Club.Id" />
+    <input type="hidden" name="VakId" value="@Model.Vak.Id" />
     <div id="selectedSeatsContainer"></div>
 
     <div class="ss-grid-wrapper">
         <div class="ss-grid" id="seatGrid">
-            @for (int i = 0; i < vak.Rows; i++)
+            @for (int i = 0; i < Model.Vak.Rows; i++)
             {
                 <div class="ss-row">
                     <span class="ss-row-label">@(i + 1)</span>
-                    @for (int j = 0; j < vak.SeatsPerRow; j++)
-                    {
+                    @for (int j = 0; j < Model.Vak.SeatsPerRow; j++)
+                    {                 
                         string seatId = $"{i + 1}-{j + 1}";
+                        bool isTaken = Model.TakenSeats.Contains(seatId);
+                        string seatClass = isTaken ? "ss-seat ss-seat-taken" : "ss-seat ss-seat-available";
                         <button type="button"
-                                class="ss-seat ss-seat-available"
+                                class="@seatClass"
                                 data-seat="@seatId"
                                 data-row="@(i + 1)"
                                 data-col="@(j + 1)"
-                                title="Row @(i + 1) · Seat @(j + 1)">
+                                title="Row @(i + 1) · Seat @(j + 1)"
+                                disabled="@(isTaken ? "disabled" : null)">
                             <svg viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
                                 <rect x="4" y="12" width="28" height="16" rx="4" />
                                 <rect x="2" y="26" width="6" height="6" rx="2" />
@@ -111,26 +115,30 @@
 </form>
 
 @section Scripts {
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
     <script>
-        // ── SignalR hook-in point ──────────────────────────────────
-        // When you add SignalR, connect here and call:
-        //   markSeatTaken(seatId)   — to grey out a seat in real time
-        //   markSeatFree(seatId)    — to re-enable a seat
-        //
-        // Example:
-        //   const connection = new signalR.HubConnectionBuilder()
-        //       .withUrl("/seatHub")
-        //       .build();
-        //   connection.on("SeatTaken", (seatId) => markSeatTaken(seatId));
-        //   connection.on("SeatReleased", (seatId) => markSeatFree(seatId));
-        //   connection.start();
-
+        const matchId = @Model.Club.Id;
+        const vakId = @Model.Vak.Id;
         const selectedSeats = new Set();
         const selectedSeatsContainer = document.getElementById("selectedSeatsContainer");
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/seathub")
+            .withAutomaticReconnect()
+            .build();
+
+        connection.on("SeatReserved", (seatId) => markSeatTaken(seatId));
+        connection.on("SeatReleased", (seatId) => markSeatFree(seatId));
+        connection.on("SeatsReserved", (seatIds) => seatIds.forEach((seatId) => markSeatTaken(seatId)));
+        connection.on("SeatsReleased", (seatIds) => seatIds.forEach((seatId) => markSeatFree(seatId)));
+
+        const connectionReady = connection
+            .start()
+            .then(() => connection.invoke("JoinGroup", matchId, vakId))
+            .catch((err) => console.error(err.toString()));
 
         document.querySelectorAll(".ss-seat").forEach((seat) => {
-            seat.addEventListener("click", () => {
-                if (seat.classList.contains("ss-seat-taken")) {
+            seat.addEventListener("click", async () => {
+                if (seat.classList.contains("ss-seat-taken") || seat.hasAttribute("disabled")) {
                     return;
                 }
 
@@ -139,15 +147,38 @@
                     selectedSeats.delete(seatId);
                     seat.classList.remove("ss-seat-selected");
                     seat.classList.add("ss-seat-available");
-                } else {
-                    selectedSeats.add(seatId);
-                    seat.classList.remove("ss-seat-available");
-                    seat.classList.add("ss-seat-selected");
+                    renderSelectedSeats();
+
+                    if (await ensureConnection()) {
+                        await connection.invoke("UnselectSeat", matchId, vakId, seatId);
+                    }
+                    return;
                 }
 
+                if (await ensureConnection()) {
+                    const canSelect = await connection.invoke("TrySelectSeat", matchId, vakId, seatId);
+                    if (!canSelect) {
+                        markSeatTaken(seatId);
+                        return;
+                    }
+                }
+
+                selectedSeats.add(seatId);
+                seat.classList.remove("ss-seat-available");
+                seat.classList.add("ss-seat-selected");
                 renderSelectedSeats();
             });
         });
+
+        async function ensureConnection() {
+            try {
+                await connectionReady;
+                return true;
+            } catch (err) {
+                console.error(err);
+                return false;
+            }
+        }
 
         function renderSelectedSeats() {
             selectedSeatsContainer.innerHTML = "";
@@ -166,17 +197,23 @@
                 seat.classList.remove("ss-seat-available", "ss-seat-selected");
                 seat.classList.add("ss-seat-taken");
                 seat.style.pointerEvents = "none";
+                seat.setAttribute("disabled", "disabled");
                 selectedSeats.delete(seatId);
                 renderSelectedSeats();
             }
         }
 
         function markSeatFree(seatId) {
+            if (selectedSeats.has(seatId)) {
+                return;
+            }
+
             const seat = document.querySelector(`[data-seat="${seatId}"]`);
             if (seat) {
                 seat.classList.remove("ss-seat-taken", "ss-seat-selected");
                 seat.classList.add("ss-seat-available");
                 seat.style.pointerEvents = "auto";
+                seat.removeAttribute("disabled");
             }
         }
     </script>
