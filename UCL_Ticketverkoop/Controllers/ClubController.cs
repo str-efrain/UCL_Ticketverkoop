@@ -16,7 +16,7 @@ namespace UCL_Ticketverkoop.Controllers
 
 
 
-        public ClubController(IService<Club> clubService, IMapper mapper,IService<Match> matchService, IService<Vak> vakService) 
+        public ClubController(IService<Club> clubService, IMapper mapper, IService<Vak> vakService) 
         {
             _clubService = clubService;
             _mapper = mapper;

@@ -1,18 +1,19 @@
 ﻿using AutoMapper;
 using Domains.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Interfaces;
 using UCL_Ticketverkoop.ViewModels;
 
 namespace UCL_Ticketverkoop.Controllers
 {
-   
+    [Authorize]
     public class CheckoutController : Controller
     {
-        IService<Order> _orderService;
+        IOrderService _orderService;
         IMapper _mapper;
 
-        public CheckoutController(IService<Order> orderService,IMapper mapper)
+        public CheckoutController(IOrderService orderService,IMapper mapper)
         {
             _orderService = orderService;
             _mapper = mapper;
