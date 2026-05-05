@@ -10,9 +10,8 @@ namespace UCL_Ticketverkoop.AutoMapper
     {
         public AutoMapperProfile()
         {
-            CreateMap<Club, ClubVM>()
-                .ForMember(dest => dest.StadiumName, opt => opt.MapFrom(src => src.Stadium != null ? src.Stadium.Name : "Geen stadion"));
-
+  
+                
             CreateMap<Club, ClubAPIVM>();
 
             CreateMap<Stadium, StadiumVM>()
@@ -25,8 +24,11 @@ namespace UCL_Ticketverkoop.AutoMapper
 
             CreateMap<Vak, VakVM>()
                 .ForMember(dest => dest.StadiumName, opt => opt.MapFrom(src => src.Stadium.Name));
-               
-           
+            
+            CreateMap<Club, ClubVM>()
+            .ForMember(dest => dest.Stadium, opt => opt.MapFrom(src => src.Stadium));
+
+
             CreateMap<Match, MatchVM>()
                 .ForMember(dest => dest.HomeTeamName, opt => opt.MapFrom(src => src.HomeClub.Name))
                 .ForMember(dest => dest.HomeTeamLogoUrl, opt => opt.MapFrom(src => src.HomeClub.LogoUrl))

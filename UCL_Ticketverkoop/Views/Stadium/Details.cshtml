@@ -1,37 +1,36 @@
-﻿@model UCL_Ticketverkoop.ViewModels.StadiumVM
+﻿@model UCL_Ticketverkoop.ViewModels.ClubVM
 <link href="~/css/stadiumdetails.css" rel="stylesheet" />
 
 @{
-    ViewData["Title"] = Model.name;
-    var club = Model.clubs.FirstOrDefault();
+    ViewData["Title"] = Model.Stadium.name;
 }
 
 <!-- ── Header ── -->
 <div class="sd-header">
-    @if (club != null)
+    @if (Model != null)
     {
-        <img src="/Images/@club.LogoUrl" alt="@club.Name" class="sd-club-logo" />
+        <img src="/Images/@Model.LogoUrl" alt="@Model.Name" class="sd-club-logo" />
     }
     <div class="sd-header-info">
         <p class="sd-eyebrow">Stadium</p>
-        <h1 class="sd-title">@Model.name</h1>
-        @if (!string.IsNullOrEmpty(Model.city))
+        <h1 class="sd-title">@Model.Stadium.name</h1>
+        @if (!string.IsNullOrEmpty(Model.Stadium.city))
         {
-            <p class="sd-city">📍 @Model.city</p>
+            <p class="sd-city">📍 @Model.Stadium.city</p>
         }
-        @if (club != null)
+        @if (Model != null)
         {
-            <p class="sd-club-name">@club.Name</p>
+            <p class="sd-club-name">@Model.Name</p>
         }
     </div>
 </div>
 
 <!-- ── Stats bar ── -->
 @{
-    int totalSeats = Model.vaks.Sum(v => v.Rows * v.SeatsPerRow);
-    int totalVaks  = Model.vaks.Count;
-    double minPrice = Model.vaks.Any() ? Model.vaks.Min(v => v.Price) : 0;
-    double maxPrice = Model.vaks.Any() ? Model.vaks.Max(v => v.Price) : 0;
+    int totalSeats = Model.Stadium.vaks.Sum(v => v.Rows * v.SeatsPerRow);
+    int totalVaks = Model.Stadium.vaks.Count;
+    double minPrice = Model.Stadium.vaks.Any() ? Model.Stadium.vaks.Min(v => v.Price) : 0;
+    double maxPrice = Model.Stadium.vaks.Any() ? Model.Stadium.vaks.Max(v => v.Price) : 0;
 }
 <div class="sd-stats">
     <div class="sd-stat">
@@ -58,11 +57,10 @@
     <h2 class="sd-sections-title">Choose Your Section</h2>
 </div>
 
-@if (Model.vaks.Any())
+@if (Model.Stadium.vaks.Any())
 {
     <!-- Group by ring if rings are present -->
-    
-    var rings = Model.vaks
+    var rings = Model.Stadium.vaks
         .GroupBy(v => string.IsNullOrEmpty(v.Ring) ? "General" : v.Ring)
         .OrderBy(g => g.Key)
         .ToList();
@@ -100,7 +98,7 @@
                                 <span class="sd-vak-detail-label">Seats</span>
                             </div>
                         </div>
-                        <a asp-controller="Abonnement" asp-action="Buy" asp-route-vakId="@vak.Id" class="sd-vak-btn">
+                        <a asp-controller="Subscription" asp-action="Index" asp-route-vakId="@vak.Id" class="sd-vak-btn">
                             Buy Season Ticket
                         </a>
                     </div>

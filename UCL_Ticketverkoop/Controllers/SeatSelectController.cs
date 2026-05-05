@@ -77,7 +77,7 @@ namespace UCL_Ticketverkoop.Controllers
 
             
 
-            MatchVM viewModel = _mapper.Map<MatchVM>(match);  
+            MatchVM viewModel = _mapper.Map<MatchVM>(match);
             SeatSelectVM seatSelectVM = new SeatSelectVM
             {
                 match = viewModel,
@@ -90,7 +90,12 @@ namespace UCL_Ticketverkoop.Controllers
         [Authorize]
         public async Task<IActionResult> SelectSeat(int MatchId, int VakId, string Seat)
         {
+            //Tickets huidige gebruiker ophalen
             var CurrentUserTickets = await _ticketService.GetTicketsByUserAsync(User.FindFirst(ClaimTypes.NameIdentifier)?.Value) ?? new List<Ticket>(); ;
+
+            //shoppingCart ophalen
+            ShoppingCartVM cart = new ShoppingCartVM();
+            cart = HttpContext.Session.GetObject<ShoppingCartVM>(CartSession) ?? new ShoppingCartVM();
 
             //Match en vak ophalen
             Match match = await _matchService.FindByIdAsync(MatchId);
@@ -111,10 +116,6 @@ namespace UCL_Ticketverkoop.Controllers
             {
                 return NotFound();
             }
-
-            //shoppingCart ophalen
-            ShoppingCartVM cart = new ShoppingCartVM();
-            cart = HttpContext.Session.GetObject<ShoppingCartVM>(CartSession) ?? new ShoppingCartVM();
 
             //check of er al 4 tickets van deze match in de winkelmand of bestellingen zitten
             int TicketsForMatchInCart = cart.Tickets.Where(t => t.Match.Id == MatchId).Count();
@@ -161,7 +162,14 @@ namespace UCL_Ticketverkoop.Controllers
                 return View("SeatSelection", viewModel);
             }
 
-            if(isInShoppingCart)
+            if(DateTime.Now < match.MatchDate.AddMonths(-1) || DateTime.Now > match.MatchDate)
+            { 
+                ViewBag.ErrorMessage = "Sorry, de kaartverkoop voor deze wedstrijd is nog niet gestart of al afgelopen!";
+                MatchVM VM = _mapper.Map<MatchVM>(match);
+                return View("SeatSelection", VM);
+            }
+
+            if (isInShoppingCart)
             {
                 ViewBag.ErrorMessage = "Je hebt deze stoel al in je winkelmand!";
                 MatchVM matchVM = _mapper.Map<MatchVM>(match);

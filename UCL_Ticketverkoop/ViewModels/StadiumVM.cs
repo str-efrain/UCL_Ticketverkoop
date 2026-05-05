@@ -4,6 +4,7 @@ namespace UCL_Ticketverkoop.ViewModels
 {
     public class StadiumVM
     {
+        public int id { get; set; }
         public string name { get; set; } = null!;
 
         public string? city { get; set; }

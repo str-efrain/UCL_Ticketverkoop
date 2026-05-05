@@ -1,0 +1,183 @@
+﻿@model UCL_Ticketverkoop.ViewModels.SubSelectVM
+<link href="~/css/seatselect.css" rel="stylesheet" />
+
+@{
+    ViewData["Title"] = $"{Model.Club.Stadium.name}";
+    var vak = Model.Club.Stadium.vaks.FirstOrDefault(v => v.Id == Model.VakId);
+}
+
+@if (ViewBag.ErrorMessage != null)
+{
+    <div class="alert alert-danger">@ViewBag.ErrorMessage</div>
+}
+
+@if (vak == null)
+{
+    <p class="ss-empty">Section not found.</p>
+    return;
+}
+
+
+
+<!-- ── Section info ── -->
+<div class="ss-section-info">
+    <div>
+        <p class="ss-eyebrow">Section</p>
+        <h1 class="ss-section-name">@vak.Name</h1>
+        @if (!string.IsNullOrEmpty(vak.Ring))
+        {
+            <span class="ss-ring-badge">@vak.Ring</span>
+        }
+    </div>
+    <div class="ss-section-stats">
+        <div class="ss-stat">
+            <span class="ss-stat-value">@vak.Rows</span>
+            <span class="ss-stat-label">Rows</span>
+        </div>
+        <div class="ss-stat-divider"></div>
+        <div class="ss-stat">
+            <span class="ss-stat-value">@vak.SeatsPerRow</span>
+            <span class="ss-stat-label">Per Row</span>
+        </div>
+        <div class="ss-stat-divider"></div>
+        <div class="ss-stat">
+            <span class="ss-stat-value">€@vak.Price.ToString("0.##")</span>
+            <span class="ss-stat-label">Per Seat</span>
+        </div>
+    </div>
+</div>
+
+<!-- ── Legend ── -->
+<div class="ss-legend">
+    <div class="ss-legend-item">
+        <svg class="ss-seat-icon ss-seat-available" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="12" width="28" height="16" rx="4" /><rect x="2" y="26" width="6" height="6" rx="2" /><rect x="28" y="26" width="6" height="6" rx="2" /><rect x="8" y="6" width="20" height="10" rx="4" /></svg>
+        <span>Available</span>
+    </div>
+    <div class="ss-legend-item">
+        <svg class="ss-seat-icon ss-seat-taken" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="12" width="28" height="16" rx="4" /><rect x="2" y="26" width="6" height="6" rx="2" /><rect x="28" y="26" width="6" height="6" rx="2" /><rect x="8" y="6" width="20" height="10" rx="4" /></svg>
+        <span>Taken</span>
+    </div>
+    <div class="ss-legend-item">
+        <svg class="ss-seat-icon ss-seat-selected" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="12" width="28" height="16" rx="4" /><rect x="2" y="26" width="6" height="6" rx="2" /><rect x="28" y="26" width="6" height="6" rx="2" /><rect x="8" y="6" width="20" height="10" rx="4" /></svg>
+        <span>Selected</span>
+    </div>
+</div>
+
+<!-- ── Pitch indicator ── -->
+<div class="ss-pitch">
+    <span>PITCH</span>
+</div>
+
+
+
+
+
+<!-- ── Seat grid ── -->
+<form asp-controller="Subscription" asp-action="AddSeats" method="post">
+    <input type="hidden" name="VakId" value="@Model.VakId" />
+    <div id="selectedSeatsContainer"></div>
+
+    <div class="ss-grid-wrapper">
+        <div class="ss-grid" id="seatGrid">
+            @for (int i = 0; i < vak.Rows; i++)
+            {
+                <div class="ss-row">
+                    <span class="ss-row-label">@(i + 1)</span>
+                    @for (int j = 0; j < vak.SeatsPerRow; j++)
+                    {
+                        string seatId = $"{i + 1}-{j + 1}";
+                        <button type="button"
+                                class="ss-seat ss-seat-available"
+                                data-seat="@seatId"
+                                data-row="@(i + 1)"
+                                data-col="@(j + 1)"
+                                title="Row @(i + 1) · Seat @(j + 1)">
+                            <svg viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="4" y="12" width="28" height="16" rx="4" />
+                                <rect x="2" y="26" width="6" height="6" rx="2" />
+                                <rect x="28" y="26" width="6" height="6" rx="2" />
+                                <rect x="8" y="6" width="20" height="10" rx="4" />
+                            </svg>
+                        </button>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="ss-section-actions">
+        <button type="submit" class="btn btn-primary">Ga naar winkelmand</button>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        // ── SignalR hook-in point ──────────────────────────────────
+        // When you add SignalR, connect here and call:
+        //   markSeatTaken(seatId)   — to grey out a seat in real time
+        //   markSeatFree(seatId)    — to re-enable a seat
+        //
+        // Example:
+        //   const connection = new signalR.HubConnectionBuilder()
+        //       .withUrl("/seatHub")
+        //       .build();
+        //   connection.on("SeatTaken", (seatId) => markSeatTaken(seatId));
+        //   connection.on("SeatReleased", (seatId) => markSeatFree(seatId));
+        //   connection.start();
+
+        const selectedSeats = new Set();
+        const selectedSeatsContainer = document.getElementById("selectedSeatsContainer");
+
+        document.querySelectorAll(".ss-seat").forEach((seat) => {
+            seat.addEventListener("click", () => {
+                if (seat.classList.contains("ss-seat-taken")) {
+                    return;
+                }
+
+                const seatId = seat.dataset.seat;
+                if (selectedSeats.has(seatId)) {
+                    selectedSeats.delete(seatId);
+                    seat.classList.remove("ss-seat-selected");
+                    seat.classList.add("ss-seat-available");
+                } else {
+                    selectedSeats.add(seatId);
+                    seat.classList.remove("ss-seat-available");
+                    seat.classList.add("ss-seat-selected");
+                }
+
+                renderSelectedSeats();
+            });
+        });
+
+        function renderSelectedSeats() {
+            selectedSeatsContainer.innerHTML = "";
+            selectedSeats.forEach((seatId) => {
+                const input = document.createElement("input");
+                input.type = "hidden";
+                input.name = "selectedSeats";
+                input.value = seatId;
+                selectedSeatsContainer.appendChild(input);
+            });
+        }
+
+        function markSeatTaken(seatId) {
+            const seat = document.querySelector(`[data-seat="${seatId}"]`);
+            if (seat) {
+                seat.classList.remove("ss-seat-available", "ss-seat-selected");
+                seat.classList.add("ss-seat-taken");
+                seat.style.pointerEvents = "none";
+                selectedSeats.delete(seatId);
+                renderSelectedSeats();
+            }
+        }
+
+        function markSeatFree(seatId) {
+            const seat = document.querySelector(`[data-seat="${seatId}"]`);
+            if (seat) {
+                seat.classList.remove("ss-seat-taken", "ss-seat-selected");
+                seat.classList.add("ss-seat-available");
+                seat.style.pointerEvents = "auto";
+            }
+        }
+    </script>
+}

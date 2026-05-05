@@ -9,12 +9,12 @@ namespace UCL_Ticketverkoop.Controllers
 {
     public class StadiumController : Controller
     {
-        private readonly IService<Stadium> _stadiumService;
+        private readonly IService<Club> _clubService;
         private readonly IMapper _mapper;
 
-        public StadiumController(IService<Stadium> stadiumService, IMapper mapper) 
+        public StadiumController(IService<Club> clubService, IMapper mapper) 
         {
-            _stadiumService = stadiumService;
+            _clubService = clubService;
             _mapper = mapper;
         }
         public IActionResult Index()
@@ -26,8 +26,8 @@ namespace UCL_Ticketverkoop.Controllers
         {
             try 
             {
-                var model = await _stadiumService.FindByIdAsync(id);
-                StadiumVM viewModel = _mapper.Map<StadiumVM>(model);
+                var model = await _clubService.FindByIdAsync(id);
+                ClubVM viewModel = _mapper.Map<ClubVM>(model);
                 return View(viewModel);
             }
             catch (Exception ex) 

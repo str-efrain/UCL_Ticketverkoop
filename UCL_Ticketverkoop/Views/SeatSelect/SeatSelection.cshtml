@@ -80,8 +80,12 @@
     <span>PITCH</span>
 </div>
 
+
+
+
+
 <!-- ── Seat grid ── -->
-<form asp-controller="SeatSelect" asp-action="AddSeats" method="post">
+    <form asp-controller="SeatSelect" asp-action="AddSeats" method="post">
     <input type="hidden" name="MatchId" value="@Model.match.Id" />
     <input type="hidden" name="VakId" value="@Model.VakId" />
     <div id="selectedSeatsContainer"></div>
