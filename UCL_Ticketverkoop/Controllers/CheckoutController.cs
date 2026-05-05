@@ -9,10 +9,10 @@ namespace UCL_Ticketverkoop.Controllers
    
     public class CheckoutController : Controller
     {
-        IService<Order> _orderService;
+        IOrderService _orderService;
         IMapper _mapper;
 
-        public CheckoutController(IService<Order> orderService,IMapper mapper)
+        public CheckoutController(IOrderService orderService,IMapper mapper)
         {
             _orderService = orderService;
             _mapper = mapper;

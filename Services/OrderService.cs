@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace Services
 {
-    public class OrderService : IService<Order>
+    public class OrderService : IOrderService
     {
-        private readonly IDAO<Order> _orderDAO;
+        private readonly IOrderDAO _orderDAO;
 
-        public OrderService(IDAO<Order> orderDAO)
+        public OrderService(IOrderDAO orderDAO)
         {
             _orderDAO = orderDAO;
         }
@@ -41,6 +41,11 @@ namespace Services
         public async Task UpdateAsync(Order entity)
         {
             await _orderDAO.UpdateAsync(entity);
+        }
+
+        public async Task<List<Order>> GetOrdersByUserIdAsync(string userId)
+        {  
+            return await _orderDAO.GetOrdersByUserIdAsync(userId);   
         }
     }
 }

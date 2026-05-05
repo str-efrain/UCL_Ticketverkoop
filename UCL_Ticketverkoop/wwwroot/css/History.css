@@ -1,0 +1,297 @@
+/* ?? Header ???????????????????????????????????????????????????? */
+.oh-header {
+    margin-bottom: 1.75rem;
+}
+
+.oh-eyebrow {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #d4af37;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 0.3rem;
+}
+
+    .oh-eyebrow::before {
+        content: '';
+        display: inline-block;
+        width: 18px;
+        height: 2px;
+        background: #d4af37;
+    }
+
+.oh-title {
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0 0 0.35rem;
+}
+
+.oh-subtitle {
+    font-size: 0.9rem;
+    color: #8fa3d0;
+    margin: 0;
+}
+
+/* ?? Orders list ???????????????????????????????????????????????? */
+.oh-orders {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.oh-order-card {
+    background: linear-gradient(135deg, #001540 0%, #002d72 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    padding: 1.5rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.oh-order-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    margin-bottom: 1rem;
+}
+
+.oh-order-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.oh-order-label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.oh-order-date {
+    font-size: 0.82rem;
+    color: #8fa3d0;
+}
+
+.oh-order-total {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.25rem;
+    font-size: 0.8rem;
+    color: #8fa3d0;
+}
+
+.oh-order-price {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #d4af37;
+}
+
+/* ?? Ticket list ???????????????????????????????????????????????? */
+.oh-ticket-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.oh-ticket {
+    background: rgba(0, 14, 46, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.oh-ticket-main {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.oh-team-logos {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.oh-logo {
+    width: 38px;
+    height: 38px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.15));
+}
+
+.oh-ticket-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.oh-teams {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.oh-vs {
+    color: #d4af37;
+    font-weight: 800;
+    margin: 0 0.2rem;
+}
+
+.oh-meta {
+    font-size: 0.78rem;
+    color: #8fa3d0;
+}
+
+.oh-ticket-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 2rem;
+    align-items: center;
+}
+
+.oh-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.oh-detail-label {
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8fa3d0;
+}
+
+.oh-detail-value {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.oh-seat-badge {
+    display: inline-block;
+    padding: 0.15rem 0.6rem;
+    background: rgba(212, 175, 55, 0.1);
+    border: 1px solid rgba(212, 175, 55, 0.35);
+    border-radius: 20px;
+    color: #d4af37;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.oh-status-badge {
+    display: inline-block;
+    padding: 0.15rem 0.6rem;
+    background: rgba(0, 200, 100, 0.1);
+    border: 1px solid rgba(0, 200, 100, 0.3);
+    border-radius: 20px;
+    color: #00c864;
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+
+.oh-price-col {
+    margin-left: auto;
+}
+
+.oh-ticket-price {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #d4af37;
+}
+
+.oh-empty-tickets {
+    font-size: 0.85rem;
+    color: #8fa3d0;
+    margin: 0;
+}
+
+/* ?? Empty state ???????????????????????????????????????????????? */
+.oh-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    text-align: center;
+    gap: 0.6rem;
+}
+
+.oh-empty-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0;
+}
+
+.oh-empty-sub {
+    font-size: 0.88rem;
+    color: #8fa3d0;
+    margin: 0 0 1rem;
+}
+
+.oh-primary-btn {
+    display: inline-block;
+    padding: 0.7rem 2rem;
+    background: #d4af37;
+    border-radius: 8px;
+    color: #001540;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: background 0.2s, transform 0.15s;
+}
+
+    .oh-primary-btn:hover {
+        background: #f0d060;
+        transform: translateY(-2px);
+        text-decoration: none;
+        color: #001540;
+    }
+
+/* ?? Responsive ???????????????????????????????????????????????? */
+@media (max-width: 900px) {
+    .oh-order-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .oh-order-total {
+        align-items: flex-start;
+    }
+
+    .oh-price-col {
+        margin-left: 0;
+    }
+}
+
+@media (max-width: 600px) {
+    .oh-ticket-main {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .oh-ticket-details {
+        gap: 0.75rem 1.25rem;
+    }
+
+    .oh-logo {
+        width: 32px;
+        height: 32px;
+    }
+}

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Repositories
 {
-    public class OrderDAO : IDAO<Order>
+    public class OrderDAO : IOrderDAO
     {
         private readonly UCL_TicketingDbContext _context;
 
@@ -89,6 +89,23 @@ namespace Repositories
             {
                 Console.WriteLine(ex);
             }
+        }
+
+        public async Task<List<Order>> GetOrdersByUserIdAsync(string userId)
+        {
+            return await _context.Orders
+                .Where(o => o.UserId.Equals(userId))
+                .Include(o => o.Tickets)
+                    .ThenInclude(t => t.Match)
+                    .ThenInclude(m => m.HomeClub)
+                .Include(o => o.Tickets)
+                    .ThenInclude(t => t.Match)
+                    .ThenInclude(m => m.AwayClub)
+                .Include(o => o.Tickets)
+                    .ThenInclude(t => t.Vak)
+                .Include(o => o.Abonnement)
+                .AsNoTracking()
+                .ToListAsync();
         }
     }
 }

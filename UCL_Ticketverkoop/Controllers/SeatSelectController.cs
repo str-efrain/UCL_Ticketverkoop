@@ -33,6 +33,7 @@ namespace UCL_Ticketverkoop.Controllers
     //Gebruik bestaande externe API’s (bv.hotel-search/booking API via een publieke
     //provider of API-platform).
     //Je hoeft geen echte betaling bij hotel te doen
+    [Authorize]
     public class SeatSelectController : Controller
     {
         private const string CartSession = "shoppingCart";

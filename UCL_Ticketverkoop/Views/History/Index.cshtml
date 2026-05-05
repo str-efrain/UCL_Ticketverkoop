@@ -1,0 +1,98 @@
+﻿@{
+    ViewData["Title"] = "Order History";
+    var orders = Model as List<UCL_Ticketverkoop.ViewModels.OrderVM> ?? new List<UCL_Ticketverkoop.ViewModels.OrderVM>();
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/History.css" asp-append-version="true" />
+}
+
+<div class="oh-header">
+    <p class="oh-eyebrow">Account</p>
+    <h1 class="oh-title">Order History</h1>
+    <p class="oh-subtitle">Review your past orders and ticket details.</p>
+</div>
+
+@if (orders.Count > 0)
+{
+    <div class="oh-orders">
+        @foreach (var order in orders)
+        {
+            <section class="oh-order-card">
+                <div class="oh-order-header">
+                    <div class="oh-order-meta">
+                        <span class="oh-order-label">Order #@order.Id</span>
+                        <span class="oh-order-date">@order.OrderDate.ToString("ddd d MMM yyyy · HH:mm")</span>
+                    </div>
+                    <div class="oh-order-total">
+                        <span>Total</span>
+                        <span class="oh-order-price">€@((order.TotalPrice ?? 0).ToString("0.##"))</span>
+                    </div>
+                </div>
+
+                @if (order.Tickets != null && order.Tickets.Count > 0)
+                {
+                    <div class="oh-ticket-list">
+                        @foreach (var ticket in order.Tickets)
+                        {
+                            <div class="oh-ticket">
+                                <div class="oh-ticket-main">
+                                    <div class="oh-team-logos">
+                                        <img src="/Images/@ticket.Match.HomeTeamLogoUrl" alt="@ticket.Match.HomeTeamName" class="oh-logo" />
+                                        <span class="oh-vs">vs</span>
+                                        <img src="/Images/@ticket.Match.AwayTeamLogoUrl" alt="@ticket.Match.AwayTeamName" class="oh-logo" />
+                                    </div>
+                                    <div class="oh-ticket-info">
+                                        <div class="oh-teams">@ticket.Match.HomeTeamName <span class="oh-vs">vs</span> @ticket.Match.AwayTeamName</div>
+                                        <div class="oh-meta">@ticket.Match.MatchDate.ToString("ddd d MMM yyyy · HH:mm")</div>
+                                        <div class="oh-meta">@ticket.Match.StadiumName</div>
+                                    </div>
+                                </div>
+                                <div class="oh-ticket-details">
+                                    <div class="oh-detail">
+                                        <span class="oh-detail-label">Section</span>
+                                        <span class="oh-detail-value">@ticket.Vak.Name</span>
+                                    </div>
+                                    @if (!string.IsNullOrEmpty(ticket.Vak.Ring))
+                                    {
+                                        <div class="oh-detail">
+                                            <span class="oh-detail-label">Ring</span>
+                                            <span class="oh-detail-value">@ticket.Vak.Ring</span>
+                                        </div>
+                                    }
+                                    <div class="oh-detail">
+                                        <span class="oh-detail-label">Seat</span>
+                                        <span class="oh-seat-badge">@ticket.Seat</span>
+                                    </div>
+                                    @if (!string.IsNullOrEmpty(ticket.Status))
+                                    {
+                                        <div class="oh-detail">
+                                            <span class="oh-detail-label">Status</span>
+                                            <span class="oh-status-badge">@ticket.Status</span>
+                                        </div>
+                                    }
+                                    <div class="oh-detail oh-price-col">
+                                        <span class="oh-detail-label">Price</span>
+                                        <span class="oh-ticket-price">€@ticket.Vak.Price.ToString("0.##")</span>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="oh-empty-tickets">No tickets were found for this order.</p>
+                }
+            </section>
+        }
+    </div>
+}
+else
+{
+    <div class="oh-empty">
+        <p class="oh-empty-title">No orders yet</p>
+        <p class="oh-empty-sub">Your order history will appear here after checkout.</p>
+        <a asp-controller="Match" asp-action="Index" class="oh-primary-btn">Browse Matches</a>
+    </div>
+}
