@@ -80,7 +80,47 @@
                         }
                     </div>
                 }
-                else
+                @if (order.Abonnements != null && order.Abonnements.Count > 0)
+                {
+                    <div class="oh-ticket-list">
+                        @foreach (var ticket in order.Abonnements)
+                        {
+                            <div class="oh-ticket">
+                                <div class="oh-ticket-main">
+                                    <div class="oh-team-logos">
+                                        <img src="/Images/@ticket.Club.LogoUrl" alt="@ticket.Club?.Name" class="oh-logo" />
+                                    </div>
+                                    <div class="oh-ticket-info">
+                                        <div class="oh-teams">@ticket.Club?.Name seasonpass</div>
+                                        <div class="oh-meta">@ticket.Club?.Stadium?.name</div>
+                                    </div>
+                                </div>
+                                <div class="oh-ticket-details">
+                                    <div class="oh-detail">
+                                        <span class="oh-detail-label">Section</span>
+                                        <span class="oh-detail-value">@ticket.Vak?.Name</span>
+                                    </div>
+                                    @if (!string.IsNullOrEmpty(ticket.Vak?.Ring))
+                                    {
+                                        <div class="oh-detail">
+                                            <span class="oh-detail-label">Ring</span>
+                                            <span class="oh-detail-value">@ticket.Vak?.Ring</span>
+                                        </div>
+                                    }
+                                    <div class="oh-detail">
+                                        <span class="oh-detail-label">Seat</span>
+                                        <span class="oh-seat-badge">@ticket.Seat</span>
+                                    </div>
+                                    <div class="oh-detail oh-price-col">
+                                        <span class="oh-detail-label">Price</span>
+                                        <span class="oh-ticket-price">€@ticket.Vak?.Price.ToString("0.##")</span>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                @if ((order.Tickets == null || order.Tickets.Count == 0)&&(order.Abonnements == null || order.Abonnements.Count == 0))
                 {
                     <p class="oh-empty-tickets">No tickets were found for this order.</p>
                 }
