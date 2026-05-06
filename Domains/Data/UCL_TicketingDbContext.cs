@@ -72,8 +72,8 @@ public partial class UCL_TicketingDbContext : DbContext
                 .HasMaxLength(255)
                 .IsUnicode(false);
 
-            entity.HasOne(d => d.Order).WithOne(p => p.Abonnement)
-                .HasForeignKey<Abonnement>(d => d.OrderId)
+            entity.HasOne(d => d.Order).WithMany(p => p.Abonnements)
+                .HasForeignKey(d => d.OrderId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_Abonnement_Order");
 

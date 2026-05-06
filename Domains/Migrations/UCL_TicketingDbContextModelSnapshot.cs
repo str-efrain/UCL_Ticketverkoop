@@ -356,8 +356,8 @@ namespace Domains.Migrations
                         .HasConstraintName("FK_Abonnement_Club");
 
                     b.HasOne("Domains.Entities.Order", "Order")
-                        .WithOne("Abonnement")
-                        .HasForeignKey("Domains.Entities.Abonnement", "OrderId")
+                        .WithMany("Abonnements")
+                        .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_Abonnement_Order");
@@ -492,7 +492,7 @@ namespace Domains.Migrations
 
             modelBuilder.Entity("Domains.Entities.Order", b =>
                 {
-                    b.Navigation("Abonnement");
+                    b.Navigation("Abonnements");
 
                     b.Navigation("Tickets");
                 });

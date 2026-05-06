@@ -55,7 +55,7 @@ namespace Repositories
                     .ThenInclude(m => m.AwayClub)
                 .Include(o => o.Tickets)
                     .ThenInclude(t => t.Vak)
-                .Include(o => o.Abonnement)
+                .Include(o => o.Abonnements)
                 .Include(o => o.User)
                 .AsNoTracking()
                 .SingleOrDefaultAsync(o => o.Id == Id);
@@ -67,8 +67,16 @@ namespace Repositories
             {
                 return await _context.Orders
                     .AsNoTracking()
-                    .Include(o => o.Tickets)
-                    .Include(o => o.User)
+                .Include(o => o.Tickets)
+                    .ThenInclude(t => t.Match)
+                    .ThenInclude(m => m.HomeClub)
+                .Include(o => o.Tickets)
+                    .ThenInclude(t => t.Match)
+                    .ThenInclude(m => m.AwayClub)
+                .Include(o => o.Tickets)
+                    .ThenInclude(t => t.Vak)
+                .Include(o => o.Abonnements)
+                .Include(o => o.User)
                     .ToListAsync();
             }
             catch (Exception ex)
@@ -103,7 +111,7 @@ namespace Repositories
                     .ThenInclude(m => m.AwayClub)
                 .Include(o => o.Tickets)
                     .ThenInclude(t => t.Vak)
-                .Include(o => o.Abonnement)
+                .Include(o => o.Abonnements)
                 .AsNoTracking()
                 .ToListAsync();
         }

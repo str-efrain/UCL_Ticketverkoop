@@ -127,7 +127,7 @@ namespace UCL_Ticketverkoop.Controllers
             }
 
             //Mailing
-            await _orderService.SendOrderConfirmationAsync(order);
+            //await _orderService.SendOrderConfirmationAsync(order);
 
             return RedirectToAction("Index", "Checkout", new { orderId = order.Id });
 
@@ -142,7 +142,7 @@ namespace UCL_Ticketverkoop.Controllers
                     return NotFound();
 
                 cart.Tickets.RemoveAll(t => t.Id == id.Value);
-                cart.TotalPrice = cart.Tickets.Sum(t => t.Vak.Price);
+                cart.TotalPrice = cart.Subscriptions.Sum(s => s.Vak.Price) + cart.Tickets.Sum(t => t.Vak.Price);
 
                 SetShoppingCart(cart);
 
@@ -153,7 +153,7 @@ namespace UCL_Ticketverkoop.Controllers
                 if (!id.HasValue)
                     return NotFound();
                 cart.Subscriptions.RemoveAll(s => s.Id == id.Value);
-                cart.TotalPrice = cart.Subscriptions.Sum(s => s.Vak.Price);
+                cart.TotalPrice = cart.Subscriptions.Sum(s => s.Vak.Price) + cart.Tickets.Sum(t => t.Vak.Price);
                 SetShoppingCart(cart);
                 return View("Index", cart);
 
