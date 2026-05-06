@@ -16,7 +16,7 @@ public partial class Order
 
     public virtual IdentityUser User { get; set; } = null!;
 
-    public virtual ICollection<Abonnement> Abonnements { get; set; }
+    public virtual ICollection<Abonnement> Abonnements { get; set; } = new List<Abonnement>();
 
     public virtual ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
 }
