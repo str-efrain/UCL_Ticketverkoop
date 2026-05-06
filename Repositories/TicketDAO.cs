@@ -74,19 +74,41 @@ namespace Repositories
 
         public async Task<bool> IsSeatTakenAsync(int matchId, int vakId, string seat)
         {
-            return await _context.Tickets
+            var match = await _context.Matches.FindAsync(matchId);
+            if (match == null) return false;
+
+            bool ticketTaken = await _context.Tickets
                 .AnyAsync(t => t.MatchId == matchId &&
                                t.VakId == vakId &&
                                t.Seat.Equals(seat));
+
+            if (ticketTaken) return true;
+
+            return await _context.Abonnements
+                .AnyAsync(a => a.ClubId == match.HomeClubId &&
+                               a.SeizoenId == match.SeizoenId &&
+                               a.VakId == vakId &&
+                               a.Seat.Equals(seat));
         }
 
         public async Task<List<string>> GetTakenSeatsAsync(int matchId, int vakId)
         {
-            return await _context.Tickets
+            var match = await _context.Matches.FindAsync(matchId);
+            if (match == null) return new List<string>();
+
+            var ticketSeats = await _context.Tickets
                 .AsNoTracking()
                 .Where(t => t.MatchId == matchId && t.VakId == vakId)
                 .Select(t => t.Seat)
                 .ToListAsync();
+
+            var abonnementSeats = await _context.Abonnements
+                .AsNoTracking()
+                .Where(a => a.ClubId == match.HomeClubId && a.SeizoenId == match.SeizoenId && a.VakId == vakId)
+                .Select(a => a.Seat)
+                .ToListAsync();
+
+            return ticketSeats.Concat(abonnementSeats).Distinct().ToList();
         }
 
         public async Task<IEnumerable<Ticket>> GetTicketsByUserAsync(String userId)

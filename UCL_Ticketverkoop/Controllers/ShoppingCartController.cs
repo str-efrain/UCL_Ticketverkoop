@@ -39,6 +39,10 @@ namespace UCL_Ticketverkoop.Controllers
             var shoppingCartVM = HttpContext.Session.GetObject<ShoppingCartVM>(CartSession);
             return shoppingCartVM;
         }
+        public void ClearShoppingCart()
+        {
+            HttpContext.Session.Remove(CartSession);
+        }
         public void SetShoppingCart(ShoppingCartVM cart)
         {
             HttpContext.Session.SetObject(CartSession, cart);
@@ -132,6 +136,9 @@ namespace UCL_Ticketverkoop.Controllers
 
             //Mailing
             //await _orderService.SendOrderConfirmationAsync(order);
+
+            //Cart leegmaken
+            ClearShoppingCart();
 
             return RedirectToAction("Index", "Checkout", new { orderId = orderId });
 
