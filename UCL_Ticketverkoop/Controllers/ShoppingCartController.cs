@@ -6,6 +6,7 @@ using NuGet.Versioning;
 using Services.Interfaces;
 using System.Security.Claims;
 using UCL_Ticketverkoop.ViewModels;
+using Domains.Exceptions;
 
 namespace UCL_Ticketverkoop.Controllers
 {
@@ -47,94 +48,81 @@ namespace UCL_Ticketverkoop.Controllers
         [Authorize]
         public async Task<IActionResult> Buy()
         {
-            ShoppingCartVM cart = GetShoppingCart();
-
-            if (cart == null || (!cart.Tickets.Any() && !cart.Subscriptions.Any()))
+            try
             {
-                ViewBag.ErrorMessage = "Je mand is leeg!";
-                return View("Index", cart);
-            }
+                ShoppingCartVM cart = GetShoppingCart();
 
-            //if (cart.Tickets != null && cart.Tickets.Any())
-            //{
-            //    foreach (var item in cart.Tickets)
-            //    {
-            //        bool isTaken = await _seatService.isSeatTakenAsync(item.Match.HomeTeamId, item.Vak.Id, item.Seat, item.Match.SeizoenId, item.Match.Id);
-            //        if (isTaken)
-            //        {
-            //            ViewBag.ErrorMessage = $"Sorry,De stoel {item.Seat} in vak {item.Vak.Name} voor de match {item.Match.AwayTeamName} is al bezet!";
-            //            return View("Index", cart);
-            //        }
-            //    }
-            //}
-
-            //if (cart.Subscriptions != null && cart.Subscriptions.Any())
-            //{
-            //    foreach (var item in cart.Subscriptions)
-            //    {
-            //        bool isTaken = await _seatService.isSeatTakenAsync(item.Club.Id, item.Vak.Id, item.Seat, item.SeizoenId, null);
-            //        if (isTaken)
-            //        {
-            //            ViewBag.ErrorMessage = $"Sorry,De stoel {item.Seat} in vak {item.Vak.Name} voor de dit seizoen is al bezet!";
-            //            return View("Index", cart);
-            //        }
-            //    }
-            //}
-
-
-            List<Ticket> tickets = new List<Ticket>();
-            List<Abonnement> subscriptions = new List<Abonnement>();
-            Order order = new Order();
-
-            order = new Order
-            {
-
-                UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
-                OrderDate = DateTime.Now,
-                TotalPrice = cart.TotalPrice
-            };
-
-
-            if (cart.Tickets != null && cart.Tickets.Any())
-            {
-                foreach (var item in cart.Tickets)
+                if (cart == null || (!cart.Tickets.Any() && !cart.Subscriptions.Any()))
                 {
-                    tickets.Add( new Ticket
-                    {
-                        OrderId = order.Id,
-                        MatchId = item.Match.Id,
-                        VakId = item.Vak.Id,
-                        Seat = item.Seat,
-                    });
-
-                }
-            }
-
-            if (cart.Subscriptions != null && cart.Subscriptions.Any())
-            {
-                foreach (var item in cart.Subscriptions)
-                {
-                    subscriptions.Add(new Abonnement
-                    {
-                        OrderId = order.Id,
-                        ClubId = item.Club.Id,
-                        VakId = item.Vak.Id,
-                        Seat = item.Seat,
-                        SeizoenId = item.SeizoenId
-                    });
+                    ViewBag.ErrorMessage = "Je mand is leeg!";
+                    return View("Index", cart);
                 }
 
+                List<Ticket> tickets = new List<Ticket>();
+                List<Abonnement> subscriptions = new List<Abonnement>();
+                Order order = new Order();
 
+                order = new Order
+                {
+
+                    UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
+                    OrderDate = DateTime.Now,
+                    TotalPrice = cart.TotalPrice
+                };
+
+
+                if (cart.Tickets != null && cart.Tickets.Any())
+                {
+                    foreach (var item in cart.Tickets)
+                    {
+                        tickets.Add(new Ticket
+                        {
+                            OrderId = order.Id,
+                            MatchId = item.Match.Id,
+                            VakId = item.Vak.Id,
+                            Seat = item.Seat,
+                        });
+
+                    }
+                }
+
+                if (cart.Subscriptions != null && cart.Subscriptions.Any())
+                {
+                    foreach (var item in cart.Subscriptions)
+                    {
+                        subscriptions.Add(new Abonnement
+                        {
+                            OrderId = order.Id,
+                            ClubId = item.Club.Id,
+                            VakId = item.Vak.Id,
+                            Seat = item.Seat,
+                            SeizoenId = item.SeizoenId
+                        });
+                    }
+
+
+
+                }
+
+                int orderId = await _orderService.ProcessOrderAsync(tickets, subscriptions, order.UserId, cart.TotalPrice);
+
+                //Mailing
+                //await _orderService.SendOrderConfirmationAsync(order);
+
+                return RedirectToAction("Index", "Checkout", new { orderId = orderId });
+            }
+            catch (BusinessRuleException e)
+            {
+
+                ViewBag.ErrorMessage = e.Message;
+                return View("Index");
 
             }
-
-            int orderId =await _orderService.ProcessOrderAsync(tickets, subscriptions, order.UserId,cart.TotalPrice);
-
-            //Mailing
-            //await _orderService.SendOrderConfirmationAsync(order);
-
-            return RedirectToAction("Index", "Checkout", new { orderId = orderId });
-
+            catch(Exception)
+            {
+                ViewBag.ErrorMessage = "Er is een fout opgetreden bij het verwerken van je bestelling. Probeer het later opnieuw.";
+                return View("Index");
+            }
         }
         public IActionResult Delete(int? id, string type)
         {
