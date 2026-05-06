@@ -14,10 +14,10 @@ namespace UCL_Ticketverkoop.Controllers
         private const string CartSession = "shoppingCart";
         private readonly IOrderService _orderService;
         private readonly ITicketService _ticketService;
-        private readonly ISeatService _seatService; 
+        private readonly ISeatService _seatService;
         private readonly IAbonnementService _abonnementService;
 
-        public ShoppingCartController(IOrderService orderService, ITicketService ticketService,ISeatService seatService,IAbonnementService abonnementService)
+        public ShoppingCartController(IOrderService orderService, ITicketService ticketService, ISeatService seatService, IAbonnementService abonnementService)
         {
             _orderService = orderService;
             _ticketService = ticketService;
@@ -49,65 +49,79 @@ namespace UCL_Ticketverkoop.Controllers
         {
             ShoppingCartVM cart = GetShoppingCart();
 
-            if(cart == null || (!cart.Tickets.Any()&&!cart.Subscriptions.Any()))
+            if (cart == null || (!cart.Tickets.Any() && !cart.Subscriptions.Any()))
             {
                 ViewBag.ErrorMessage = "Je mand is leeg!";
-                return View("Index",cart);
+                return View("Index", cart);
             }
 
-
-            foreach (var item in cart.Tickets)
+            if (cart.Tickets != null && cart.Tickets.Any())
             {
-                bool isTaken = await _seatService.isSeatTakenAsync(item.Match.HomeTeamId, item.Vak.Id, item.Seat, item.Match.SeizoenId,item.Match.Id);
-                if (isTaken)
+                foreach (var item in cart.Tickets)
                 {
-                    ViewBag.ErrorMessage = $"Sorry,De stoel {item.Seat} in vak {item.Vak.Name} voor de match {item.Match.AwayTeamName} is al bezet!";
-                    return View("Index", cart);
+                    bool isTaken = await _seatService.isSeatTakenAsync(item.Match.HomeTeamId, item.Vak.Id, item.Seat, item.Match.SeizoenId, item.Match.Id);
+                    if (isTaken)
+                    {
+                        ViewBag.ErrorMessage = $"Sorry,De stoel {item.Seat} in vak {item.Vak.Name} voor de match {item.Match.AwayTeamName} is al bezet!";
+                        return View("Index", cart);
+                    }
                 }
             }
 
-            foreach (var item in cart.Subscriptions)
+            if (cart.Subscriptions != null && cart.Subscriptions.Any())
             {
-                bool isTaken = await _seatService.isSeatTakenAsync(item.Club.Id, item.Vak.Id, item.Seat, item.SeizoenId, null);
-                if (isTaken)
+                foreach (var item in cart.Subscriptions)
                 {
-                    ViewBag.ErrorMessage = $"Sorry,De stoel {item.Seat} in vak {item.Vak.Name} voor de dit seizoen is al bezet!";
-                    return View("Index", cart);
+                    bool isTaken = await _seatService.isSeatTakenAsync(item.Club.Id, item.Vak.Id, item.Seat, item.SeizoenId, null);
+                    if (isTaken)
+                    {
+                        ViewBag.ErrorMessage = $"Sorry,De stoel {item.Seat} in vak {item.Vak.Name} voor de dit seizoen is al bezet!";
+                        return View("Index", cart);
+                    }
                 }
             }
+
 
 
             Order order = new Order
             {
-               
-                UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value, 
+
+                UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
                 OrderDate = DateTime.Now,
                 TotalPrice = cart.TotalPrice
             };
 
             await _orderService.AddAsync(order);
 
-            foreach (var item in cart.Tickets)
+            if (cart.Tickets != null && cart.Tickets.Any())
             {
-               await _ticketService.AddAsync(new Ticket
+                foreach (var item in cart.Tickets)
                 {
-                    OrderId = order.Id,
-                    MatchId = item.Match.Id,
-                    VakId = item.Vak.Id,
-                    Seat = item.Seat,
-                });
-   
+                    await _ticketService.AddAsync(new Ticket
+                    {
+                        OrderId = order.Id,
+                        MatchId = item.Match.Id,
+                        VakId = item.Vak.Id,
+                        Seat = item.Seat,
+                    });
+
+                }
             }
-            foreach (var item in cart.Subscriptions)
+
+            if (cart.Subscriptions != null && cart.Subscriptions.Any())
             {
-               await _abonnementService.AddAsync(new Abonnement
+                foreach (var item in cart.Subscriptions)
                 {
-                    OrderId = order.Id,
-                    ClubId = item.Club.Id,
-                    VakId = item.Vak.Id,
-                    Seat = item.Seat,
-                    SeizoenId = item.SeizoenId
-                });
+                    await _abonnementService.AddAsync(new Abonnement
+                    {
+                        OrderId = order.Id,
+                        ClubId = item.Club.Id,
+                        VakId = item.Vak.Id,
+                        Seat = item.Seat,
+                        SeizoenId = item.SeizoenId
+                    });
+                }
+
 
 
             }
@@ -118,19 +132,36 @@ namespace UCL_Ticketverkoop.Controllers
             return RedirectToAction("Index", "Checkout", new { orderId = order.Id });
 
         }
-        public IActionResult Delete(int? id) 
+        public IActionResult Delete(int? id, string type)
         {
             ShoppingCartVM cart = GetShoppingCart();
+            if (type == "Ticket")
+            {
 
-            if (!id.HasValue)
-                return NotFound();            
+                if (!id.HasValue)
+                    return NotFound();
 
-            cart.Tickets.RemoveAll(t => t.Id == id.Value);
-            cart.TotalPrice = cart.Tickets.Sum(t => t.Vak.Price);
+                cart.Tickets.RemoveAll(t => t.Id == id.Value);
+                cart.TotalPrice = cart.Tickets.Sum(t => t.Vak.Price);
 
-            SetShoppingCart(cart);
+                SetShoppingCart(cart);
 
-            return View("Index", cart);
+                return View("Index", cart);
+            }
+            else if (type == "Subscription")
+            {
+                if (!id.HasValue)
+                    return NotFound();
+                cart.Subscriptions.RemoveAll(s => s.Id == id.Value);
+                cart.TotalPrice = cart.Subscriptions.Sum(s => s.Vak.Price);
+                SetShoppingCart(cart);
+                return View("Index", cart);
+
+            }
+            else
+            {
+                return NotFound();
+            }
         }
     }
 }
