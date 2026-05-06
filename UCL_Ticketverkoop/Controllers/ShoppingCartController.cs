@@ -123,11 +123,11 @@ namespace UCL_Ticketverkoop.Controllers
                 ViewBag.ErrorMessage = e.Message;
                 return View("Index");
             }
-            //catch(Exception)
-            //{
-            //    ViewBag.ErrorMessage = "Er is een fout opgetreden bij het verwerken van je bestelling. Probeer het later opnieuw.";
-            //    return View("Index");
-            //}
+            catch (Exception)
+            {
+                ViewBag.ErrorMessage = "Er is een fout opgetreden bij het verwerken van je bestelling. Probeer het later opnieuw.";
+                return View("Index");
+            }
         }
         public IActionResult Delete(int? id, string type)
         {

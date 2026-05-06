@@ -38,11 +38,26 @@ namespace Services
             const int maxMatchesPerDayPerUser = 1;
             var match = await _matchDAO.FindByIdAsync(entity.MatchId);
             var vak = await _vakDAO.FindByIdAsync(entity.VakId);
+            var seat = entity.Seat;
 
             if (match == null)
-                throw new Exception("Match bestaat niet.");
+                throw new Exception("Invalid Match");
+
+            if (vak == null)
+                throw new Exception("Invalid Vak");
+
+            string[] seatRowCol = seat.Split('-');
+            if (seatRowCol.Length != 2 || !int.TryParse(seatRowCol[0], out int seatRow) || !int.TryParse(seatRowCol[1], out int seatCol))
+                throw new Exception("Invalid seat");
+
+            if (seatRow < 1 || seatRow >= vak.Rows || seatCol < 1 || seatCol >= vak.SeatsPerRow)
+                throw new Exception("Invalid seat");
+
+           
 
             //Controle max 4 tickets per user per match 
+
+            //dit haalt alles op wat recent is toegevoegd voor de savechanges
             var localTickets = _context.Tickets.Local
                 .Where(t => t.Order.UserId == userId && t.MatchId == entity.MatchId)
                 .ToList();
@@ -59,11 +74,11 @@ namespace Services
                 throw new SeatIsTakenException(entity.Seat, vak.Name, match.HomeClub.Stadium.Name);
             }
 
-            ////Controle max 1 match per dag per user
-            //if (userTickets.Count(t => t.MatchId != entity.MatchId && t.Match.MatchDate.Date == match.MatchDate.Date) >= maxMatchesPerDayPerUser)
-            //{
-            //    throw new MaxTicketsPerMatchDayExeededException(maxMatchesPerDayPerUser);
-            //}
+            //Controle max 1 match per dag per user
+            if (userTickets.Count(t => t.MatchId != entity.MatchId && t.Match.MatchDate.Date == match.MatchDate.Date) >= maxMatchesPerDayPerUser)
+            {
+                throw new MaxTicketsPerMatchDayExeededException(maxMatchesPerDayPerUser);
+            }
 
             //controle of de ticket verkoop al gestart is
             //if(DateTime.Now < entity.Match.MatchDate.AddMonths(-1) || DateTime.Now > entity.Match.MatchDate)
