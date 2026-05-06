@@ -29,8 +29,8 @@
 @{
     int totalSeats = Model.Stadium.vaks.Sum(v => v.Rows * v.SeatsPerRow);
     int totalVaks = Model.Stadium.vaks.Count;
-    double minPrice = Model.Stadium.vaks.Any() ? Model.Stadium.vaks.Min(v => v.Price) : 0;
-    double maxPrice = Model.Stadium.vaks.Any() ? Model.Stadium.vaks.Max(v => v.Price) : 0;
+    double minPrice = Model.Stadium.vaks.Any() ? Model.Stadium.vaks.Min(v => v.SubscriptionPrice) : 0;
+    double maxPrice = Model.Stadium.vaks.Any() ? Model.Stadium.vaks.Max(v => v.SubscriptionPrice) : 0;
 }
 <div class="sd-stats">
     <div class="sd-stat">
@@ -54,7 +54,7 @@
 <!-- ── Sections ── -->
 <div class="sd-sections-header">
     <p class="sd-eyebrow">Sections</p>
-    <h2 class="sd-sections-title">Choose Your Section</h2>
+    <h2 class="sd-sections-title">Choose Your Section for a Season Ticket</h2>
 </div>
 
 @if (Model.Stadium.vaks.Any())
@@ -80,7 +80,7 @@
                     <div class="sd-vak-card">
                         <div class="sd-vak-top">
                             <span class="sd-vak-name">@vak.Name</span>
-                            <span class="sd-vak-price">€@vak.Price.ToString("0.##")</span>
+                            <span class="sd-vak-price">€@vak.SubscriptionPrice.ToString("0.##")</span>
                         </div>
                         <div class="sd-vak-details">
                             <div class="sd-vak-detail">

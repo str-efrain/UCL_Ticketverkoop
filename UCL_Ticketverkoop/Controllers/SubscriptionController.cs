@@ -65,7 +65,7 @@ namespace UCL_Ticketverkoop.Controllers
                     SeizoenId = (await _seizoenService.GetCurrentSeasonAsync()).Id
                 });
 
-                shoppingCart.TotalPrice += shoppingCart.Subscriptions.Last().Vak.Price;
+                shoppingCart.TotalPrice += shoppingCart.Subscriptions.Last().Vak.SubscriptionPrice;
             }
      
 
