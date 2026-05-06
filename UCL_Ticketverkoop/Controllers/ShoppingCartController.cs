@@ -79,9 +79,11 @@ namespace UCL_Ticketverkoop.Controllers
                     VakId = item.Vak.Id,
                     Seat = item.Seat,
                 });
-                
-                
+   
             }
+
+            //Mailing
+            await _orderService.SendOrderConfirmationAsync(order);
 
             return RedirectToAction("Index", "Checkout", new { orderId = order.Id });
 
