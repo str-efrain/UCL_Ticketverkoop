@@ -47,6 +47,8 @@ namespace Repositories
         public async Task<Order?> FindByIdAsync(int Id)
         {
             return await _context.Orders
+                .Include(o => o.Abonnements)
+                    .ThenInclude(A => A.Vak)
                 .Include(o => o.Tickets)
                     .ThenInclude(t => t.Match)
                     .ThenInclude(m => m.HomeClub)
@@ -56,6 +58,8 @@ namespace Repositories
                 .Include(o => o.Tickets)
                     .ThenInclude(t => t.Vak)
                 .Include(o => o.Abonnements)
+                    .ThenInclude(A => A.Club)
+                        .ThenInclude(c => c.Stadium)
                 .Include(o => o.User)
                 .AsNoTracking()
                 .SingleOrDefaultAsync(o => o.Id == Id);
@@ -67,6 +71,8 @@ namespace Repositories
             {
                 return await _context.Orders
                     .AsNoTracking()
+                .Include(o => o.Abonnements)
+                    .ThenInclude(A => A.Vak)
                 .Include(o => o.Tickets)
                     .ThenInclude(t => t.Match)
                     .ThenInclude(m => m.HomeClub)
@@ -76,6 +82,8 @@ namespace Repositories
                 .Include(o => o.Tickets)
                     .ThenInclude(t => t.Vak)
                 .Include(o => o.Abonnements)
+                    .ThenInclude(A=>A.Club)
+                        .ThenInclude(c=>c.Stadium)
                 .Include(o => o.User)
                     .ToListAsync();
             }

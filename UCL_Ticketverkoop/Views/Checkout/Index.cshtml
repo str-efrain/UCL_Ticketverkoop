@@ -4,6 +4,7 @@
     ViewData["Title"] = "Checkout";
     var order = Model as UCL_Ticketverkoop.ViewModels.OrderVM;
     var tickets = order?.Tickets ?? new List<UCL_Ticketverkoop.ViewModels.TicketVM>();
+    var subscriptions = order?.Abonnements?? new List<UCL_Ticketverkoop.ViewModels.SubscriptionVM>();
 }
 
 @section Styles {
@@ -50,6 +51,46 @@
                             <div class="co-meta">@item.Match.StadiumName</div>
                         </div>
                         <img src="/Images/@item.Match.AwayTeamLogoUrl" alt="@item.Match.AwayTeamName" class="co-logo" />
+                    </div>
+
+                    <div class="co-ticket-details">
+                        <div class="co-detail">
+                            <span class="co-detail-label">Section</span>
+                            <span class="co-detail-value">@item.Vak.Name</span>
+                        </div>
+                        @if (!string.IsNullOrEmpty(item.Vak.Ring))
+                        {
+                            <div class="co-detail">
+                                <span class="co-detail-label">Ring</span>
+                                <span class="co-detail-value">@item.Vak.Ring</span>
+                            </div>
+                        }
+                        <div class="co-detail">
+                            <span class="co-detail-label">Seat</span>
+                            <span class="co-seat-badge">@item.Seat</span>
+                        </div>
+                        <div class="co-detail co-price-col">
+                            <span class="co-detail-label">Price</span>
+                            <span class="co-ticket-price">€@item.Vak.Price.ToString("0.##")</span>
+                        </div>
+                    </div>
+                </article>
+            }
+        </div>
+    }
+
+    @if (subscriptions.Count > 0)
+    {
+        <div class="co-ticket-list">
+            @foreach (var item in subscriptions)
+            {
+                <article class="co-ticket">
+                    <div class="co-ticket-main">
+                        <img src="/Images/@item.Club.LogoUrl" alt="@item.Club.Name" class="co-logo" />
+                        <div class="co-match-info">
+                            <div class="co-teams">@item.Club.Name seasonpass</div>
+                            <div class="co-meta">@item.Club.Stadium.name</div>
+                        </div>
                     </div>
 
                     <div class="co-ticket-details">
