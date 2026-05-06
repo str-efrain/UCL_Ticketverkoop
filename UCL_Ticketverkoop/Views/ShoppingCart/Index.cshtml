@@ -91,6 +91,13 @@
                             <span class="sc-detail-label">Section</span>
                             <span class="sc-detail-value">@item.Vak.Name</span>
                         </div>
+                        @if (!string.IsNullOrEmpty(item.Ring))
+                        {
+                            <div class="sc-detail">
+                                <span class="sc-detail-label">Ring</span>
+                                <span class="sc-detail-value">@item.Ring</span>
+                            </div>
+                        }
                         <div class="sc-detail">
                             <span class="sc-detail-label">Seat</span>
                             <span class="sc-detail-value sc-seat-badge">@item.Seat</span>

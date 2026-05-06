@@ -251,6 +251,7 @@ namespace UCL_Ticketverkoop.Controllers
                     Id = nextId++,
                     Match = _mapper.Map<MatchVM>(match),
                     Vak = _mapper.Map<VakVM>(vak),
+                    Ring = vak.Ring,
                     Seat = seat
                 };
 

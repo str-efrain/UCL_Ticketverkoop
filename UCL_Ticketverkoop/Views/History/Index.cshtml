@@ -53,11 +53,11 @@
                                         <span class="oh-detail-label">Section</span>
                                         <span class="oh-detail-value">@ticket.Vak.Name</span>
                                     </div>
-                                    @if (!string.IsNullOrEmpty(ticket.Vak.Ring))
+                                    @if (!string.IsNullOrEmpty(ticket.Ring))
                                     {
                                         <div class="oh-detail">
                                             <span class="oh-detail-label">Ring</span>
-                                            <span class="oh-detail-value">@ticket.Vak.Ring</span>
+                                            <span class="oh-detail-value">@ticket.Ring</span>
                                         </div>
                                     }
                                     <div class="oh-detail">
@@ -100,20 +100,19 @@
                                         <span class="oh-detail-label">Section</span>
                                         <span class="oh-detail-value">@ticket.Vak?.Name</span>
                                     </div>
-                                    @if (!string.IsNullOrEmpty(ticket.Vak?.Ring))
-                                    {
-                                        <div class="oh-detail">
-                                            <span class="oh-detail-label">Ring</span>
-                                            <span class="oh-detail-value">@ticket.Vak?.Ring</span>
-                                        </div>
-                                    }
+                                    
+                                    <div class="oh-detail">
+                                        <span class="oh-detail-label">Ring</span>
+                                        <span class="oh-detail-value">@ticket.Vak?.Ring</span>
+                                    </div>
+                                    
                                     <div class="oh-detail">
                                         <span class="oh-detail-label">Seat</span>
                                         <span class="oh-seat-badge">@ticket.Seat</span>
                                     </div>
                                     <div class="oh-detail oh-price-col">
                                         <span class="oh-detail-label">Price</span>
-                                        <span class="oh-ticket-price">€@ticket.Vak?.Price.ToString("0.##")</span>
+                                        <span class="oh-ticket-price">€@ticket.Vak?.SubscriptionPrice.ToString("0.##")</span>
                                     </div>
                                 </div>
                             </div>
