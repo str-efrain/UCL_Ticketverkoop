@@ -55,35 +55,38 @@ namespace UCL_Ticketverkoop.Controllers
                 return View("Index", cart);
             }
 
-            if (cart.Tickets != null && cart.Tickets.Any())
-            {
-                foreach (var item in cart.Tickets)
-                {
-                    bool isTaken = await _seatService.isSeatTakenAsync(item.Match.HomeTeamId, item.Vak.Id, item.Seat, item.Match.SeizoenId, item.Match.Id);
-                    if (isTaken)
-                    {
-                        ViewBag.ErrorMessage = $"Sorry,De stoel {item.Seat} in vak {item.Vak.Name} voor de match {item.Match.AwayTeamName} is al bezet!";
-                        return View("Index", cart);
-                    }
-                }
-            }
+            //if (cart.Tickets != null && cart.Tickets.Any())
+            //{
+            //    foreach (var item in cart.Tickets)
+            //    {
+            //        bool isTaken = await _seatService.isSeatTakenAsync(item.Match.HomeTeamId, item.Vak.Id, item.Seat, item.Match.SeizoenId, item.Match.Id);
+            //        if (isTaken)
+            //        {
+            //            ViewBag.ErrorMessage = $"Sorry,De stoel {item.Seat} in vak {item.Vak.Name} voor de match {item.Match.AwayTeamName} is al bezet!";
+            //            return View("Index", cart);
+            //        }
+            //    }
+            //}
 
-            if (cart.Subscriptions != null && cart.Subscriptions.Any())
-            {
-                foreach (var item in cart.Subscriptions)
-                {
-                    bool isTaken = await _seatService.isSeatTakenAsync(item.Club.Id, item.Vak.Id, item.Seat, item.SeizoenId, null);
-                    if (isTaken)
-                    {
-                        ViewBag.ErrorMessage = $"Sorry,De stoel {item.Seat} in vak {item.Vak.Name} voor de dit seizoen is al bezet!";
-                        return View("Index", cart);
-                    }
-                }
-            }
+            //if (cart.Subscriptions != null && cart.Subscriptions.Any())
+            //{
+            //    foreach (var item in cart.Subscriptions)
+            //    {
+            //        bool isTaken = await _seatService.isSeatTakenAsync(item.Club.Id, item.Vak.Id, item.Seat, item.SeizoenId, null);
+            //        if (isTaken)
+            //        {
+            //            ViewBag.ErrorMessage = $"Sorry,De stoel {item.Seat} in vak {item.Vak.Name} voor de dit seizoen is al bezet!";
+            //            return View("Index", cart);
+            //        }
+            //    }
+            //}
 
 
+            List<Ticket> tickets = new List<Ticket>();
+            List<Abonnement> subscriptions = new List<Abonnement>();
+            Order order = new Order();
 
-            Order order = new Order
+            order = new Order
             {
 
                 UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
@@ -91,13 +94,12 @@ namespace UCL_Ticketverkoop.Controllers
                 TotalPrice = cart.TotalPrice
             };
 
-            await _orderService.AddAsync(order);
 
             if (cart.Tickets != null && cart.Tickets.Any())
             {
                 foreach (var item in cart.Tickets)
                 {
-                    await _ticketService.AddAsync(new Ticket
+                    tickets.Add( new Ticket
                     {
                         OrderId = order.Id,
                         MatchId = item.Match.Id,
@@ -112,7 +114,7 @@ namespace UCL_Ticketverkoop.Controllers
             {
                 foreach (var item in cart.Subscriptions)
                 {
-                    await _abonnementService.AddAsync(new Abonnement
+                    subscriptions.Add(new Abonnement
                     {
                         OrderId = order.Id,
                         ClubId = item.Club.Id,
@@ -126,10 +128,12 @@ namespace UCL_Ticketverkoop.Controllers
 
             }
 
+            int orderId =await _orderService.ProcessOrderAsync(tickets, subscriptions, order.UserId,cart.TotalPrice);
+
             //Mailing
             //await _orderService.SendOrderConfirmationAsync(order);
 
-            return RedirectToAction("Index", "Checkout", new { orderId = order.Id });
+            return RedirectToAction("Index", "Checkout", new { orderId = orderId });
 
         }
         public IActionResult Delete(int? id, string type)

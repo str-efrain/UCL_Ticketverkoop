@@ -126,9 +126,9 @@ namespace UCL_Ticketverkoop.Controllers
             //controle of de deze persoon al tickets heeft voor een andere match op dezelfde dag
             bool OtherMatchSameDayDB = CurrentUserTickets.Where(t => t.Match.MatchDate.Date == match.MatchDate.Date && t.Match.Id != MatchId).Any();
             bool OtherMatchSameDayCart = cart.Tickets.Where(t => t.Match.MatchDate.Date == match.MatchDate.Date && t.Match.Id != MatchId).Any();
-            if (OtherMatchSameDayDB||OtherMatchSameDayCart) 
+            if (OtherMatchSameDayDB || OtherMatchSameDayCart)
             {
-                ViewBag.ErrorMessage = "Je hebt al ticket(s) voor een wedstrijd op " +match.MatchDate.ToShortDateString();
+                ViewBag.ErrorMessage = "Je hebt al ticket(s) voor een wedstrijd op " + match.MatchDate.ToShortDateString();
                 SeatSelectVM viewModel = await BuildSeatSelectVm(match, VakId);
                 return View("SeatSelection", viewModel);
             }
@@ -210,14 +210,14 @@ namespace UCL_Ticketverkoop.Controllers
                 return View("SeatSelection", limitViewModel);
             }
 
-            bool otherMatchSameDayDb = currentUserTickets.Any(t => t.Match.MatchDate.Date == match.MatchDate.Date && t.Match.Id != MatchId);
-            bool otherMatchSameDayCart = cart.Tickets.Any(t => t.Match.MatchDate.Date == match.MatchDate.Date && t.Match.Id != MatchId);
-            if (otherMatchSameDayDb || otherMatchSameDayCart)
-            {
-                ViewBag.ErrorMessage = "Je hebt al ticket(s) voor een wedstrijd op " + match.MatchDate.ToShortDateString();
-                SeatSelectVM sameDayViewModel = await BuildSeatSelectVm(match, VakId);
-                return View("SeatSelection", sameDayViewModel);
-            }
+            //bool otherMatchSameDayDb = currentUserTickets.Any(t => t.Match.MatchDate.Date == match.MatchDate.Date && t.Match.Id != MatchId);
+            //bool otherMatchSameDayCart = cart.Tickets.Any(t => t.Match.MatchDate.Date == match.MatchDate.Date && t.Match.Id != MatchId);
+            //if (otherMatchSameDayDb || otherMatchSameDayCart)
+            //{
+            //    ViewBag.ErrorMessage = "Je hebt al ticket(s) voor een wedstrijd op " + match.MatchDate.ToShortDateString();
+            //    SeatSelectVM sameDayViewModel = await BuildSeatSelectVm(match, VakId);
+            //    return View("SeatSelection", sameDayViewModel);
+            //}
 
             int nextId = cart.Tickets.Count;
             foreach (string seat in seatsToAdd)

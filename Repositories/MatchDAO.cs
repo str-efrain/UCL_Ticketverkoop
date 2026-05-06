@@ -47,14 +47,14 @@ namespace Repositories
         public async Task<Match?> FindByIdAsync(int Id)
         {
             return await _context.Matches
-                .Include(o => o.Tickets)
-                .Include(o=>o.HomeClub)
-                    .ThenInclude(c => c.Stadium)
-                    .ThenInclude(v=>v.Vaks)
-                .Include(o => o.AwayClub)
-                .Include(o => o.Seizoen)
-                .AsNoTracking()
-                .SingleOrDefaultAsync(o => o.Id == Id);
+                    .Include(m => m.Tickets)
+                    .Include(m => m.Seizoen)
+                    .Include(m => m.AwayClub)
+                    .Include(m => m.HomeClub)
+                        .ThenInclude(club => club.Stadium)
+                            .ThenInclude(stadium => stadium.Vaks)
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(m => m.Id == Id);
         }
 
         public async Task<IEnumerable<Match>?> GetAllAsync()

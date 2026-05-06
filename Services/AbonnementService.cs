@@ -1,4 +1,5 @@
 ﻿using Domains.Entities;
+using Domains.Exceptions;
 using Repositories.Interfaces;
 using Services.Interfaces;
 using System;
@@ -12,13 +13,41 @@ namespace Services
     public class AbonnementService:IAbonnementService
     {
         private readonly IAbonnementDAO _abonnementDAO;
-        public AbonnementService(IAbonnementDAO abonnementDAO)
+        private readonly ISeatService _seatService;
+        private readonly ISeizoenService _seizoenService;
+        public AbonnementService(IAbonnementDAO abonnementDAO, ISeatService seatService, ISeizoenService seizoenService)
         {
             _abonnementDAO = abonnementDAO;
+            _seatService = seatService;
+            _seizoenService = seizoenService;
         }
 
         public async Task AddAsync(Abonnement entity)
         {
+            entity.Seizoen = await _seizoenService.FindByIdAsync(entity.SeizoenId);
+
+            DateTime startDateAsDateTime = entity.Seizoen.StartDate.ToDateTime(TimeOnly.MinValue);
+            DateOnly startAbonnementen = DateOnly.FromDateTime(startDateAsDateTime.AddMonths(-2));
+            DateOnly stopAbonnementen = DateOnly.FromDateTime(startDateAsDateTime.AddMonths(-1));
+
+            DateOnly vandaag = DateOnly.FromDateTime(DateTime.Now);
+
+            //controle of de abonnementenverkoop al gestart is en nog niet gestopt is
+            //if (vandaag < startAbonnementen || vandaag >= stopAbonnementen)
+            //{
+            //    DateTime start= startAbonnementen.ToDateTime(TimeOnly.MinValue);
+            //    DateTime end = stopAbonnementen.ToDateTime(TimeOnly.MinValue);
+
+            //    throw new SubscriptionSalesNotActiveException(start, end);
+            //}
+
+            //controle of seat al is genomen
+            if (await _seatService.isSeatTakenAsync(entity.ClubId, entity.VakId, entity.Seat, entity.SeizoenId,null))
+            {
+                throw new SeatIsTakenException(entity.Seat, entity.Vak.Name, entity.Club.Stadium.Name);
+            }
+
+
             await _abonnementDAO.AddAsync(entity);
         }
 

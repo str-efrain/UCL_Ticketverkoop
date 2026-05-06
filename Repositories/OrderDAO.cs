@@ -21,14 +21,6 @@ namespace Repositories
         public async Task AddAsync(Order entity)
         {
             _context.Entry(entity).State = EntityState.Added;
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-            }
         }
 
         public async Task DeleteAsync(Order entity)

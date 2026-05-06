@@ -21,14 +21,6 @@ namespace Repositories
         public async Task AddAsync(Ticket entity)
         {
             _context.Entry(entity).State = EntityState.Added;
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-            }
         }
 
         public async Task DeleteAsync(Ticket entity)

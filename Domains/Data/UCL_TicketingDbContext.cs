@@ -65,7 +65,7 @@ public partial class UCL_TicketingDbContext : DbContext
 
             entity.ToTable("Abonnement");
 
-            entity.HasIndex(e => e.OrderId, "IX_Abonnement_OrderId").IsUnique();
+            entity.HasIndex(e => e.OrderId, "IX_Abonnement_OrderId");
             entity.HasIndex(e => e.SeizoenId, "IX_Abonnement_SeizoenId");
 
             entity.Property(e => e.Seat)

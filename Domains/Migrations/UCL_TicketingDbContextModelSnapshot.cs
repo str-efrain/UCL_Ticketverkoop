@@ -55,8 +55,7 @@ namespace Domains.Migrations
 
                     b.HasIndex("VakId");
 
-                    b.HasIndex(new[] { "OrderId" }, "IX_Abonnement_OrderId")
-                        .IsUnique();
+                    b.HasIndex(new[] { "OrderId" }, "IX_Abonnement_OrderId");
 
                     b.HasIndex(new[] { "SeizoenId" }, "IX_Abonnement_SeizoenId");
 
