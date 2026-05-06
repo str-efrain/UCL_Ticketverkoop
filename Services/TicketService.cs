@@ -19,42 +19,51 @@ namespace Services
         private readonly ISeatService _seatService;
         private readonly IMatchDAO _matchDAO;
         private readonly IDAO<Vak> _vakDAO;
-        public TicketService(ITicketDAO ticketDAO,ISeatService seatService, IMatchDAO matchDAO, IDAO<Vak> vakDAO)
+        private readonly UCL_TicketingDbContext _context;
+        public TicketService(ITicketDAO ticketDAO,ISeatService seatService, IMatchDAO matchDAO, IDAO<Vak> vakDAO, UCL_TicketingDbContext context)
         {
             _ticketDAO = ticketDAO;
             _seatService = seatService;
             _matchDAO = matchDAO;
             _vakDAO = vakDAO;
+            _context = context;
         }
         public async Task AddAsync(Ticket entity, string userId)
         {
+            //Ze worden hier eerst toegevoegd omdat je anders reace conditions hebt bij max 4 tickets per match
+            //dit is veilig omdat er een transactie is in de orderservice
+            await _ticketDAO.AddAsync(entity);
             var userTickets = await _ticketDAO.GetTicketsByUserAsync(userId);
             const int maxTicketsPerUserPerMatch = 4;
             const int maxMatchesPerDayPerUser = 1;
-            entity.Match = await _matchDAO.FindByIdAsync(entity.MatchId);
-            entity.Vak = await _vakDAO.FindByIdAsync(entity.VakId);
+            var match = await _matchDAO.FindByIdAsync(entity.MatchId);
+            var vak = await _vakDAO.FindByIdAsync(entity.VakId);
 
-            if (entity.Match == null)
+            if (match == null)
                 throw new Exception("Match bestaat niet.");
 
             //Controle max 4 tickets per user per match 
-            int countForMatch = userTickets.Count(t => t.MatchId == entity.MatchId);
-            if (countForMatch >= maxTicketsPerUserPerMatch)
+            var localTickets = _context.Tickets.Local
+                .Where(t => t.Order.UserId == userId && t.MatchId == entity.MatchId)
+                .ToList();
+
+            int totaalAantal =userTickets.Count(t => t.MatchId == entity.MatchId) + localTickets.Count;
+            if (totaalAantal >= maxTicketsPerUserPerMatch)
             {
                 throw new TicketLimitExceededException(maxTicketsPerUserPerMatch);
             }
 
             //controle of seat al is genomen
-            if (await _seatService.isSeatTakenAsync(entity.Match.HomeClubId, entity.VakId, entity.Seat, entity.Match.SeizoenId, entity.Match.Id))
+            if (await _seatService.isSeatTakenAsync(match.HomeClubId, vak.Id, entity.Seat, match.SeizoenId, match.Id))
             {
-                throw new SeatIsTakenException(entity.Seat, entity.Vak.Name, entity.Match.HomeClub.Stadium.Name);
+                throw new SeatIsTakenException(entity.Seat, vak.Name, match.HomeClub.Stadium.Name);
             }
 
-            //Controle max 1 match per dag per user
-            if (userTickets.Count(t => t.MatchId != entity.MatchId && t.Match.MatchDate.Date == entity.Match.MatchDate.Date) >= maxMatchesPerDayPerUser)
-            {
-                throw new MaxTicketsPerMatchDayExeededException(entity.Match.MatchDate, maxMatchesPerDayPerUser);
-            }
+            ////Controle max 1 match per dag per user
+            //if (userTickets.Count(t => t.MatchId != entity.MatchId && t.Match.MatchDate.Date == match.MatchDate.Date) >= maxMatchesPerDayPerUser)
+            //{
+            //    throw new MaxTicketsPerMatchDayExeededException(maxMatchesPerDayPerUser);
+            //}
 
             //controle of de ticket verkoop al gestart is
             //if(DateTime.Now < entity.Match.MatchDate.AddMonths(-1) || DateTime.Now > entity.Match.MatchDate)
@@ -62,7 +71,6 @@ namespace Services
             //        throw new TicketSalesNotActiveException(entity.Match.MatchDate.AddMonths(-1),entity.Match.MatchDate);
             //}
 
-            await _ticketDAO.AddAsync(entity);
         }
 
         public Task AddAsync(Ticket entity)

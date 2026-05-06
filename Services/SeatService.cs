@@ -23,7 +23,7 @@ namespace Services
         //abbonement kan de verkoop van een ticket blokkeren, maar een ticket niet de verkoop van een abonnement
         public async Task<bool> isSeatTakenAsync(int clubId, int vakId, string seat, int seasonId, int? matchId = null)
         {
-            if (matchId.HasValue && matchId.Value > 0)
+            if (matchId.HasValue)
             {
                 var hasTicket = await _ticketDAO.IsSeatTakenAsync(matchId.Value, vakId, seat);
 

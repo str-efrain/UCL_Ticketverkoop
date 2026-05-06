@@ -33,8 +33,8 @@ namespace Domains.Exceptions
 
     public class MaxTicketsPerMatchDayExeededException : BusinessRuleException
     {
-        public MaxTicketsPerMatchDayExeededException(DateTime matchDay,int aantal)
-            : base($"Je kunt maximum {aantal} ticket(s) kopen voor wedstrijden op {matchDay.ToShortDateString()}.") { }
+        public MaxTicketsPerMatchDayExeededException(int aantal)
+            : base($"Je kunt maximum naar {aantal} wedstrijd(en) per dag gaan.") { }
     }
 
     public class SeatIsTakenException : BusinessRuleException
