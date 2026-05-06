@@ -47,7 +47,6 @@ KeyVaultSecret emailPasswordSecret = client.GetSecret(emailPassword);
 string emailPasswordVal = emailPasswordSecret.Value;
 builder.Configuration["EmailSettings:Password"] = emailPasswordVal;
 
-
 //Connection string ophalen
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
@@ -126,6 +125,9 @@ builder.Services.AddScoped<IService<Vak>, VakService>();
 
 builder.Services.AddScoped<ITicketDAO, TicketDAO>();
 builder.Services.AddScoped<ITicketService,TicketService>();
+
+builder.Services.AddScoped<ISeizoenDAO, SeizoenDAO>();
+builder.Services.AddScoped<ISeizoenService, SeizoenService>();
 
 builder.Services.AddScoped<IOrderDAO, OrderDAO>();
 builder.Services.AddScoped<IOrderService, OrderService>();

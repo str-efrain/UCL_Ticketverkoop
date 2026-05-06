@@ -15,30 +15,28 @@
     <div class="alert alert-danger">@ViewBag.ErrorMessage</div>
 }
 
-@if (Model?.Tickets != null && Model.Tickets.Count > 0)
+@* 1. De Grote Check: Zit er iets in de mand? *@
+@if ((Model?.Tickets != null && Model.Tickets.Any()) || (Model?.Subscriptions != null && Model.Subscriptions.Any()))
 {
     <div class="sc-layout">
 
-        <!-- ── Ticket list ── -->
+        <!-- ── Linkerkant: De items ── -->
         <div class="sc-tickets">
-            @foreach (var item in Model.Tickets)
+
+            @* Abonnementen tonen *@
+            @foreach (var item in Model.Subscriptions)
             {
                 <div class="sc-ticket">
-                    <!-- Teams -->
                     <div class="sc-ticket-match">
-                        <img src="/Images/@item.Match.HomeTeamLogoUrl" alt="@item.Match.HomeTeamName" class="sc-logo" />
+                        <img src="/Images/@item.Club.LogoUrl" alt="@item.Club.Name" class="sc-logo" />
                         <div class="sc-match-info">
-                            <span class="sc-teams">@item.Match.HomeTeamName <span class="sc-vs">vs</span> @item.Match.AwayTeamName</span>
-                            <span class="sc-meta">@item.Match.MatchDate.ToString("ddd d MMM yyyy · HH:mm")</span>
-                            <span class="sc-meta">@item.Match.StadiumName</span>
+                            <span class="sc-teams">@item.Club.Name Season Pass</span>
+                            <span class="sc-meta">@item.Club.Stadium?.name</span>
                         </div>
-                        <img src="/Images/@item.Match.AwayTeamLogoUrl" alt="@item.Match.AwayTeamName" class="sc-logo" />
                     </div>
 
-                    <!-- Divider -->
                     <div class="sc-ticket-divider"></div>
 
-                    <!-- Seat details -->
                     <div class="sc-ticket-details">
                         <div class="sc-detail">
                             <span class="sc-detail-label">Section</span>
@@ -55,49 +53,76 @@
                             <span class="sc-detail-label">Seat</span>
                             <span class="sc-detail-value sc-seat-badge">@item.Seat</span>
                         </div>
-                        @if (!string.IsNullOrEmpty(item.Status))
-                        {
-                            <div class="sc-detail">
-                                <span class="sc-detail-label">Status</span>
-                                <span class="sc-status-badge">@item.Status</span>
-                            </div>
-                        }
                         <div class="sc-detail sc-price-col">
                             <span class="sc-detail-label">Price</span>
                             <span class="sc-ticket-price">€@item.Vak.Price.ToString("0.##")</span>
                         </div>
                     </div>
 
-                    <!-- Remove -->
-                    <a asp-controller="ShoppingCart"
-                       asp-action="Delete"
-                       asp-route-id="@item.Id"
-                       class="sc-remove"
-                       title="Remove ticket">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="3 6 5 6 21 6" />
-                            <path d="M19 6l-1 14H6L5 6" />
-                            <path d="M10 11v6" />
-                            <path d="M14 11v6" />
-                            <path d="M9 6V4h6v2" />
-                        </svg>
+                    <a asp-controller="ShoppingCart" asp-action="Delete" asp-route-id="@item.Id" class="sc-remove">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" /></svg>
+                    </a>
+                </div>
+            }
+
+            @* Losse Tickets tonen *@
+            @foreach (var item in Model.Tickets)
+            {
+                <div class="sc-ticket">
+                    <div class="sc-ticket-match">
+                        <img src="/Images/@item.Match.HomeTeamLogoUrl" alt="@item.Match.HomeTeamName" class="sc-logo" />
+                        <div class="sc-match-info">
+                            <span class="sc-teams">@item.Match.HomeTeamName vs @item.Match.AwayTeamName</span>
+                            <span class="sc-meta">@item.Match.MatchDate.ToString("ddd d MMM yyyy · HH:mm")</span>
+                        </div>
+                        <img src="/Images/@item.Match.AwayTeamLogoUrl" alt="@item.Match.AwayTeamName" class="sc-logo" />
+                    </div>
+
+                    <div class="sc-ticket-divider"></div>
+
+                    <div class="sc-ticket-details">
+                        <div class="sc-detail">
+                            <span class="sc-detail-label">Section</span>
+                            <span class="sc-detail-value">@item.Vak.Name</span>
+                        </div>
+                        <div class="sc-detail">
+                            <span class="sc-detail-label">Seat</span>
+                            <span class="sc-detail-value sc-seat-badge">@item.Seat</span>
+                        </div>
+                        <div class="sc-detail sc-price-col">
+                            <span class="sc-detail-label">Price</span>
+                            <span class="sc-ticket-price">€@item.Vak.Price.ToString("0.##")</span>
+                        </div>
+                    </div>
+
+                    <a asp-controller="ShoppingCart" asp-action="Delete" asp-route-id="@item.Id" class="sc-remove">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" /></svg>
                     </a>
                 </div>
             }
         </div>
 
-        <!-- ── Order summary ── -->
+        <!-- ── Rechterkant: Order Summary ── -->
         <div class="sc-summary">
             <h2 class="sc-summary-title">Order Summary</h2>
 
             <div class="sc-summary-lines">
+                @* Summary regels voor Abonnementen *@
+                @foreach (var item in Model.Subscriptions)
+                {
+                    <div class="sc-summary-line">
+                        <span>@item.Club.Name Pass</span>
+                        <span>€@item.Vak.Price.ToString("0.##")</span>
+                    </div>
+                }
+
+                @* Summary regels voor Tickets *@
                 @foreach (var item in Model.Tickets)
                 {
                     <div class="sc-summary-line">
-                        <span>@item.Match.HomeTeamName vs @item.Match.AwayTeamName</span>
+                        <span>Ticket: @item.Match.HomeTeamName</span>
                         <span>€@item.Vak.Price.ToString("0.##")</span>
                     </div>
-                    <span class="sc-summary-sub">@item.Vak.Name · Seat @item.Seat</span>
                 }
             </div>
 
@@ -106,25 +131,19 @@
                 <span class="sc-total-price">€@Model.TotalPrice.ToString("0.##")</span>
             </div>
 
-            <a asp-controller="ShoppingCart" asp-action="Buy" class="sc-buy-btn">
-                Confirm &amp; Buy
-            </a>
-
-            <a asp-controller="Match" asp-action="Index" class="sc-continue-link">
-                ← Continue browsing matches
-            </a>
+            <a asp-controller="ShoppingCart" asp-action="Buy" class="sc-buy-btn">Confirm &amp; Buy</a>
+            <a asp-controller="Match" asp-action="Index" class="sc-continue-link">← Continue browsing</a>
         </div>
 
     </div>
 }
 else
 {
+    @* 2. De Empty State: Alleen als er NIETS in zit *@
     <div class="sc-empty">
         <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="32" cy="32" r="30" stroke="#1a3a8f" stroke-width="2" />
             <path d="M20 24h4l4 16h12l4-12H28" stroke="#d4af37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-            <circle cx="30" cy="44" r="2" fill="#d4af37" />
-            <circle cx="40" cy="44" r="2" fill="#d4af37" />
         </svg>
         <p class="sc-empty-title">Your cart is empty</p>
         <p class="sc-empty-sub">Head to the match calendar and grab your tickets.</p>
