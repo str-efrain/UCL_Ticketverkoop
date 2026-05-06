@@ -24,7 +24,9 @@
         <div class="sc-tickets">
 
             @* Abonnementen tonen *@
-            @foreach (var item in Model.Subscriptions)
+            @if(Model.Subscriptions?.Any()==true)
+            {
+                @foreach (var item in Model.Subscriptions)
             {
                 <div class="sc-ticket">
                     <div class="sc-ticket-match">
@@ -64,9 +66,13 @@
                     </a>
                 </div>
             }
+            }
+            
 
             @* Losse Tickets tonen *@
-            @foreach (var item in Model.Tickets)
+            @if(Model.Tickets?.Any()== true)
+            {
+             @foreach (var item in Model.Tickets)
             {
                 <div class="sc-ticket">
                     <div class="sc-ticket-match">
@@ -100,6 +106,8 @@
                     </a>
                 </div>
             }
+
+            }
         </div>
 
         <!-- ── Rechterkant: Order Summary ── -->
@@ -108,14 +116,19 @@
 
             <div class="sc-summary-lines">
                 @* Summary regels voor Abonnementen *@
-                @foreach (var item in Model.Subscriptions)
+                @if (Model.Subscriptions?.Any() == true)
+                {
+                    @foreach (var item in Model.Subscriptions)
                 {
                     <div class="sc-summary-line">
                         <span>@item.Club.Name Pass</span>
                         <span>€@item.Vak.Price.ToString("0.##")</span>
                     </div>
                 }
-
+                }
+                
+                @if(Model.Subscriptions?.Any()==true)
+                {
                 @* Summary regels voor Tickets *@
                 @foreach (var item in Model.Tickets)
                 {
@@ -123,6 +136,7 @@
                         <span>Ticket: @item.Match.HomeTeamName</span>
                         <span>€@item.Vak.Price.ToString("0.##")</span>
                     </div>
+                }
                 }
             </div>
 

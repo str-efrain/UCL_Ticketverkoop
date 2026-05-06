@@ -55,6 +55,7 @@ namespace UCL_Ticketverkoop.Controllers
                 return View("Index",cart);
             }
 
+
             foreach (var item in cart.Tickets)
             {
                 bool isTaken = await _seatService.isSeatTakenAsync(item.Match.HomeTeamId, item.Vak.Id, item.Seat, item.Match.SeizoenId,item.Match.Id);
@@ -95,8 +96,7 @@ namespace UCL_Ticketverkoop.Controllers
                     VakId = item.Vak.Id,
                     Seat = item.Seat,
                 });
-                
-                
+   
             }
             foreach (var item in cart.Subscriptions)
             {
@@ -111,6 +111,9 @@ namespace UCL_Ticketverkoop.Controllers
 
 
             }
+
+            //Mailing
+            await _orderService.SendOrderConfirmationAsync(order);
 
             return RedirectToAction("Index", "Checkout", new { orderId = order.Id });
 

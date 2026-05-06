@@ -7,16 +7,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Util.Mail.Interfaces;
+using Util.PDF.Interfaces;
 
 namespace Services
 {
     public class OrderService : IOrderService
     {
         private readonly IOrderDAO _orderDAO;
+        private readonly IEmailSend _emailSend;
+        private readonly ICreatePDF _createPdf;
 
-        public OrderService(IOrderDAO orderDAO)
+        public OrderService(IOrderDAO orderDAO, IEmailSend emailSend, ICreatePDF createPDF)
         {
             _orderDAO = orderDAO;
+            _emailSend = emailSend;
+            _createPdf = createPDF;
         }
         public async Task AddAsync(Order entity)
         {
@@ -46,6 +52,21 @@ namespace Services
         public async Task<List<Order>> GetOrdersByUserIdAsync(string userId)
         {  
             return await _orderDAO.GetOrdersByUserIdAsync(userId);   
+        }
+
+        public async Task SendOrderConfirmationAsync(Order order)
+        {
+            var orderWithDetails = await _orderDAO.FindByIdAsync(order.Id) ?? order;
+            var pdfStream = _createPdf.CreateTicketPDFDocument(orderWithDetails.Tickets.ToList());
+            if (!string.IsNullOrWhiteSpace(orderWithDetails.User.Email))
+            {
+                await _emailSend.SendOrderConfirmationEmailAsync(
+                    orderWithDetails.User.Email,
+                    "Orderbevesting",
+                    "Bedankt voor jouw bestelling." +
+                    "<br/>Bijgevoegd vind je jouw tickets.",
+                    pdfStream);
+            }
         }
     }
 }

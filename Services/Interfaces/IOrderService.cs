@@ -10,5 +10,7 @@ namespace Services.Interfaces
     public interface IOrderService : IService<Order>
     {
         Task<List<Order>> GetOrdersByUserIdAsync(string userId);
+
+        Task SendOrderConfirmationAsync(Order order);
     }
 }

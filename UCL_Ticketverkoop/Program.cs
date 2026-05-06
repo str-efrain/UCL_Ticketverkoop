@@ -16,8 +16,10 @@ using Services.Interfaces;
 using System.Text;
 using UCL_Ticketverkoop.Data;
 using UCL_Ticketverkoop.Hubs;
-using Util;
-using Util.Interfaces;
+using Util.Mail;
+using Util.Mail.Interfaces;
+using Util.PDF;
+using Util.PDF.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -135,6 +137,8 @@ builder.Services.AddScoped<ISeatService, SeatService>();
 builder.Services.AddScoped<IAbonnementDAO, AbonnementDAO>();
 builder.Services.AddScoped<IAbonnementService, AbonnementService>();
 
+builder.Services.AddScoped<ICreatePDF, CreatePDF>();
+
 //JWT Bearer tokens
 builder.Services.AddAuthentication()
     .AddJwtBearer(cfg =>
@@ -180,7 +184,7 @@ builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("Emai
 builder.Services.AddSingleton<IEmailSend, EmailSend>();
 
 //conformation email
-builder.Services.AddTransient<Microsoft.AspNetCore.Identity.UI.Services.IEmailSender, Util.EmailSend>();
+builder.Services.AddTransient<Microsoft.AspNetCore.Identity.UI.Services.IEmailSender, EmailSend>();
 
 builder.Services.AddSession(options =>
 {
