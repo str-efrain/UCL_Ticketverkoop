@@ -113,18 +113,15 @@ namespace UCL_Ticketverkoop.Controllers
                 //Mailing
                 //await _orderService.SendOrderConfirmationAsync(order);
 
+                //Cart leegmaken
+                ClearShoppingCart();
+
                 return RedirectToAction("Index", "Checkout", new { orderId = orderId });
             }
             catch (BusinessRuleException e)
             {
-
                 ViewBag.ErrorMessage = e.Message;
                 return View("Index");
-            //Cart leegmaken
-            ClearShoppingCart();
-
-            return RedirectToAction("Index", "Checkout", new { orderId = orderId });
-
             }
             catch(Exception)
             {
