@@ -1,4 +1,5 @@
-﻿using Org.BouncyCastle.Utilities.Bzip2;
+﻿using Domains.Entities;
+using Org.BouncyCastle.Utilities.Bzip2;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,6 @@ namespace Util.Mail.Interfaces
     public interface IEmailSend
     {
         Task SendEmailAsync(string email, string subject, string message);
-        Task SendOrderConfirmationEmailAsync(string email, string subject, string message, byte[] pdfBytes);
+        Task SendOrderConfirmationEmailAsync(string email, string subject, Order order, byte[] ticketPdf, byte[] abonnementPdf);
     }
 }

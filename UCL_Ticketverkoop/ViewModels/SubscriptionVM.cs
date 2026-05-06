@@ -12,5 +12,7 @@ namespace UCL_Ticketverkoop.ViewModels
         public string Seat { get; set; } = null!;
 
         public int SeizoenId { get; set; }
+        public string SeizoenName { get; set; }
+
     }
 }

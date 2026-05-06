@@ -109,9 +109,10 @@ namespace UCL_Ticketverkoop.Controllers
                 }
 
                 int orderId = await _orderService.ProcessOrderAsync(tickets, subscriptions, order.UserId, cart.TotalPrice);
+                order.Id = orderId;
 
                 //Mailing
-                //await _orderService.SendOrderConfirmationAsync(order);
+                await _orderService.SendOrderConfirmationAsync(order, tickets, subscriptions);
 
                 //Cart leegmaken
                 ClearShoppingCart();

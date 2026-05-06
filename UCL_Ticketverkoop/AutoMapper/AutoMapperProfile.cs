@@ -57,7 +57,8 @@ namespace UCL_Ticketverkoop.AutoMapper
 
             CreateMap<Abonnement, SubscriptionVM>()
                 .ForMember(dest => dest.Club, opt => opt.MapFrom(src => src.Club))
-                .ForMember(dest => dest.Vak, opt => opt.MapFrom(src => src.Vak));
+                .ForMember(dest => dest.Vak, opt => opt.MapFrom(src => src.Vak))
+                .ForMember(dest => dest.SeizoenName, opt => opt.MapFrom(src => src.Seizoen.Name));
 
             CreateMap<Order, OrderVM>()
              .ForMember(dest => dest.Tickets, opt => opt.MapFrom(src => src.Tickets))
