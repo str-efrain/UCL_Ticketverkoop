@@ -10,5 +10,6 @@ namespace Util.PDF.Interfaces
     public interface ICreatePDF
     {
         byte[] CreateTicketPDFDocument(List<Ticket> tickets);
+        byte[] CreateAbonnementPDFDocument(List<Abonnement> abonnements);
     }
 }

@@ -103,19 +103,25 @@ namespace Services
             return await _orderDAO.GetOrdersByUserIdAsync(userId);   
         }
 
-        public async Task SendOrderConfirmationAsync(Order order)
+        public async Task SendOrderConfirmationAsync(Order order, List<Ticket> tickets, List<Abonnement> subscriptions)
         {
             var orderWithDetails = await _orderDAO.FindByIdAsync(order.Id) ?? order;
-            var pdfStream = _createPdf.CreateTicketPDFDocument(orderWithDetails.Tickets.ToList());
-            if (!string.IsNullOrWhiteSpace(orderWithDetails.User.Email))
-            {
-                await _emailSend.SendOrderConfirmationEmailAsync(
-                    orderWithDetails.User.Email,
-                    "Orderbevesting",
-                    "Bedankt voor jouw bestelling." +
-                    "<br/>Bijgevoegd vind je jouw tickets.",
-                    pdfStream);
-            }
+
+            // Tickets PDF
+            var ticketPdf = tickets.Any() ? _createPdf.CreateTicketPDFDocument(tickets) : null;
+
+            // Season pass PDF (send separately or together)
+            var abonnementPdf = subscriptions.Any() ? _createPdf.CreateAbonnementPDFDocument(subscriptions) : null;
+
+            string userEmail = orderWithDetails.User?.Email ?? order.UserId;
+
+            await _emailSend.SendOrderConfirmationEmailAsync(
+                userEmail,
+                "Orderbevesting",
+                orderWithDetails,
+                ticketPdf,
+                abonnementPdf);
+            
         }
     }
 }

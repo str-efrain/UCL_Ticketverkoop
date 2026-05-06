@@ -109,9 +109,10 @@ namespace UCL_Ticketverkoop.Controllers
                 }
 
                 int orderId = await _orderService.ProcessOrderAsync(tickets, subscriptions, order.UserId, cart.TotalPrice);
+                order.Id = orderId;
 
                 //Mailing
-                //await _orderService.SendOrderConfirmationAsync(order);
+                await _orderService.SendOrderConfirmationAsync(order, tickets, subscriptions);
 
                 //Cart leegmaken
                 ClearShoppingCart();
@@ -123,11 +124,11 @@ namespace UCL_Ticketverkoop.Controllers
                 ViewBag.ErrorMessage = e.Message;
                 return View("Index");
             }
-            catch(Exception)
-            {
-                ViewBag.ErrorMessage = "Er is een fout opgetreden bij het verwerken van je bestelling. Probeer het later opnieuw.";
-                return View("Index");
-            }
+            //catch(Exception)
+            //{
+            //    ViewBag.ErrorMessage = "Er is een fout opgetreden bij het verwerken van je bestelling. Probeer het later opnieuw.";
+            //    return View("Index");
+            //}
         }
         public IActionResult Delete(int? id, string type)
         {

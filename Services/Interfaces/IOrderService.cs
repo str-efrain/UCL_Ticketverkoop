@@ -11,8 +11,7 @@ namespace Services.Interfaces
     {
         Task<List<Order>> GetOrdersByUserIdAsync(string userId);
 
-        Task SendOrderConfirmationAsync(Order order);
-
+        Task SendOrderConfirmationAsync(Order order, List<Ticket> tickets, List<Abonnement> subscriptions);
         Task<int> ProcessOrderAsync(List<Ticket> tickets, List<Abonnement> subscriptions, string userId, double totalPrice);
     }
 }
