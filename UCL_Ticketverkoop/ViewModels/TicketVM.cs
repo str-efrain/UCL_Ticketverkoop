@@ -10,5 +10,7 @@
         public string Ring { get; set; }
         public string Seat { get; set; }
         public string? Status { get; set; }
+        public bool CanCancel { get; set; }
+        public DateTime CancelDeadline { get; set; }
     }
 }

@@ -72,12 +72,24 @@ namespace Repositories
             }
         }
 
+        public async Task UpdateStatusAsync(int ticketId, string status)
+        {
+            var ticket = await _context.Tickets.FindAsync(ticketId);
+            if (ticket == null)
+            {
+                return;
+            }
+
+            ticket.Status = status;
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<bool> IsSeatTakenAsync(int matchId, int vakId, string seat)
         {
-            bool inDb = await _context.Tickets.AnyAsync(t => t.MatchId == matchId && t.VakId == vakId && t.Seat == seat);
+            bool inDb = await _context.Tickets.AnyAsync(t => t.MatchId == matchId && t.VakId == vakId && t.Seat == seat && t.Status != "Canceled");
             if (inDb) return true;
 
-            bool inLocal = _context.Tickets.Local.Any(t => t.MatchId == matchId && t.VakId == vakId && t.Seat == seat);
+            bool inLocal = _context.Tickets.Local.Any(t => t.MatchId == matchId && t.VakId == vakId && t.Seat == seat && t.Status != "Canceled");
 
             return inLocal;
         }
@@ -89,7 +101,7 @@ namespace Repositories
 
             var ticketSeats = await _context.Tickets
                 .AsNoTracking()
-                .Where(t => t.MatchId == matchId && t.VakId == vakId)
+                .Where(t => t.MatchId == matchId && t.VakId == vakId && t.Status != "Canceled")
                 .Select(t => t.Seat)
                 .ToListAsync();
 

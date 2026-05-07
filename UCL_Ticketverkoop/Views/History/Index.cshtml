@@ -13,6 +13,16 @@
     <p class="oh-subtitle">Review your past orders and ticket details.</p>
 </div>
 
+@if (TempData["SuccessMessage"] is string successMessage)
+{
+    <div class="oh-alert oh-alert-success">@successMessage</div>
+}
+
+@if (TempData["ErrorMessage"] is string errorMessage)
+{
+    <div class="oh-alert oh-alert-error">@errorMessage</div>
+}
+
 @if (orders.Count > 0)
 {
     <div class="oh-orders">
@@ -35,7 +45,7 @@
                     <div class="oh-ticket-list">
                         @foreach (var ticket in order.Tickets)
                         {
-                            <div class="oh-ticket">
+                            <div class="oh-ticket @(string.Equals(ticket.Status, "Canceled", StringComparison.OrdinalIgnoreCase) ? "oh-ticket-canceled" : "")">
                                 <div class="oh-ticket-main">
                                     <div class="oh-team-logos">
                                         <img src="/Images/@ticket.Match.HomeTeamLogoUrl" alt="@ticket.Match.HomeTeamName" class="oh-logo" />
@@ -74,6 +84,19 @@
                                     <div class="oh-detail oh-price-col">
                                         <span class="oh-detail-label">Price</span>
                                         <span class="oh-ticket-price">€@ticket.Vak.Price.ToString("0.##")</span>
+                                    </div>
+                                    <div class="oh-detail oh-cancel-col">
+                                        @if (ticket.CanCancel)
+                                        {
+                                            <form asp-controller="History" asp-action="CancelTicket" method="post" class="oh-cancel-form">
+                                                <input type="hidden" name="ticketId" value="@ticket.Id" />
+                                                <button type="submit" class="oh-cancel-btn">Cancel ticket</button>
+                                            </form>
+                                        }
+                                        else if (!string.Equals(ticket.Status, "Canceled", StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            <span class="oh-cancel-note">Cancellation closed on @ticket.CancelDeadline.ToString("ddd d MMM yyyy · HH:mm")</span>
+                                        }
                                     </div>
                                 </div>
                             </div>

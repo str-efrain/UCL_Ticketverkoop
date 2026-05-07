@@ -11,11 +11,13 @@ namespace UCL_Ticketverkoop.Controllers
     public class HistoryController : Controller
     {
         private readonly IOrderService _orderService;
+        private readonly ITicketService _ticketService;
         private readonly IMapper _mapper;
 
-        public HistoryController(IOrderService orderService, IMapper mapper)
+        public HistoryController(IOrderService orderService, ITicketService ticketService, IMapper mapper)
         {
             _orderService = orderService;
+            _ticketService = ticketService;
             _mapper = mapper;
         }
 
@@ -28,10 +30,49 @@ namespace UCL_Ticketverkoop.Controllers
 
             foreach (var order in data)
             {
-                orders.Add(_mapper.Map<OrderVM>(order));
+                var orderViewModel = _mapper.Map<OrderVM>(order);
+                SetCancellationState(orderViewModel);
+                orders.Add(orderViewModel);
             }
 
             return View(orders);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CancelTicket(int ticketId)
+        {
+            string? userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                return Challenge();
+            }
+
+            try
+            {
+                await _ticketService.CancelTicketAsync(ticketId, userId);
+                TempData["SuccessMessage"] = "Ticket canceled successfully.";
+            }
+            catch (UnauthorizedAccessException)
+            {
+                TempData["ErrorMessage"] = "This ticket could not be found for your account.";
+            }
+            catch (InvalidOperationException ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        private static void SetCancellationState(OrderVM order)
+        {
+            foreach (var ticket in order.Tickets)
+            {
+                ticket.CancelDeadline = ticket.Match.MatchDate.AddDays(-7);
+                ticket.CanCancel = !string.Equals(ticket.Status, "Canceled", StringComparison.OrdinalIgnoreCase) &&
+                                   DateTime.Now <= ticket.CancelDeadline;
+            }
         }
     }
 }

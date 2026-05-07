@@ -13,5 +13,6 @@ namespace Repositories.Interfaces
         Task<bool>  IsSeatTakenAsync(int matchId, int vakId, string seat);
         Task<List<string>> GetTakenSeatsAsync(int matchId, int vakId);
         Task<IEnumerable<Ticket>> GetTicketsByUserAsync(String userId);
+        Task UpdateStatusAsync(int ticketId, string status);
     }
 }

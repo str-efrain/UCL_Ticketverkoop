@@ -15,6 +15,7 @@ namespace Services
 {
     public class TicketService : ITicketService
     {
+        private const string CanceledStatus = "Canceled";
         private readonly ITicketDAO _ticketDAO;
         private readonly ISeatService _seatService;
         private readonly IMatchDAO _matchDAO;
@@ -68,17 +69,17 @@ namespace Services
 
             //dit haalt alles op wat recent is toegevoegd voor de savechanges
             var localTickets = _context.Tickets.Local
-                .Where(t => t.Order.UserId == userId && t.MatchId == entity.MatchId)
+                .Where(t => t.Order.UserId == userId && t.MatchId == entity.MatchId && t.Status != CanceledStatus)
                 .ToList();
 
-            int totaalAantal = userTickets.Count(t => t.MatchId == entity.MatchId) + localTickets.Count - 1; //-1 omdat de ticket die we net hebben toegevoegd ook in local zit, maar nog niet in de database, dus die moeten we eraf halen
+            int totaalAantal = userTickets.Count(t => t.MatchId == entity.MatchId && t.Status != CanceledStatus) + localTickets.Count - 1; //-1 omdat de ticket die we net hebben toegevoegd ook in local zit, maar nog niet in de database, dus die moeten we eraf halen
             if (totaalAantal >= maxTicketsPerUserPerMatch)
             {
                 throw new TicketLimitExceededException(maxTicketsPerUserPerMatch);
             }
 
             //Controle max 1 match per dag per user
-            if (userTickets.Count(t => t.MatchId != entity.MatchId && t.Match.MatchDate.Date == match.MatchDate.Date) >= maxMatchesPerDayPerUser)
+            if (userTickets.Count(t => t.Status != CanceledStatus && t.MatchId != entity.MatchId && t.Match.MatchDate.Date == match.MatchDate.Date) >= maxMatchesPerDayPerUser)
             {
                 throw new MaxTicketsPerMatchDayExeededException(maxMatchesPerDayPerUser);
             }
@@ -99,6 +100,28 @@ namespace Services
         public async Task DeleteAsync(Ticket entity)
         {
            await _ticketDAO.DeleteAsync(entity);
+        }
+
+        public async Task CancelTicketAsync(int ticketId, string userId)
+        {
+            var ticket = await _ticketDAO.FindByIdAsync(ticketId);
+
+            if (ticket == null || ticket.Order.UserId != userId)
+            {
+                throw new UnauthorizedAccessException("Ticket not found for this user.");
+            }
+
+            if (ticket.Status == CanceledStatus)
+            {
+                return;
+            }
+
+            if (DateTime.Now > ticket.Match.MatchDate.AddDays(-7))
+            {
+                throw new InvalidOperationException("Tickets can only be canceled until one week before the match.");
+            }
+
+            await _ticketDAO.UpdateStatusAsync(ticket.Id, CanceledStatus);
         }
 
         public async Task<Ticket?> FindByIdAsync(int Id)
