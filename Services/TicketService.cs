@@ -30,15 +30,24 @@ namespace Services
         }
         public async Task AddAsync(Ticket entity, string userId)
         {
-            //Ze worden hier eerst toegevoegd omdat je anders reace conditions hebt bij max 4 tickets per match
-            //dit is veilig omdat er een transactie is in de orderservice
-            await _ticketDAO.AddAsync(entity);
             var userTickets = await _ticketDAO.GetTicketsByUserAsync(userId);
             const int maxTicketsPerUserPerMatch = 4;
             const int maxMatchesPerDayPerUser = 1;
             var match = await _matchDAO.FindByIdAsync(entity.MatchId);
             var vak = await _vakDAO.FindByIdAsync(entity.VakId);
             var seat = entity.Seat;
+
+            //controle of seat al is genomen
+            //moet voor de addAsync want anders vindt ie zich zelf alsan were,isSeatTaken controleerd ook in local
+            if (await _seatService.isSeatTakenAsync(match.HomeClubId, vak.Id, entity.Seat, match.SeizoenId, match.Id))
+            {
+                throw new SeatIsTakenException(entity.Seat, vak.Name, match.HomeClub.Stadium.Name);
+            }
+
+
+            //Ze worden hier eerst toegevoegd omdat je anders reace conditions hebt bij max 4 tickets per match
+            //dit is veilig omdat er een transactie is in de orderservice
+            await _ticketDAO.AddAsync(entity);
 
             if (match == null)
                 throw new Exception("Invalid Match");
@@ -50,7 +59,7 @@ namespace Services
             if (seatRowCol.Length != 2 || !int.TryParse(seatRowCol[0], out int seatRow) || !int.TryParse(seatRowCol[1], out int seatCol))
                 throw new Exception("Invalid seat");
 
-            if (seatRow < 1 || seatRow >= vak.Rows || seatCol < 1 || seatCol >= vak.SeatsPerRow)
+            if (seatRow < 1 || seatRow > vak.Rows || seatCol < 1 || seatCol > vak.SeatsPerRow)
                 throw new Exception("Invalid seat");
 
            
@@ -62,16 +71,10 @@ namespace Services
                 .Where(t => t.Order.UserId == userId && t.MatchId == entity.MatchId)
                 .ToList();
 
-            int totaalAantal =userTickets.Count(t => t.MatchId == entity.MatchId) + localTickets.Count;
+            int totaalAantal = userTickets.Count(t => t.MatchId == entity.MatchId) + localTickets.Count - 1; //-1 omdat de ticket die we net hebben toegevoegd ook in local zit, maar nog niet in de database, dus die moeten we eraf halen
             if (totaalAantal >= maxTicketsPerUserPerMatch)
             {
                 throw new TicketLimitExceededException(maxTicketsPerUserPerMatch);
-            }
-
-            //controle of seat al is genomen
-            if (await _seatService.isSeatTakenAsync(match.HomeClubId, vak.Id, entity.Seat, match.SeizoenId, match.Id))
-            {
-                throw new SeatIsTakenException(entity.Seat, vak.Name, match.HomeClub.Stadium.Name);
             }
 
             //Controle max 1 match per dag per user

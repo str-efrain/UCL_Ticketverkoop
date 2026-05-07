@@ -15,16 +15,48 @@ namespace Services
         private readonly IAbonnementDAO _abonnementDAO;
         private readonly ISeatService _seatService;
         private readonly ISeizoenService _seizoenService;
-        public AbonnementService(IAbonnementDAO abonnementDAO, ISeatService seatService, ISeizoenService seizoenService)
+        private readonly IService<Vak> _vakService;
+        private readonly IService<Club> _clubService;
+        public AbonnementService(IAbonnementDAO abonnementDAO, ISeatService seatService, ISeizoenService seizoenService,IService<Vak> vakService,IService<Club> clubService)
         {
             _abonnementDAO = abonnementDAO;
             _seatService = seatService;
             _seizoenService = seizoenService;
+            _vakService = vakService;
+            _clubService = clubService;
         }
 
         public async Task AddAsync(Abonnement entity)
         {
             entity.Seizoen = await _seizoenService.FindByIdAsync(entity.SeizoenId);
+            entity.Vak = await _vakService.FindByIdAsync(entity.VakId);
+            entity.Club =  await _clubService.FindByIdAsync(entity.ClubId);
+
+
+            if (entity.Seat == null || entity.VakId == 0 || entity.ClubId == 0 || entity.SeizoenId == 0)
+            {
+                throw new Exception("ongeldige gegevens");
+            }
+
+            if(entity.Seizoen == null)
+            {
+                throw new Exception("ongeldig seizoen");
+            }
+
+            string[] seatRowCol = entity.Seat.Split('-');
+            if (seatRowCol.Length != 2 || !int.TryParse(seatRowCol[0], out int seatRow) || !int.TryParse(seatRowCol[1], out int seatCol))
+                throw new Exception("ongeldige stoel");
+
+            if (seatRow < 1 || seatRow > entity.Vak.Rows || seatCol < 1 || seatCol > entity.Vak.SeatsPerRow)
+                throw new Exception("ongeldige stoel");
+
+            //controle of seat al is genomen
+            if (await _seatService.isSeatTakenAsync(entity.ClubId, entity.VakId, entity.Seat, entity.SeizoenId, null))
+            {
+                throw new SeatIsTakenException(entity.Seat, entity.Vak.Name, entity.Club.Stadium.Name);
+            }
+
+            await _abonnementDAO.AddAsync(entity);
 
             DateTime startDateAsDateTime = entity.Seizoen.StartDate.ToDateTime(TimeOnly.MinValue);
             DateOnly startAbonnementen = DateOnly.FromDateTime(startDateAsDateTime.AddMonths(-2));
@@ -40,15 +72,6 @@ namespace Services
 
             //    throw new SubscriptionSalesNotActiveException(start, end);
             //}
-
-            //controle of seat al is genomen
-            if (await _seatService.isSeatTakenAsync(entity.ClubId, entity.VakId, entity.Seat, entity.SeizoenId,null))
-            {
-                throw new SeatIsTakenException(entity.Seat, entity.Vak.Name, entity.Club.Stadium.Name);
-            }
-
-
-            await _abonnementDAO.AddAsync(entity);
         }
 
         public async Task DeleteAsync(Abonnement entity)

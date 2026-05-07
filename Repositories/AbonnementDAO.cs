@@ -71,11 +71,21 @@ namespace Repositories
 
         public async Task<bool> isSeatTakenAsync(int clubId, int vakId, string seat, int seasonId)
         {
-            return await _context.Abonnements
+            bool takenInDb = await _context.Abonnements
                 .AnyAsync(a => a.ClubId == clubId &&
                                a.VakId == vakId &&
                                a.Seat == seat &&
                                a.SeizoenId == seasonId);
+
+            if (takenInDb) return true;
+
+            bool takenInLocal = _context.Abonnements.Local
+                .Any(a => a.ClubId == clubId &&
+                          a.VakId == vakId &&
+                          a.Seat == seat &&
+                          a.SeizoenId == seasonId);
+
+            return takenInLocal;
         }
     }
 }

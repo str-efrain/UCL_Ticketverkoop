@@ -74,21 +74,12 @@ namespace Repositories
 
         public async Task<bool> IsSeatTakenAsync(int matchId, int vakId, string seat)
         {
-            var match = await _context.Matches.FindAsync(matchId);
-            if (match == null) return false;
+            bool inDb = await _context.Tickets.AnyAsync(t => t.MatchId == matchId && t.VakId == vakId && t.Seat == seat);
+            if (inDb) return true;
 
-            bool ticketTaken = await _context.Tickets
-                .AnyAsync(t => t.MatchId == matchId &&
-                               t.VakId == vakId &&
-                               t.Seat.Equals(seat));
+            bool inLocal = _context.Tickets.Local.Any(t => t.MatchId == matchId && t.VakId == vakId && t.Seat == seat);
 
-            if (ticketTaken) return true;
-
-            return await _context.Abonnements
-                .AnyAsync(a => a.ClubId == match.HomeClubId &&
-                               a.SeizoenId == match.SeizoenId &&
-                               a.VakId == vakId &&
-                               a.Seat.Equals(seat));
+            return inLocal;
         }
 
         public async Task<List<string>> GetTakenSeatsAsync(int matchId, int vakId)
@@ -118,8 +109,6 @@ namespace Repositories
                 .Where(t => t.Order.UserId == userId)
                 .Include(t => t.Match)
                 .ToListAsync();
-
-
         }
     }
 
