@@ -182,6 +182,18 @@ builder.Services.AddControllersWithViews();
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 
 builder.Services.AddSingleton<IEmailSend, EmailSend>();
+builder.Services.AddHttpClient("OverpassApi", client =>
+{
+    client.BaseAddress = new Uri("https://overpass-api.de/api/");
+    client.Timeout = TimeSpan.FromSeconds(30);
+    client.DefaultRequestHeaders.UserAgent.ParseAdd("EfraThib-Ticketing/1.0");
+});
+builder.Services.AddHttpClient("WikimediaApi", client =>
+{
+    client.BaseAddress = new Uri("https://commons.wikimedia.org/");
+    client.Timeout = TimeSpan.FromSeconds(15);
+    client.DefaultRequestHeaders.UserAgent.ParseAdd("EfraThib-Ticketing/1.0");
+});
 
 //conformation email
 builder.Services.AddTransient<Microsoft.AspNetCore.Identity.UI.Services.IEmailSender, EmailSend>();

@@ -44,6 +44,10 @@
                    asp-controller="History" asp-action="Index">
                     Order History
                 </a>
+                <a class="@(currentController == "Hotel" ? "active" : "")"
+                   asp-controller="Hotel" asp-action="Index">
+                    Hotels
+                </a>
             </div>
 
             @await Html.PartialAsync("_SelectCulture")

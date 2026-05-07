@@ -1,0 +1,89 @@
+@model UCL_Ticketverkoop.ViewModels.HotelSearchVM
+
+@{
+    ViewData["Title"] = "Hotels";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Hotel.css" asp-append-version="true" />
+}
+
+<div class="hotel-header">
+    <p class="hotel-eyebrow">Match stay</p>
+    <h1 class="hotel-title">Hotel recommendations</h1>
+    <p class="hotel-subtitle">Choose a match city and get a short list of nearby hotel options.</p>
+</div>
+
+<form asp-controller="Hotel" asp-action="Index" method="get" class="hotel-search">
+    <label asp-for="SelectedCity" class="hotel-label">City</label>
+    <div class="hotel-search-row">
+        <select asp-for="SelectedCity" asp-items="Model.Cities" name="city" class="hotel-select">
+            <option value="">Select a city</option>
+        </select>
+        <button type="submit" class="hotel-button">Find hotels</button>
+    </div>
+</form>
+
+@if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+{
+    <div class="hotel-alert">@Model.ErrorMessage</div>
+}
+
+@if (Model.Hotels.Any())
+{
+    <section class="hotel-results">
+        <div class="hotel-results-head">
+            <h2>Recommended stays in @Model.SelectedCity</h2>
+            <span>@Model.Hotels.Count options</span>
+        </div>
+
+        <div class="hotel-grid">
+            @foreach (var hotel in Model.Hotels)
+            {
+                <article class="hotel-card">
+                    <div class="hotel-photo-wrap">
+                        @if (!string.IsNullOrWhiteSpace(hotel.PhotoUrl))
+                        {
+                            <img src="@hotel.PhotoUrl" alt="@hotel.Name" class="hotel-photo" loading="lazy" />
+                        }
+                        else
+                        {
+                            <div class="hotel-photo hotel-photo-empty">No photo</div>
+                        }
+                    </div>
+
+                    <div class="hotel-card-main">
+                        <h3>@hotel.Name</h3>
+
+                        @if (!string.IsNullOrWhiteSpace(hotel.Stars))
+                        {
+                            <p class="hotel-stars">@hotel.Stars sterren</p>
+                        }
+                        else
+                        {
+                            <p class="hotel-stars">Sterren onbekend</p>
+                        }
+
+                        @if (!string.IsNullOrWhiteSpace(hotel.Address))
+                        {
+                            <p class="hotel-meta">@hotel.Address</p>
+                        }
+
+                    </div>
+
+                    <div class="hotel-card-actions">
+                        <a href="@hotel.BookingUrl" target="_blank" rel="noopener noreferrer" class="hotel-link">
+                            View on Booking
+                        </a>
+                    </div>
+                </article>
+            }
+        </div>
+    </section>
+}
+else if (Model.HasSearched && string.IsNullOrWhiteSpace(Model.ErrorMessage))
+{
+    <div class="hotel-empty">
+        No hotel recommendations were found for this city.
+    </div>
+}
