@@ -10,9 +10,9 @@ namespace UCL_Ticketverkoop.Controllers
 {
     public class HotelController : Controller
     {
+        private const int MaxHotels = 5;
         private readonly IMatchService _matchService;
         private readonly IHttpClientFactory _httpClientFactory;
-        private const int MaxHotels = 5;
 
         public HotelController(IMatchService matchService, IHttpClientFactory httpClientFactory)
         {
@@ -87,8 +87,7 @@ namespace UCL_Ticketverkoop.Controllers
 
         private async Task<List<HotelRecommendationVM>> GetHotelsForCityAsync(string city)
         {
-            string overpassQuery = BuildHotelQuery(city);
-            var hotels = await ExecuteHotelQueryAsync(overpassQuery, city);
+            var hotels = await ExecuteHotelQueryAsync(BuildHotelQuery(city), city);
 
             if (hotels.Count == 0 && TryGetCityCoordinates(city, out double latitude, out double longitude))
             {
@@ -122,7 +121,7 @@ namespace UCL_Ticketverkoop.Controllers
                 return new List<HotelRecommendationVM>();
             }
 
-            var hotels = elements
+            return elements
                 .EnumerateArray()
                 .Select(element => ParseHotel(element, city))
                 .Where(hotel => !string.IsNullOrWhiteSpace(hotel.Name))
@@ -130,17 +129,15 @@ namespace UCL_Ticketverkoop.Controllers
                 .Select(group => group.First())
                 .Take(MaxHotels)
                 .ToList();
-
-            return hotels;
         }
 
         private static string BuildHotelQuery(string city)
         {
-            string cityPattern = BuildCityPattern(city);
+            string cityName = EscapeOverpassRegex(city.Trim());
 
             return $"""
                 [out:json][timeout:25];
-                area["name"~"^({cityPattern})$","i"]["boundary"="administrative"]->.searchArea;
+                area["name"~"^({cityName})$",i]["boundary"="administrative"]->.searchArea;
                 (
                   nwr["tourism"="hotel"](area.searchArea);
                   nwr["tourism"="guest_house"](area.searchArea);
@@ -168,43 +165,23 @@ namespace UCL_Ticketverkoop.Controllers
 
         private static bool TryGetCityCoordinates(string city, out double latitude, out double longitude)
         {
-            string normalizedCity = city.Trim();
-            if (IsMunich(normalizedCity))
+            (latitude, longitude) = city.Trim().ToLowerInvariant() switch
             {
-                latitude = 48.137154;
-                longitude = 11.576124;
-                return true;
-            }
+                "barcelona" => (41.3874, 2.1686),
+                "madrid" => (40.4168, -3.7038),
+                "paris" => (48.8566, 2.3522),
+                "manchester" => (53.4808, -2.2426),
+                "brugge" or "bruges" => (51.2093, 3.2247),
+                "munchen" or "muenchen" or "munich" or "m\u00FCnchen" => (48.137154, 11.576124),
+                "london" => (51.5072, -0.1276),
+                "liverpool" => (53.4084, -2.9916),
+                "milan" or "milano" => (45.4642, 9.1900),
+                "dortmund" => (51.5136, 7.4653),
+                "lisbon" or "lisboa" => (38.7223, -9.1393),
+                _ => (0, 0)
+            };
 
-            latitude = 0;
-            longitude = 0;
-            return false;
-        }
-
-        private static string BuildCityPattern(string city)
-        {
-            var cityAliases = GetCityAliases(city)
-                .Select(EscapeOverpassRegex)
-                .Distinct(StringComparer.OrdinalIgnoreCase);
-
-            return string.Join("|", cityAliases);
-        }
-
-        private static IEnumerable<string> GetCityAliases(string city)
-        {
-            string trimmedCity = city.Trim();
-            yield return trimmedCity;
-
-            if (trimmedCity.Equals("München", StringComparison.OrdinalIgnoreCase) ||
-                trimmedCity.Equals("Munchen", StringComparison.OrdinalIgnoreCase) ||
-                trimmedCity.Equals("Muenchen", StringComparison.OrdinalIgnoreCase) ||
-                trimmedCity.Equals("Munich", StringComparison.OrdinalIgnoreCase))
-            {
-                yield return "München";
-                yield return "Munchen";
-                yield return "Muenchen";
-                yield return "Munich";
-            }
+            return latitude != 0 || longitude != 0;
         }
 
         private static string EscapeOverpassRegex(string value)
@@ -225,14 +202,6 @@ namespace UCL_Ticketverkoop.Controllers
                 .Replace("$", "\\$");
         }
 
-        private static bool IsMunich(string city)
-        {
-            return city.Equals("M\u00FCnchen", StringComparison.OrdinalIgnoreCase) ||
-                   city.Equals("Munchen", StringComparison.OrdinalIgnoreCase) ||
-                   city.Equals("Muenchen", StringComparison.OrdinalIgnoreCase) ||
-                   city.Equals("Munich", StringComparison.OrdinalIgnoreCase);
-        }
-
         private static HotelRecommendationVM ParseHotel(JsonElement element, string city)
         {
             JsonElement tags = element.TryGetProperty("tags", out JsonElement tagsElement)
@@ -240,14 +209,13 @@ namespace UCL_Ticketverkoop.Controllers
                 : default;
 
             string hotelName = ReadTag(tags, "name") ?? "Hotel";
-            string? photoUrl = ReadImageUrl(tags);
 
             return new HotelRecommendationVM
             {
                 Name = hotelName,
                 Address = BuildAddress(tags),
                 Stars = ReadStars(tags),
-                PhotoUrl = photoUrl,
+                PhotoUrl = ReadImageUrl(tags),
                 BookingUrl = BuildBookingUrl(hotelName, city)
             };
         }
@@ -332,7 +300,7 @@ namespace UCL_Ticketverkoop.Controllers
                 return normalizedRating.Length.ToString();
             }
 
-            string digits = new(normalizedRating.TakeWhile(character => char.IsDigit(character)).ToArray());
+            string digits = new(normalizedRating.TakeWhile(char.IsDigit).ToArray());
             return string.IsNullOrWhiteSpace(digits) ? normalizedRating : digits;
         }
 
@@ -370,6 +338,5 @@ namespace UCL_Ticketverkoop.Controllers
                 ? value.GetString()
                 : null;
         }
-
     }
 }
