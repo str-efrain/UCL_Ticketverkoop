@@ -16,14 +16,14 @@
         $"~{Context.Request.Path.Value}"; //Naar welke pagina moet ik teruggaan na het veranderen van taal?
 }
 
-<div>
+<div class="culture-selector">
     <form id="selectLanguage" asp-controller="Home"
           asp-action="SetAppLanguage" asp-route-returnUrl="@responseUrl"
-          method="post" class="form-horizontal" role="form">
-        <label>
+          method="post" class="culture-form" role="form">
+        <label class="culture-label" for="lang">
             @Localizer["Select Language"]
         </label>
-        <select name="lang" class="setLang"
+        <select id="lang" name="lang" class="setLang culture-select"
                 asp-for="@currentRequestCulture.RequestCulture.UICulture.Name"
                 asp-items="cultureItems">
         </select>

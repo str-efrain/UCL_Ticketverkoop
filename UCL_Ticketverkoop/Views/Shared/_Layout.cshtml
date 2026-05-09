@@ -16,44 +16,53 @@
         @{
             var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
         }
-        <nav class="navbar">
-            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
-                EfraThib<span>_Ticketing</span>
-            </a>
-
-            <div class="nav-links">
-                <a class="@(currentController == "Home" ? "active" : "")"
-                   asp-controller="Home" asp-action="Index">
-                    Home
+        <nav class="navbar navbar-expand-lg site-header">
+            <div class="nav-shell">
+                <a class="navbar-brand site-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    EfraThib<span>_Ticketing</span>
                 </a>
 
-                <a class="@(currentController == "Club" || currentController == "Stadium" ? "active" : "")"
-                   asp-controller="Club" asp-action="Index">
-                    Clubs
-                </a>
+                <button class="navbar-toggler site-nav-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavigation"
+                        aria-controls="mainNavigation" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
 
-                <a class="@(currentController == "Match" || currentController == "SeatSelect" ? "active" : "")"
-                   asp-controller="Match" asp-action="Index">
-                    Matchcalendar
-                </a>
-                <a class="@(currentController == "ShoppingCart" || currentController == "Checkout" ? "active" : "")"
-                   asp-controller="ShoppingCart" asp-action="Index">
-                    ShoppingCart
-                </a>
-                <a class="@(currentController == "History" ? "active" : "")"
-                   asp-controller="History" asp-action="Index">
-                    Order History
-                </a>
-                <a class="@(currentController == "Hotel" ? "active" : "")"
-                   asp-controller="Hotel" asp-action="Index">
-                    Hotels
-                </a>
-            </div>
+                <div class="collapse navbar-collapse site-nav-collapse" id="mainNavigation">
+                    <div class="nav-links">
+                        <a class="@(currentController == "Home" ? "active" : "")"
+                           asp-controller="Home" asp-action="Index">
+                            Home
+                        </a>
 
-            @await Html.PartialAsync("_SelectCulture")
+                        <a class="@(currentController == "Club" || currentController == "Stadium" ? "active" : "")"
+                           asp-controller="Club" asp-action="Index">
+                            Clubs
+                        </a>
 
-            <div class="nav-auth">
-                <partial name="_LoginPartial" />
+                        <a class="@(currentController == "Match" || currentController == "SeatSelect" ? "active" : "")"
+                           asp-controller="Match" asp-action="Index">
+                            Matchcalendar
+                        </a>
+                        <a class="@(currentController == "ShoppingCart" || currentController == "Checkout" ? "active" : "")"
+                           asp-controller="ShoppingCart" asp-action="Index">
+                            ShoppingCart
+                        </a>
+                        <a class="@(currentController == "History" ? "active" : "")"
+                           asp-controller="History" asp-action="Index">
+                            Order History
+                        </a>
+                        <a class="@(currentController == "Hotel" ? "active" : "")"
+                           asp-controller="Hotel" asp-action="Index">
+                            Hotels
+                        </a>
+                    </div>
+
+                    <div class="nav-actions">
+                        @await Html.PartialAsync("_SelectCulture")
+
+                        <partial name="_LoginPartial" />
+                    </div>
+                </div>
             </div>
         </nav>
     </header>
