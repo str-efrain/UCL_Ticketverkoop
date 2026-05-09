@@ -43,6 +43,8 @@ namespace Repositories
         .Include(o => o.Abonnements)
             .ThenInclude(a => a.Vak)
         .Include(o => o.Abonnements)
+            .ThenInclude(a => a.Seizoen)
+        .Include(o => o.Abonnements)
             .ThenInclude(a => a.Club)
                 .ThenInclude(c => c.Stadium)
 

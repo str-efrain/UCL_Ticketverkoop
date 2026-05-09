@@ -106,12 +106,18 @@ namespace Services
         public async Task SendOrderConfirmationAsync(Order order, List<Ticket> tickets, List<Abonnement> subscriptions)
         {
             var orderWithDetails = await _orderDAO.FindByIdAsync(order.Id) ?? order;
+            var ticketsWithDetails = orderWithDetails.Tickets.Any()
+                ? orderWithDetails.Tickets.ToList()
+                : tickets;
+            var subscriptionsWithDetails = orderWithDetails.Abonnements.Any()
+                ? orderWithDetails.Abonnements.ToList()
+                : subscriptions;
 
             // Tickets PDF
-            var ticketPdf = tickets.Any() ? _createPdf.CreateTicketPDFDocument(tickets) : null;
+            var ticketPdf = ticketsWithDetails.Any() ? _createPdf.CreateTicketPDFDocument(ticketsWithDetails) : null;
 
             // Season pass PDF (send separately or together)
-            var abonnementPdf = subscriptions.Any() ? _createPdf.CreateAbonnementPDFDocument(subscriptions) : null;
+            var abonnementPdf = subscriptionsWithDetails.Any() ? _createPdf.CreateAbonnementPDFDocument(subscriptionsWithDetails) : null;
 
             string userEmail = orderWithDetails.User?.Email ?? order.UserId;
 
