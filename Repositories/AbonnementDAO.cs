@@ -87,5 +87,24 @@ namespace Repositories
 
             return takenInLocal;
         }
+
+        public async Task<List<string>> GetTakenSeatsAsync(int clubId, int vakId, int seasonId)
+        {
+            var takenInDb = await _context.Abonnements
+                .AsNoTracking()
+                .Where(a => a.ClubId == clubId &&
+                            a.VakId == vakId &&
+                            a.SeizoenId == seasonId)
+                .Select(a => a.Seat)
+                .ToListAsync();
+
+            var takenInLocal = _context.Abonnements.Local
+                .Where(a => a.ClubId == clubId &&
+                            a.VakId == vakId &&
+                            a.SeizoenId == seasonId)
+                .Select(a => a.Seat);
+
+            return takenInDb.Concat(takenInLocal).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+        }
     }
 }

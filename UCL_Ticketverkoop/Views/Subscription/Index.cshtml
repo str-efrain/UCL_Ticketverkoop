@@ -22,8 +22,12 @@
 <!-- ── Section info ── -->
 <div class="ss-section-info">
     <div>
-        <p class="ss-eyebrow">Section</p>
+        <p class="ss-eyebrow">Season ticket</p>
         <h1 class="ss-section-name">@Model.Vak.Name</h1>
+        @if (!string.IsNullOrWhiteSpace(Model.SeasonName))
+        {
+            <span class="ss-ring-badge">@Model.SeasonName</span>
+        }
         @if (!string.IsNullOrEmpty(Model.Vak.Ring))
         {
             <span class="ss-ring-badge">@Model.Vak.Ring</span>
@@ -76,6 +80,7 @@
 <form asp-controller="Subscription" asp-action="AddSubscriptions" method="post">
     <input type="hidden" name="ClubId" value="@Model.Club.Id" />
     <input type="hidden" name="VakId" value="@Model.Vak.Id" />
+    <input type="hidden" name="SeasonId" value="@Model.SeasonId" />
     <div id="selectedSeatsContainer"></div>
 
     <div class="ss-grid-wrapper">
@@ -117,7 +122,7 @@
 @section Scripts {
     <script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
     <script>
-        const matchId = @Model.Club.Id;
+        const matchId = @(Model.SeasonId * 100000 + Model.Club.Id);
         const vakId = @Model.Vak.Id;
         const selectedSeats = new Set();
         const selectedSeatsContainer = document.getElementById("selectedSeatsContainer");

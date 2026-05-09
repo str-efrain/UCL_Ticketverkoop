@@ -94,6 +94,11 @@ namespace Services
             return await _abonnementDAO.isSeatTakenAsync(clubId,vakId,seat,seasonId);
         }
 
+        public async Task<List<string>> GetTakenSeatsAsync(int clubId, int vakId, int seasonId)
+        {
+            return await _abonnementDAO.GetTakenSeatsAsync(clubId, vakId, seasonId);
+        }
+
         public async Task UpdateAsync(Abonnement entity)
         {
             await _abonnementDAO.UpdateAsync(entity);

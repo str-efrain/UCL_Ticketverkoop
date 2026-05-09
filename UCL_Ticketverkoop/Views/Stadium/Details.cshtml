@@ -1,11 +1,10 @@
-﻿@model UCL_Ticketverkoop.ViewModels.ClubVM
+@model UCL_Ticketverkoop.ViewModels.ClubVM
 <link href="~/css/stadiumdetails.css" rel="stylesheet" />
 
 @{
     ViewData["Title"] = Model.Stadium.name;
 }
 
-<!-- ── Header ── -->
 <div class="sd-header">
     @if (Model != null)
     {
@@ -25,7 +24,6 @@
     </div>
 </div>
 
-<!-- ── Stats bar ── -->
 @{
     int totalSeats = Model.Stadium.vaks.Sum(v => v.Rows * v.SeatsPerRow);
     int totalVaks = Model.Stadium.vaks.Count;
@@ -51,20 +49,33 @@
     </div>
 </div>
 
-<!-- ── Sections ── -->
 <div class="sd-sections-header">
-    <p class="sd-eyebrow">Sections</p>
-    <h2 class="sd-sections-title">Choose Your Section for a Season Ticket</h2>
+    <div>
+        <p class="sd-eyebrow">Sections</p>
+        <h2 class="sd-sections-title">Choose Your Section for a Season Ticket</h2>
+    </div>
+    <form asp-controller="Stadium" asp-action="Details" method="get" class="sd-season-form">
+        <input type="hidden" name="id" value="@Model.Id" />
+        <label for="seasonId" class="sd-season-label">Season</label>
+        <select id="seasonId" name="seasonId" asp-items="ViewBag.Seasons" class="sd-season-select">
+        </select>
+    </form>
 </div>
+
+@if (ViewBag.SelectedSeasonName != null)
+{
+    <div class="sd-season-context">
+        <span class="sd-season-eyebrow">Selected season</span>
+        <span class="sd-season-name">@ViewBag.SelectedSeasonName</span>
+    </div>
+}
 
 @if (Model.Stadium.vaks.Any())
 {
-    <!-- Group by ring if rings are present -->
     var rings = Model.Stadium.vaks
         .GroupBy(v => string.IsNullOrEmpty(v.Ring) ? "General" : v.Ring)
         .OrderBy(g => g.Key)
         .ToList();
-    
 
     @foreach (var ring in rings)
     {
@@ -98,7 +109,12 @@
                                 <span class="sd-vak-detail-label">Seats</span>
                             </div>
                         </div>
-                        <a asp-controller="Subscription" asp-action="Index" asp-route-vakId="@vak.Id" asp-route-clubId="@Model.Id" class="sd-vak-btn">
+                        <a asp-controller="Subscription"
+                           asp-action="Index"
+                           asp-route-vakId="@vak.Id"
+                           asp-route-clubId="@Model.Id"
+                           asp-route-seasonId="@ViewBag.SelectedSeasonId"
+                           class="sd-vak-btn">
                             Buy Season Ticket
                         </a>
                     </div>
@@ -110,4 +126,12 @@
 else
 {
     <p class="sd-empty">No sections available for this stadium yet.</p>
+}
+
+@section Scripts {
+    <script>
+        document.getElementById("seasonId")?.addEventListener("change", function () {
+            this.form.submit();
+        });
+    </script>
 }

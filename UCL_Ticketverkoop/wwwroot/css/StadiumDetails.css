@@ -110,6 +110,11 @@
 
 /* ── Section heading ─────────────────────────────────────────── */
 .sd-sections-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 1rem;
+    flex-wrap: wrap;
     margin-bottom: 1.25rem;
 }
 
@@ -119,6 +124,57 @@
     color: #ffffff;
     margin: 0;
     line-height: 1.1;
+}
+
+.sd-season-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    min-width: 220px;
+}
+
+.sd-season-label,
+.sd-season-eyebrow {
+    color: #d4af37;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.sd-season-select {
+    background-color: rgba(17, 27, 59, 0.95);
+    border: 1px solid rgba(212, 175, 55, 0.45);
+    border-radius: 8px;
+    color: #ffffff;
+    min-height: 2.5rem;
+    padding: 0.55rem 0.8rem;
+}
+
+.sd-season-select:focus {
+    border-color: #d4af37;
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.18);
+    outline: none;
+}
+
+.sd-season-select option {
+    background-color: #111b3b;
+}
+
+.sd-season-context {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: rgba(212, 175, 55, 0.1);
+    border: 1px solid rgba(212, 175, 55, 0.24);
+    border-radius: 10px;
+    margin-bottom: 1.25rem;
+    padding: 0.85rem 1rem;
+}
+
+.sd-season-name {
+    color: #ffffff;
+    font-weight: 700;
 }
 
 /* ── Ring group ──────────────────────────────────────────────── */
@@ -288,6 +344,10 @@
     .sd-vaks-grid {
         grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     }
+
+    .sd-season-form {
+        width: 100%;
+    }
 }
 
 @media (max-width: 480px) {
@@ -297,5 +357,10 @@
 
     .sd-header {
         padding: 1.25rem;
+    }
+
+    .sd-season-context {
+        align-items: flex-start;
+        flex-direction: column;
     }
 }

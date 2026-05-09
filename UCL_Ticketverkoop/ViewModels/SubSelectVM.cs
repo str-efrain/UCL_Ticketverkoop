@@ -4,6 +4,8 @@
     {
        public ClubVM Club { get; set; }
         public VakVM Vak { get; set; }
+        public int SeasonId { get; set; }
+        public string? SeasonName { get; set; }
         public HashSet<string> TakenSeats { get; set; } = new HashSet<string>(System.StringComparer.OrdinalIgnoreCase);
     }
 }

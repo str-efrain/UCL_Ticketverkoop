@@ -10,5 +10,6 @@ namespace Repositories.Interfaces
     public interface IAbonnementDAO : IDAO<Abonnement>
     {
         Task<bool> isSeatTakenAsync(int clubId, int vakId, string seat, int seasonId);
+        Task<List<string>> GetTakenSeatsAsync(int clubId, int vakId, int seasonId);
     }
 }
