@@ -1,0 +1,11 @@
+@model UCL_Ticketverkoop.ViewModels.ClubMatchVM
+
+<section class="season-summary">
+    <span class="season-eyebrow">UEFA Champions League</span>
+    <h2>@(string.IsNullOrWhiteSpace(Model.SelectedSeasonName) ? "No season selected" : Model.SelectedSeasonName)</h2>
+    <span class="season-count">@Model.Matches.Count() match(es)</span>
+</section>
+
+<div id="content">
+    <partial name="_MatchData" model="Model.Matches" />
+</div>

@@ -93,6 +93,45 @@ namespace Repositories
             }
         }
 
+        public async Task<IEnumerable<Match>?> GetBySeasonAsync(int seasonId)
+        {
+            try
+            {
+                return await _context.Matches
+                    .Include(h => h.HomeClub)
+                        .ThenInclude(c => c.Stadium)
+                    .Include(a => a.AwayClub)
+                    .Include(s => s.Seizoen)
+                    .Where(m => m.SeizoenId == seasonId)
+                    .AsNoTracking()
+                    .ToListAsync();
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public async Task<IEnumerable<Match>?> GetByClubAndSeasonAsync(int clubId, int seasonId)
+        {
+            try
+            {
+                return await _context.Matches
+                    .Include(h => h.HomeClub)
+                        .ThenInclude(c => c.Stadium)
+                    .Include(a => a.AwayClub)
+                    .Include(s => s.Seizoen)
+                    .Where(m => m.SeizoenId == seasonId)
+                    .Where(m => m.HomeClubId == clubId || m.AwayClubId == clubId)
+                    .AsNoTracking()
+                    .ToListAsync();
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
         public async Task UpdateAsync(Match entity)
         {
             _context.Update(entity).State = EntityState.Modified;

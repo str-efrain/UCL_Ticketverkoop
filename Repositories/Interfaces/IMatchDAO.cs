@@ -10,5 +10,7 @@ namespace Repositories.Interfaces
     public interface IMatchDAO: IDAO<Match>
     {
         Task<IEnumerable<Match>?> GetByClubAsync(int clubId);
+        Task<IEnumerable<Match>?> GetBySeasonAsync(int seasonId);
+        Task<IEnumerable<Match>?> GetByClubAndSeasonAsync(int clubId, int seasonId);
     }
 }

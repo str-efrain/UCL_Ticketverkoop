@@ -14,20 +14,33 @@ namespace UCL_Ticketverkoop.Controllers
         private readonly IMatchService _matchService;
         private readonly IMapper _mapper;
         private readonly IService<Club> _clubService;
+        private readonly ISeizoenService _seasonService;
 
-        public MatchController(IMatchService matchService, IMapper mapper, IService<Club> clubService)
+        public MatchController(IMatchService matchService, IMapper mapper, IService<Club> clubService, ISeizoenService seasonService)
         {
             _matchService = matchService;
             _mapper = mapper;
-            _clubService = clubService; 
+            _clubService = clubService;
+            _seasonService = seasonService;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? seasonId)
         {
-            ClubMatchVM viewModel = new ClubMatchVM();
+            var seasons = (await _seasonService.GetAllAsync() ?? Enumerable.Empty<Seizoen>())
+                .OrderByDescending(s => s.StartDate)
+                .ToList();
+            var selectedSeason = GetSelectedSeason(seasons, seasonId);
 
-            viewModel.Matches = _mapper.Map<IEnumerable<MatchVM>>(await _matchService.GetAllAsync());
-            viewModel.Clubs = new SelectList(await _clubService.GetAllAsync(), "Id", "Name");
+            ClubMatchVM viewModel = new ClubMatchVM
+            {
+                SeasonID = selectedSeason?.Id,
+                SelectedSeasonName = selectedSeason?.Name,
+                Matches = selectedSeason == null
+                    ? new List<MatchVM>()
+                    : _mapper.Map<IEnumerable<MatchVM>>(await _matchService.GetBySeasonAsync(selectedSeason.Id)),
+                Clubs = new SelectList(await _clubService.GetAllAsync(), "Id", "Name"),
+                Seasons = new SelectList(seasons, "Id", "Name", selectedSeason?.Id)
+            };
 
             return View(viewModel);
 
@@ -36,19 +49,42 @@ namespace UCL_Ticketverkoop.Controllers
         [HttpPost]
         public async Task<IActionResult> getMatchesByClubs(ClubMatchVM model)
         {
-            IEnumerable<Match> matches;
-            if (model.ClubID.HasValue)
+            var seasons = (await _seasonService.GetAllAsync() ?? Enumerable.Empty<Seizoen>())
+                .OrderByDescending(s => s.StartDate)
+                .ToList();
+            var selectedSeason = GetSelectedSeason(seasons, model.SeasonID);
+
+            IEnumerable<Match> matches = Enumerable.Empty<Match>();
+            if (selectedSeason != null && model.ClubID.HasValue)
             {
-                matches = await _matchService.GetByClubAsync(model.ClubID.Value);
+                matches = await _matchService.GetByClubAndSeasonAsync(model.ClubID.Value, selectedSeason.Id)
+                    ?? Enumerable.Empty<Match>();
             }
-            else
+            else if (selectedSeason != null)
             {
-                matches = await _matchService.GetAllAsync();
+                matches = await _matchService.GetBySeasonAsync(selectedSeason.Id)
+                    ?? Enumerable.Empty<Match>();
             }
 
+            model.SeasonID = selectedSeason?.Id;
+            model.SelectedSeasonName = selectedSeason?.Name;
             model.Matches = _mapper.Map<IEnumerable<MatchVM>>(matches);
 
-            return PartialView("_MatchData", model.Matches);
+            return PartialView("_MatchCalendarResults", model);
+        }
+
+        private static Seizoen? GetSelectedSeason(List<Seizoen> seasons, int? seasonId)
+        {
+            if (seasonId.HasValue)
+            {
+                var season = seasons.FirstOrDefault(s => s.Id == seasonId.Value);
+                if (season != null)
+                {
+                    return season;
+                }
+            }
+
+            return seasons.FirstOrDefault(s => s.IsCurrentSeason) ?? seasons.FirstOrDefault();
         }
     }
 }

@@ -46,5 +46,15 @@ namespace Services
             return await _matchDAO.GetByClubAsync(clubId);
         }
 
+        public async Task<IEnumerable<Match>?> GetBySeasonAsync(int seasonId)
+        {
+            return await _matchDAO.GetBySeasonAsync(seasonId);
+        }
+
+        public async Task<IEnumerable<Match>?> GetByClubAndSeasonAsync(int clubId, int seasonId)
+        {
+            return await _matchDAO.GetByClubAndSeasonAsync(clubId, seasonId);
+        }
+
     }
 }
