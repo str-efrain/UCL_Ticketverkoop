@@ -129,12 +129,12 @@
                 {
                     <div class="sc-summary-line">
                         <span>@item.Club.Name Pass</span>
-                        <span>€@item.Vak.Price.ToString("0.##")</span>
+                        <span>€@item.Vak.SubscriptionPrice.ToString("0.##")</span>
                     </div>
                 }
                 }
                 
-                @if(Model.Subscriptions?.Any()==true)
+                @if(Model.Tickets?.Any()==true)
                 {
                 @* Summary regels voor Tickets *@
                 @foreach (var item in Model.Tickets)
