@@ -137,13 +137,13 @@
                 @if(Model.Tickets?.Any()==true)
                 {
                 @* Summary regels voor Tickets *@
-                @foreach (var item in Model.Tickets)
-                {
-                    <div class="sc-summary-line">
-                        <span>Ticket: @item.Match.HomeTeamName</span>
-                        <span>€@item.Vak.Price.ToString("0.##")</span>
-                    </div>
-                }
+                    @foreach (var item in Model.Tickets)
+                    {
+                        <div class="sc-summary-line">
+                            <span>Ticket: @item.Match.HomeTeamName - @item.Match.AwayTeamName</span>
+                            <span>€@item.Vak.Price.ToString("0.##")</span>
+                        </div>
+                    }
                 }
             </div>
 
