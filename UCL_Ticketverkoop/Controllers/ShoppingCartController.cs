@@ -122,11 +122,13 @@ namespace UCL_Ticketverkoop.Controllers
             catch (BusinessRuleException e)
             {
                 ViewBag.ErrorMessage = e.Message;
+                ClearShoppingCart();
                 return View("Index");
             }
             catch (Exception)
             {
                 ViewBag.ErrorMessage = "Er is een fout opgetreden bij het verwerken van je bestelling. Probeer het later opnieuw.";
+                ClearShoppingCart();
                 return View("Index");
             }
         }
