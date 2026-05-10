@@ -27,8 +27,8 @@ namespace Domains.Exceptions
 
     public class SubscriptionSalesNotActiveException : BusinessRuleException
     {
-        public SubscriptionSalesNotActiveException(DateTime startDate, DateTime endDate)
-            : base($"De abonnement verkoop is actief tussen {startDate.ToShortDateString} en {endDate.ToShortDateString}") { }
+        public SubscriptionSalesNotActiveException(DateTime endDate)
+            : base($"De abonnement verkoop is gestopt op {endDate.ToShortDateString}") { }
     }
 
     public class MaxTicketsPerMatchDayExeededException : BusinessRuleException

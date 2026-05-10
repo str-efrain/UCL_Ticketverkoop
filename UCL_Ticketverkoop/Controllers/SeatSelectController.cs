@@ -19,20 +19,6 @@ using UCL_Ticketverkoop.ViewModels;
 
 namespace UCL_Ticketverkoop.Controllers
 {
-    // TODO buisness rules:
-    //• Per ticket wordt een voucher gegenereerd en via e-mail verstuurd.
-    //• Abonnementen kunnen enkel aangekocht worden vóór de start van de competitie.
-    //Een abonnement-plaats kan niet meer als los ticket verkocht worden.
-    //• Overboeking is niet toegestaan; capaciteitslimieten mogen nooit overschreden
-    //worden.
-    //• Gratis annulatie is mogelijk tot 1 week vóór de wedstrijd.
-    //• Gebruikers registreren zich éénmalig en kunnen nadien inloggen.
-    //• Wachtwoord vergeten verloopt via e-mail.
-    //• Supporters kunnen een hotelovernachting boeken via externe API’s.Deze moeten
-    //niet bijgehouden worden
-    //Gebruik bestaande externe API’s (bv.hotel-search/booking API via een publieke
-    //provider of API-platform).
-    //Je hoeft geen echte betaling bij hotel te doen
     [Authorize]
     public class SeatSelectController : Controller
     {
@@ -70,14 +56,14 @@ namespace UCL_Ticketverkoop.Controllers
             if (!match.HomeClub.Stadium.Vaks.Any(v => v.Id == vakId))
                 return NotFound();
 
-            //if(DateTime.Now < match.MatchDate.AddMonths(-1) || DateTime.Now > match.MatchDate)
-            //{ 
-            //    ViewBag.ErrorMessage = "Sorry, de kaartverkoop voor deze wedstrijd is nog niet gestart of al afgelopen!";
-            //    MatchVM VM = _mapper.Map<MatchVM>(match);
-            //    return View("Index", VM);
-            //}
+            if (DateTime.Now < match.MatchDate.AddMonths(-1) || DateTime.Now > match.MatchDate)
+            {
+                ViewBag.ErrorMessage = "Sorry, de kaartverkoop voor deze wedstrijd is nog niet gestart of al afgelopen!";
+                MatchVM VM = _mapper.Map<MatchVM>(match);
+                return View("Index", VM);
+            }
 
-            
+
 
             SeatSelectVM seatSelectVM = await BuildSeatSelectVm(match, vakId);
             return View(seatSelectVM);

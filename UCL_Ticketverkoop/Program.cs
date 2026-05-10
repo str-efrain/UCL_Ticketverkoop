@@ -178,7 +178,6 @@ builder.Services.AddAuthorization(options =>
 });
 
 //email
-builder.Services.AddControllersWithViews();
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 
 builder.Services.AddSingleton<IEmailSend, EmailSend>();
@@ -197,13 +196,6 @@ builder.Services.AddHttpClient("WikimediaApi", client =>
 
 //conformation email
 builder.Services.AddTransient<Microsoft.AspNetCore.Identity.UI.Services.IEmailSender, EmailSend>();
-
-builder.Services.AddSession(options =>
-{
-    options.Cookie.Name = "be.VIVES.Session";
-
-    options.IdleTimeout = TimeSpan.FromMinutes(10); //Default = 20 min
-});
 
 //session 
 builder.Services.AddSession(options =>

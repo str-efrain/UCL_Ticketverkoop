@@ -85,10 +85,10 @@ namespace Services
             }
 
             //controle of de ticket verkoop al gestart is
-            //if(DateTime.Now < entity.Match.MatchDate.AddMonths(-1) || DateTime.Now > entity.Match.MatchDate)
-            //    {
-            //        throw new TicketSalesNotActiveException(entity.Match.MatchDate.AddMonths(-1),entity.Match.MatchDate);
-            //}
+            if (DateTime.Now < entity.Match.MatchDate.AddMonths(-1) || DateTime.Now > entity.Match.MatchDate)
+            {
+                throw new TicketSalesNotActiveException(entity.Match.MatchDate.AddMonths(-1), entity.Match.MatchDate);
+            }
 
         }
 

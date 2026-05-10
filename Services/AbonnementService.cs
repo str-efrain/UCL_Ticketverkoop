@@ -59,19 +59,17 @@ namespace Services
             await _abonnementDAO.AddAsync(entity);
 
             DateTime startDateAsDateTime = entity.Seizoen.StartDate.ToDateTime(TimeOnly.MinValue);
-            DateOnly startAbonnementen = DateOnly.FromDateTime(startDateAsDateTime.AddMonths(-2));
             DateOnly stopAbonnementen = DateOnly.FromDateTime(startDateAsDateTime.AddMonths(-1));
 
             DateOnly vandaag = DateOnly.FromDateTime(DateTime.Now);
 
             //controle of de abonnementenverkoop al gestart is en nog niet gestopt is
-            //if (vandaag < startAbonnementen || vandaag >= stopAbonnementen)
-            //{
-            //    DateTime start= startAbonnementen.ToDateTime(TimeOnly.MinValue);
-            //    DateTime end = stopAbonnementen.ToDateTime(TimeOnly.MinValue);
+            if (vandaag >= stopAbonnementen)
+            {
+                DateTime end = stopAbonnementen.ToDateTime(TimeOnly.MinValue);
 
-            //    throw new SubscriptionSalesNotActiveException(start, end);
-            //}
+                throw new SubscriptionSalesNotActiveException(end);
+            }
         }
 
         public async Task DeleteAsync(Abonnement entity)
