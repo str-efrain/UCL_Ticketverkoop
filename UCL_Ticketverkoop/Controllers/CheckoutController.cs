@@ -20,18 +20,18 @@ namespace UCL_Ticketverkoop.Controllers
         }
         public async Task<IActionResult> Index(int? orderId)
         {
-            if(!orderId.HasValue)
-                return NotFound();
+                if(!orderId.HasValue)
+                    return NotFound();
             
-            var order = await _orderService.FindByIdAsync(orderId.Value);
+                var order = await _orderService.FindByIdAsync(orderId.Value);
 
-            if(order == null)
-                return NotFound();
+                if(order == null)
+                    return NotFound();
 
-            OrderVM viewModel = _mapper.Map<OrderVM>(order);
+                OrderVM viewModel = _mapper.Map<OrderVM>(order);
 
 
-            return View(viewModel);
+                return View(viewModel);
         }
     }
 }

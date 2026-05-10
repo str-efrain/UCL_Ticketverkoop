@@ -65,7 +65,7 @@ namespace Services
 
             //controle of de abonnementenverkoop al gestart is en nog niet gestopt is
             if (vandaag >= stopAbonnementen)
-            {
+            { 
                 DateTime end = stopAbonnementen.ToDateTime(TimeOnly.MinValue);
 
                 throw new SubscriptionSalesNotActiveException(end);

@@ -22,13 +22,13 @@ namespace Domains.Exceptions
     public class TicketSalesNotActiveException : BusinessRuleException
     {
         public TicketSalesNotActiveException(DateTime startDate, DateTime endDate)
-            : base($"De ticketverkoop is actief tussen {startDate.ToShortDateString} en {endDate.ToShortDateString}") { }
+            : base($"De ticketverkoop is actief tussen {startDate.ToShortDateString()} en {endDate.ToShortDateString()}") { }
     }
 
     public class SubscriptionSalesNotActiveException : BusinessRuleException
     {
         public SubscriptionSalesNotActiveException(DateTime endDate)
-            : base($"De abonnement verkoop is gestopt op {endDate.ToShortDateString}") { }
+            : base($"De abonnement verkoop is gestopt op {endDate.ToShortDateString()}") { }
     }
 
     public class MaxTicketsPerMatchDayExeededException : BusinessRuleException

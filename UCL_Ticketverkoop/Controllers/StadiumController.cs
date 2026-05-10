@@ -20,11 +20,6 @@ namespace UCL_Ticketverkoop.Controllers
             _mapper = mapper;
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
-
         public async Task<IActionResult> Details(int id, int? seasonId)
         {
             try

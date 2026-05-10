@@ -80,7 +80,7 @@ namespace UCL_Ticketverkoop.Controllers
             {
                 shoppingCart.Subscriptions.Add(new SubscriptionVM
                 {
-                    Id = shoppingCart.Subscriptions.Count + 1, //niet naar db om in shopping cart te kunnen onderscheiden
+                    Id = shoppingCart.Subscriptions.Count + 1, //mag niet naar db om in shopping cart te kunnen onderscheiden
                     Club = _mapper.Map<ClubVM>(await _clubService.FindByIdAsync(ClubId)),
                     Vak = _mapper.Map<VakVM>(await _vakService.FindByIdAsync(VakId)),
                     Seat = seat,
