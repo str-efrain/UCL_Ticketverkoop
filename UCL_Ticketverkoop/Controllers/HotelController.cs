@@ -137,11 +137,11 @@ namespace UCL_Ticketverkoop.Controllers
 
             return $"""
                 [out:json][timeout:25];
-                area["name"~"^({cityName})$",i]["boundary"="administrative"]->.searchArea;
+                node["name"~"^({cityName})$",i]["place"~"city|town"]->.cityCenter;
                 (
-                  nwr["tourism"="hotel"](area.searchArea);
-                  nwr["tourism"="guest_house"](area.searchArea);
-                  nwr["tourism"="hostel"](area.searchArea);
+                  nwr["tourism"="hotel"](around.cityCenter:8000);
+                  nwr["tourism"="guest_house"](around.cityCenter:8000);
+                  nwr["tourism"="hostel"](around.cityCenter:8000);
                 );
                 out tags center 25;
                 """;
