@@ -119,6 +119,8 @@ namespace Repositories
         {
             return await _context.Orders
                 .Where(o => o.UserId.Equals(userId))
+                .OrderByDescending(o => o.OrderDate)
+                .ThenByDescending(o => o.Id)
                 .Include(o => o.Tickets)
                     .ThenInclude(t => t.Match)
                     .ThenInclude(m => m.HomeClub)
